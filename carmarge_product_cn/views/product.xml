@@ -6,7 +6,7 @@
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_form_view"/>
             <field name="arch" type="xml">
-                <xpath>
+                <xpath expr="//div[@name='weight']" position="after">
                     <label for="net_weight" string="净重"/>
                     <div class="o_row" name="net_weight">
                         <field name="net_weight"/>
