@@ -1,0 +1,60 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+<!--
+    <record model="ir.ui.view" id="carmarge_product_cn.list">
+      <field name="name">carmarge_product_cn list</field>
+      <field name="model">carmarge_product_cn.carmarge_product_cn</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>
+-->
+
+    <!-- actions opening views on models -->
+<!--
+    <record model="ir.actions.act_window" id="carmarge_product_cn.action_window">
+      <field name="name">carmarge_product_cn window</field>
+      <field name="res_model">carmarge_product_cn.carmarge_product_cn</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+-->
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="carmarge_product_cn.action_server">
+      <field name="name">carmarge_product_cn server</field>
+      <field name="model_id" ref="model_carmarge_product_cn_carmarge_product_cn"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+<!--
+    <menuitem name="carmarge_product_cn" id="carmarge_product_cn.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="carmarge_product_cn.menu_1" parent="carmarge_product_cn.menu_root"/>
+    <menuitem name="Menu 2" id="carmarge_product_cn.menu_2" parent="carmarge_product_cn.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="carmarge_product_cn.menu_1_list" parent="carmarge_product_cn.menu_1"
+              action="carmarge_product_cn.action_window"/>
+    <menuitem name="Server to list" id="carmarge_product_cn" parent="carmarge_product_cn.menu_2"
+              action="carmarge_product_cn.action_server"/>
+-->
+  </data>
+</odoo>

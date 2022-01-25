@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_carmarge_purchase_cn_carmarge_purchase_cn,carmarge_purchase_cn.carmarge_purchase_cn,model_carmarge_purchase_cn_carmarge_purchase_cn,base.group_user,1,1,1,1
