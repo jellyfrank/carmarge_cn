@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.config_parameter" id="mommy_documents">
+            <field name="key">mommy.documents</field>
+            <field name="value">False</field>
+        </record>
+        <record model="ir.config_parameter" id="mommy_support">
+            <field name="key">mommy.support</field>
+            <field name="value">False</field>
+        </record>
+        <record model="ir.config_parameter" id="mommy_shorcuts">
+            <field name="key">mommy.shorcuts</field>
+            <field name="value">False</field>
+        </record>
+        <record model="ir.config_parameter" id="mommy_account">
+            <field name="key">mommy.account</field>
+            <field name="value">False</field>
+        </record>
+    </data>
+</odoo>

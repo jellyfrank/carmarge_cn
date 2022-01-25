@@ -1,0 +1,10 @@
+<odoo>
+  <data>
+    <template id="assets_backend_abstract" inherit_id="web.assets_backend" name="abstract">
+      <xpath expr="script[last()]" position="after">
+        <script type="text/javascript" src="/mommy_brand/static/src/js/web.js"></script>
+      </xpath>
+    </template>
+  </data>
+</odoo>
+

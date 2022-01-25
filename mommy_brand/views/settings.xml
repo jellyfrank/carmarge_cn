@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_res_config_settings" model="ir.ui.view">
+            <field name="name">customized odoo</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[hasclass('settings')]" position="inside">
+                    <div class="app_settings_block" data-string="mommy_brand" string="Mommy" data-key="mommy_brand">
+                        <h2>Customized Your Odoo</h2>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg-6 o_setting_box" title="">
+                                <div class="o_setting_left_pane"/>
+                                <div class="o_setting_right_pane">
+                                    <b>System Title</b>
+                                    <div class="text-muted">
+                                    </div>
+                                    <div class="mt16">
+                                        <field name="mommy_title"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h2>Personal Center Setting</h2>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg-6 o_setting_box" title="">
+                                <div class="o_setting_left_pane">
+                                    <field name="mommy_show_document"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <b></b>
+                                    <label for="mommy_show_document">Show Document</label>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 o_setting_box" title="">
+                                <div class="o_setting_left_pane">
+                                    <field name="mommy_show_support"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="mommy_show_support">Show Support</label>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 o_setting_box" title="">
+                                <div class="o_setting_left_pane">
+                                    <field name="mommy_show_shortcuts"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="mommy_show_shortcuts">Show Shortcuts</label>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 o_setting_box" title="">
+                                <div class="o_setting_left_pane">
+                                    <field name="mommy_show_odoo_account"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="mommy_show_odoo_account">Show Odoo Account</label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
