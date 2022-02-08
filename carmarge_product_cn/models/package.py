@@ -13,7 +13,7 @@ class product_packaging(models.Model):
     def _get_volume(self):
         """计算体积"""
         for packaging in self:
-            packaging.volume = packaging.height * packaging.length * packaging.width
+            packaging.volume = packaging.height * packaging.length * packaging.width / 1000
 
     height = fields.Float("高")
     length = fields.Float("长")
