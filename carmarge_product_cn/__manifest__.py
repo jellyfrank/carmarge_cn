@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Carmarge Product",
+    'name': "Carmarge Product China",
 
     'summary': """
         Carmarge Product For China Business.
@@ -20,14 +20,15 @@
     'version': '14.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['delivery'],
+    'depends': ['delivery',"product"],
 
     # always loaded
     'data': [
         'security/ir.model.access.csv',
         'views/views.xml',
         'views/templates.xml',
-        'views/product.xml'
+        'views/product.xml',
+        'views/packaging.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

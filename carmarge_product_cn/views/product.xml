@@ -42,6 +42,12 @@
             <field name="arch" type="xml">
                 <field name="hs_code" position="after">
                     <field name="comm_check"/>
+                    <label for="length" string='尺寸'/>
+                    <div name="size" class="o_row">
+                        长<field name="length"/>厘米
+                        宽<field name="width"/>厘米
+                        高<field name="height"/>厘米
+                    </div>
                 </field>
             </field>
         </record>
