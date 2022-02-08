@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "carmarge_purchase_cn",
+    'name': "Carmarge Purchase China",
 
     'summary': """
         Short (1 phrase/line) summary of the module's purpose, used as
@@ -10,7 +10,7 @@
         Long description of module's purpose
     """,
 
-    'author': "My Company",
+    'author': "Kevin Kong",
     'website': "http://www.yourcompany.com",
 
     # Categories can be used to filter modules in modules listing
@@ -20,7 +20,7 @@
     'version': '14.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['purchase'],
+    'depends': ['purchase','carmarge_product_cn'],
 
     # always loaded
     'data': [

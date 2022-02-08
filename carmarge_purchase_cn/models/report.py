@@ -13,6 +13,10 @@ class purchase_report(models.Model):
     delivery_cost_line = fields.Float("运费")
     discount_manual_line = fields.Float("优惠")
     amount_tax = fields.Float("税")
+    packaging_qty = fields.Float("包裹数")
+    packaging_weight = fields.Float("包装毛量")
+    packaging_net_weight = fields.Float("包装净重")
+    packaging_volume = fields.Float("包装体积")
 
     def _select(self):
         select_str = """
@@ -53,7 +57,11 @@ class purchase_report(models.Model):
                     case when t.purchase_method = 'purchase' 
                          then sum(l.product_qty / line_uom.factor * product_uom.factor) - sum(l.qty_invoiced / line_uom.factor * product_uom.factor)
                          else sum(l.qty_received / line_uom.factor * product_uom.factor) - sum(l.qty_invoiced / line_uom.factor * product_uom.factor)
-                    end as qty_to_be_billed
+                    end as qty_to_be_billed,
+                    l.packaging_qty,
+                    l.packaging_weight,
+                    l.packaging_net_weight,
+                    l.packaging_volume
         """ % self.env['res.currency']._select_companies_rates()
         return select_str
 
@@ -88,6 +96,10 @@ class purchase_report(models.Model):
                 partner.country_id,
                 partner.commercial_partner_id,
                 analytic_account.id,
-                po.id
+                po.id,
+                l.packaging_qty,
+                l.packaging_weight,
+                l.packaging_net_weight,
+                l.packaging_volume
         """
         return group_by_str
