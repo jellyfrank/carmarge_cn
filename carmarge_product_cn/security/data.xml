@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="report.paperformat" id="paper_format_80_60">
+            <field name="name">80x60mm</field>
+            <field name="format">custom</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">5</field>
+            <field name="margin_bottom">5</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_spacing">10</field>
+            <field name="dpi">90</field>
+        </record>
+    </data>
+</odoo>

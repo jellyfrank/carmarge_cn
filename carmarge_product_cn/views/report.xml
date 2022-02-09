@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report id="report_product_packaging"
+            string="包装标签"
+            model="product.packaging"
+            report_type="qweb-html"
+            name="carmarge_product_cn.report_packagingbarcode"
+            file="carmarge_product_cn.report_packagingbarcode"
+            paperformat="carmarge_product_cn.paper_format_80_60"
+            print_report_name="'包装标签 - %s' % (object.name)"/>
+
+        <report id="report_product_packaging2"
+            string="唛头"
+            model="product.packaging"
+            report_type="qweb-html"
+            name="carmarge_product_cn.report_packagingbarcode2"
+            file="carmarge_product_cn.report_packagingbarcode2"
+            paperformat="carmarge_product_cn.paper_format_80_60"
+            print_report_name="'唛头 - %s' % (object.name)"/>
+    </data>
+</odoo>
