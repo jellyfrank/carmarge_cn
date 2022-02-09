@@ -5,10 +5,10 @@
         <div class="article o_report_layout_clean">
           <t t-raw="0"/>
           <t t-foreach="docs" t-as="packaging">
-            <div class="page" style="page-break-before: always;">
-              <h3>
-                  CARMARGE
-              </h3>
+            <div class="page" style="page-break-before: always;font-size: 13px;">
+              <div  class="o_row" >
+                <img src="/carmarge_product_cn/static/image/logo.png" style="width: 150px;"/>
+              </div>
               <span t-field="packaging.product_id.name"/>
               <div class="o_row" name="part_no">
                 <strong>Part No.:</strong>
