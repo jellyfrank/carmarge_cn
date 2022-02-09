@@ -36,7 +36,7 @@
         <div class="article o_report_layout_clean">
           <t t-raw="0"/>
           <t t-foreach="docs" t-as="packaging">
-            <div class="page" style="page-break-before: always;font-size: 13px;">
+            <div class="page" style="page-break-before: always;font-size: 15px;">
 
               <t t-call="carmarge_product_cn.packaging_header"/>
               <t t-call="carmarge_product_cn.packaging_footer"/>
