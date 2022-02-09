@@ -9,20 +9,32 @@ class product_template(models.Model):
 
     _inherit = "product.template"
 
-    brand = fields.Many2many("product.brand",string="适用")
+    def _get_packaging(self):
+        """"""
+        self.packaging = self.packaging_ids[0]
+
+    brand = fields.Many2many("product.brand", string="适用")
     comm_check = fields.Boolean("是否商检", default=False)
     default_code = fields.Char(string="配件编号")
+    height = fields.Float("高")
     is_brand_package = fields.Boolean("是否品牌包装")
     length = fields.Float("长")
-    width = fields.Float("宽")
-    height = fields.Float("高")
     net_weight = fields.Float(string="净重")
+    packaging = fields.Many2one(
+        "product.packaging", string="包装", compute="_get_packaging")
+    packaging_length = fields.Float("包装长", related="packaging.length")
+    packaging_width = fields.Float("包装宽", related="packaging.width")
+    packaging_height = fields.Float("包装高", related="packaging.height")
+    packaging_volume = fields.Float("包装体积", related="packaging.volume")
+    packaging_net_weight = fields.Float("包装净重", related="packaging.net_weight")
+    packaging_weight = fields.Float("包装毛重", related="packaging.weight")
+    width = fields.Float("宽")
     weight = fields.Float(string="毛重")
     type = fields.Selection(default="product")
+
 
 class product_brand(models.Model):
 
     _name = "product.brand"
 
     name = fields.Char("Product Brand")
-
