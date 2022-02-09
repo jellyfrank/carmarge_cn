@@ -1,62 +1,80 @@
 <odoo>
   <data>
+    <template id="carmarge_product_cn.packaging_header">
+      <div class="o_row">
+        <img src="/carmarge_product_cn/static/image/logo.png" style="width: 150px;"/>
+      </div>
+      <span t-field="packaging.product_id.name"/>
+      <div class="o_row" name="part_no">
+        <strong>Part No.:</strong>
+        <span t-field="packaging.product_id.default_code"/>
+      </div>
+      <div class="o_row" name="apply_to">
+        <strong>Apply to:</strong>
+        <span t-field="packaging.product_id.brand"/>
+      </div>
+      <div class="o_row" name="refer_no">
+        <strong>Ref No.:</strong>
+      </div>
+      <div class="o_row" name="qty">
+        <strong>Qty/Pkg:</strong>
+        <span t-field="packaging.qty"/>
+      </div>
+    </template>
+
+    <template id="carmarge_product_cn.packaging_footer">
+      <div class="o_row text-right">
+        <span>MADE IN CHINA</span>
+      </div>
+      <div class="o_row text-right">
+        <span>WWW.CARMARGE.COM</span>
+      </div>
+    </template>
+
     <template id="carmarge_product_cn.report_packagingbarcode">
       <t t-call="web.html_container">
         <div class="article o_report_layout_clean">
           <t t-raw="0"/>
           <t t-foreach="docs" t-as="packaging">
             <div class="page" style="page-break-before: always;font-size: 13px;">
-              <div  class="o_row" >
-                <img src="/carmarge_product_cn/static/image/logo.png" style="width: 150px;"/>
-              </div>
-              <span t-field="packaging.product_id.name"/>
-              <div class="o_row" name="part_no">
-                <strong>Part No.:</strong>
-                <span t-field="packaging.product_id.default_code"/>
-              </div>
-              <div class="o_row" name="apply_to">
-                <strong>Apply to:</strong>
-                <span t-field="packaging.product_id.brand"/>
-              </div>
-              <div class="o_row" name="refer_no">
-                <strong>Ref No.:</strong>
-              </div>
-              <div class="o_row" name="qty">
-                <strong>Qty/Pkg:</strong>
-                <span t-field="packaging.qty"/>
-              </div>
 
-              <div class="o_row text-right">
-                <span>MADE IN CHINA</span>
-              </div>
-              <div class="o_row text-right">
-                <span>WWW.CARMARGE.COM</span>
-              </div>
+              <t t-call="carmarge_product_cn.packaging_header"/>
+              <t t-call="carmarge_product_cn.packaging_footer"/>
             </div>
           </t>
         </div>
       </t>
     </template>
 
-    <template id="carmarge_product_cn.report_packagingbarcode2" inherit_id="carmarge_product_cn.report_packagingbarcode">
-      <xpath expr="//div[@name='qty']" position="after">
-        <div class="o_row" name="weight">
-          <strong>Net weight.:</strong>
-          <span t-field="packaging.net_weight"/>
-          <strong>Weight.:</strong>
-          <span t-field="packaging.weight"/>
+    <template id="carmarge_product_cn.report_packagingbarcode2">
+      <t t-call="web.html_container">
+        <div class="article o_report_layout_clean">
+          <t t-raw="0"/>
+          <t t-foreach="docs" t-as="packaging">
+            <div class="page" style="page-break-before: always;font-size: 13px;">
+
+              <t t-call="carmarge_product_cn.packaging_header"/>
+              <div class="o_row" name="weight">
+                <strong>Net weight.:</strong>
+                <span t-field="packaging.net_weight"/>
+                <strong>Weight.:</strong>
+                <span t-field="packaging.weight"/>
+              </div>
+              <div class="o_row" name="volume">
+                <strong>Length:</strong>
+                <span t-field="packaging.length"/>
+                <strong>Width:</strong>
+                <span t-field="packaging.width"/>
+                <strong>Height:</strong>
+                <span t-field="packaging.height"/>
+              </div>
+              <t t-call="carmarge_product_cn.packaging_footer"/>
+            </div>
+          </t>
         </div>
-      </xpath>
-      <xpath expr="//div[@name='weight']" position="after">
-        <div class="o_row" name="volume">
-          <strong>Length:</strong>
-          <span t-field="packaging.length"/>
-          <strong>Width:</strong>
-          <span t-field="packaging.width"/>
-          <strong>Height:</strong>
-          <span t-field="packaging.height"/>
-        </div>
-      </xpath>
+      </t>
+
+
     </template>
   </data>
 </odoo>
