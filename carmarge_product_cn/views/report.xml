@@ -3,7 +3,7 @@
     <data>
         <report id="report_product_packaging"
             string="包装标签"
-            model="product.packaging"
+            model="product.template"
             report_type="qweb-pdf"
             name="carmarge_product_cn.report_packagingbarcode"
             file="carmarge_product_cn.report_packagingbarcode"

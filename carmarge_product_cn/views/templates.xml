@@ -35,10 +35,28 @@
       <t t-call="web.html_container">
         <div class="article o_report_layout_clean">
           <t t-raw="0"/>
-          <t t-foreach="docs" t-as="packaging">
+          <t t-foreach="docs" t-as="product">
             <div class="page" style="page-break-before: always;font-size: 15px;">
 
-              <t t-call="carmarge_product_cn.packaging_header"/>
+              <div class="o_row">
+                <img src="/carmarge_product_cn/static/image/logo.png" style="width: 150px;"/>
+              </div>
+              <span t-field="product.packaging.product_id.name"/>
+              <div class="o_row" name="part_no">
+                <strong>Part No.:</strong>
+                <span t-field="product.packaging.product_id.default_code"/>
+              </div>
+              <div class="o_row" name="apply_to">
+                <strong>Apply to:</strong>
+                <span t-field="product.packaging.product_id.brand"/>
+              </div>
+              <div class="o_row" name="refer_no">
+                <strong>Ref No.:</strong>
+              </div>
+              <div class="o_row" name="qty">
+                <strong>Qty/Pkg:</strong>
+                <span t-field="product.packaging.qty"/>
+              </div>
               <t t-call="carmarge_product_cn.packaging_footer"/>
             </div>
           </t>

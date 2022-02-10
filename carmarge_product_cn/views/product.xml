@@ -58,15 +58,14 @@
                 </field>
                 <field name="default_code" position="after">
                     <field name="barcode" position="move"/>
-                    <field name="brand"/>
-                    <field name="uom_id"/>
+                    <field name="brand" widget="many2many_tags"/>
                     <field name="packaging_ids" widget="many2many_tags"/>
                     <field name="length"/>
                     <field name="width"/>
                     <field name="height"/>
                     <field name="volume"/>
                     <field name="net_weight"/>
-                    <field name="weight"/>
+                    <field name="weight" string="毛重"/>
                     <field name="packaging_length"/>
                     <field name="packaging_width"/>
                     <field name="packaging_height"/>
