@@ -41,7 +41,7 @@ class purchase_order_line(models.Model):
         for line in self:
             line.packaging = line.product_id.packaging_ids[0] if line.product_id.packaging_ids else None
 
-    @api.depends("packaging")
+    @api.depends("packaging","product_qty")
     def _compute_packaging_qty(self):
         """计算包裹数量"""
         for line in self:
