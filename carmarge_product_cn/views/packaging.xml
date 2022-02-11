@@ -6,38 +6,42 @@
             <field name="model">product.packaging</field>
             <field name="inherit_id" ref="product.product_packaging_form_view2"/>
             <field name="arch" type="xml">
-                <field name="barcode" position="after">
-                    <label for="length" string="长度"/>
-                    <div class="o_row" name="length">
-                        <field name="length"/>
+                <xpath expr="//group[@name='qty']" position="before">
+                    <group>
+                        <field name="barcode" position="after">
+                            <label for="length" string="长度"/>
+                            <div class="o_row" name="length">
+                                <field name="length"/>
 厘米
-                    </div>
-                    <label for="width" string="宽度"/>
-                    <div class="o_row" name="width">
-                        <field name="width"/>
+                            </div>
+                            <label for="width" string="宽度"/>
+                            <div class="o_row" name="width">
+                                <field name="width"/>
 厘米
-                    </div>
-                    <label for="height" string="高度"/>
-                    <div class="o_row" name="height">
-                        <field name="height"/>
+                            </div>
+                            <label for="height" string="高度"/>
+                            <div class="o_row" name="height">
+                                <field name="height"/>
 厘米
-                    </div>
-                    <label for="volume" string="体积"/>
-                    <div class="o_row" name="volume">
-                        <field name="volume"/>
+                            </div>
+                            <label for="volume" string="体积"/>
+                            <div class="o_row" name="volume">
+                                <field name="volume"/>
 立方米
-                    </div>
-                    <label for="net_weight" string="包装净重"/>
-                    <div class="o_row" name="net_weight">
-                        <field name="net_weight"/>
+                            </div>
+                            <label for="net_weight" string="包装净重"/>
+                            <div class="o_row" name="net_weight">
+                                <field name="net_weight"/>
 千克
-                    </div>
-                    <label for="weight" string="包装毛重"/>
-                    <div class="o_row" name="weight">
-                        <field name="weight"/>
+                            </div>
+                            <label for="weight" string="包装毛重"/>
+                            <div class="o_row" name="weight">
+                                <field name="weight"/>
 千克
-                    </div>
-                </field>
+                            </div>
+                        </field>
+                    </group>
+                </xpath>
             </field>
         </record>
 
@@ -57,7 +61,7 @@
             </field>
         </record>
 
-        <record id="view_product_packaging_form2" model="ir.ui.view">
+        <!-- <record id="view_product_packaging_form2" model="ir.ui.view">
             <field name="name">product packaging form</field>
             <field name="model">product.packaging</field>
             <field name="inherit_id" ref="product.product_packaging_form_view"/>
@@ -95,6 +99,6 @@
                     </div>
                 </field>
             </field>
-        </record>
+        </record> -->
     </data>
 </odoo>
