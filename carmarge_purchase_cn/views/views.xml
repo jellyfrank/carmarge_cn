@@ -13,8 +13,8 @@
           <field name="packaging"/>
           <field name="packaging_qty"/>
           <field name="weight" optional="hide"/>
-          <field name="net_weight" optional="hide"//>
-          <field name="volume" optional="hide"//>
+          <field name="net_weight" optional="hide"/>
+          <field name="volume" optional="hide"/>
           <field name="packaging_weight" optional="hide"/>
           <field name="packaging_net_weight" optional="hide"/>
           <field name="packaging_volume" optional="hide"/>
