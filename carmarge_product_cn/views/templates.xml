@@ -58,9 +58,9 @@
                   <strong>Qty/Pkg:</strong>
                   <span t-field="product.packaging.qty"/>
                 </div>
-              </span>
-              <t t-call="carmarge_product_cn.packaging_footer"/>
             </div>
+
+            <t t-call="carmarge_product_cn.packaging_footer"/>
           </t>
         </div>
       </t>
