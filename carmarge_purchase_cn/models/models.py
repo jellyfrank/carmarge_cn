@@ -48,6 +48,13 @@ class purchase_order_line(models.Model):
             line.packaging_qty = line.product_qty / \
                 line.packaging.qty if line.packaging.qty != 0 else 0
 
+    @api.depends("packaging","product_qty")
+    def _compute_total(self):
+        for line in self:
+            line.total_packaging_weight = line.packaging_qty * line.packaging.weight
+            line.total_packaging_volume = line.packaging_qty * line.packaging.volume
+            line.total_packaging_net_weight = line.packaging_qty * line.packaging_net_weight
+
     delivery_cost_line = fields.Monetary(
         "运费", compute="_compute_line", store=True)
     discount_manual_line = fields.Monetary(
@@ -62,6 +69,9 @@ class purchase_order_line(models.Model):
         "包装净重", related="packaging.net_weight", store=True)
     packaging_volume = fields.Float(
         "包装体积", related="packaging.volume", store=True)
+    total_packaging_weight = fields.Float("总包装毛重", compute="_compute_total")
+    total_packaging_net_weight = fields.Float("总包装毛重", compute="_compute_total")
+    total_packaging_volume = fields.Float("总包装毛重", compute="_compute_total")
     weight = fields.Float("毛重", related="product_id.weight")
     net_weight = fields.Float("净重", related="product_id.net_weight")
     volume = fields.Float("体积", related="product_id.volume")
