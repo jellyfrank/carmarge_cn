@@ -17,6 +17,10 @@ class purchase_report(models.Model):
     packaging_weight = fields.Float("包装毛量")
     packaging_net_weight = fields.Float("包装净重")
     packaging_volume = fields.Float("包装体积")
+    total_packaging_weight = fields.Float("总包装毛重")
+    total_packaging_net_weight = fields.Float("总包装净重")
+    total_packaging_volume = fields.Float("总包装体积")
+    
 
     def _select(self):
         select_str = """
@@ -61,7 +65,10 @@ class purchase_report(models.Model):
                     l.packaging_qty,
                     l.packaging_weight,
                     l.packaging_net_weight,
-                    l.packaging_volume
+                    l.packaging_volume,
+                    l.total_packaging_weight,
+                    l.total_packaging_net_weight,
+                    l.total_packaging_volume
         """ % self.env['res.currency']._select_companies_rates()
         return select_str
 
@@ -100,6 +107,9 @@ class purchase_report(models.Model):
                 l.packaging_qty,
                 l.packaging_weight,
                 l.packaging_net_weight,
-                l.packaging_volume
+                l.packaging_volume,
+                l.total_packaging_weight,
+                l.total_packaging_net_weight,
+                l.total_packaging_volume
         """
         return group_by_str

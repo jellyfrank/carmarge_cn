@@ -19,7 +19,7 @@
       </div>
       <div class="o_row" name="qty">
         <strong>Qty/Pkg:</strong>
-        <span t-field="packaging.qty"/>
+        <span t-field="packaging.qty"/>Kg
       </div>
     </template>
 
@@ -57,7 +57,7 @@
                 </div>
                 <div class="o_row" name="qty">
                   <strong>Qty/Pkg:</strong>
-                  <span t-field="product.packaging.qty"/>
+                  <span t-field="product.packaging.qty"/>Kg
                 </div>
               </div>
             </div>
@@ -78,17 +78,17 @@
               <t t-call="carmarge_product_cn.packaging_header"/>
               <div class="o_row" name="weight">
                 <strong>Net weight.:</strong>
-                <span t-field="packaging.net_weight"/>
+                <span t-field="packaging.net_weight"/>Kg
                 <strong>Weight.:</strong>
-                <span t-field="packaging.weight"/>
+                <span t-field="packaging.weight"/>Kg
               </div>
               <div class="o_row" name="volume">
                 <strong>Length:</strong>
-                <span t-field="packaging.length"/>
+                <span t-field="packaging.length"/>cm
                 <strong>Width:</strong>
-                <span t-field="packaging.width"/>
+                <span t-field="packaging.width"/>cm
                 <strong>Height:</strong>
-                <span t-field="packaging.height"/>
+                <span t-field="packaging.height"/>cm
               </div>
               </div>
               <t t-call="carmarge_product_cn.packaging_footer"/>

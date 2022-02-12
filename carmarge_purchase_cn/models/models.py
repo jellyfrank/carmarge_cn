@@ -41,14 +41,14 @@ class purchase_order_line(models.Model):
         for line in self:
             line.packaging = line.product_id.packaging_ids[0] if line.product_id.packaging_ids else None
 
-    @api.depends("packaging","product_qty")
+    @api.depends("packaging", "product_qty")
     def _compute_packaging_qty(self):
         """计算包裹数量"""
         for line in self:
             line.packaging_qty = line.product_qty / \
                 line.packaging.qty if line.packaging.qty != 0 else 0
 
-    @api.depends("packaging","product_qty")
+    @api.depends("packaging", "product_qty")
     def _compute_total(self):
         for line in self:
             line.total_packaging_weight = line.packaging_qty * line.packaging.weight
@@ -69,9 +69,12 @@ class purchase_order_line(models.Model):
         "包装净重", related="packaging.net_weight", store=True)
     packaging_volume = fields.Float(
         "包装体积", related="packaging.volume", store=True)
-    total_packaging_weight = fields.Float("总包装毛重", compute="_compute_total")
-    total_packaging_net_weight = fields.Float("总包装净重", compute="_compute_total")
-    total_packaging_volume = fields.Float("总包装体积", compute="_compute_total")
+    total_packaging_weight = fields.Float(
+        "总包装毛重", compute="_compute_total", store=True)
+    total_packaging_net_weight = fields.Float(
+        "总包装净重", compute="_compute_total", store=True)
+    total_packaging_volume = fields.Float(
+        "总包装体积", compute="_compute_total", store=True)
     weight = fields.Float("毛重", related="product_id.weight")
     net_weight = fields.Float("净重", related="product_id.net_weight")
     volume = fields.Float("体积", related="product_id.volume")
