@@ -12,7 +12,7 @@
         <xpath expr="//field[@name='order_line']//tree//field[@name='price_unit']" position="after">
           <field name="packaging"/>
           <field name="packaging_qty"/>
-          <field name="weight" optional="hide"//>
+          <field name="weight" optional="hide"/>
           <field name="net_weight" optional="hide"//>
           <field name="volume" optional="hide"//>
           <field name="packaging_weight" optional="hide"/>
