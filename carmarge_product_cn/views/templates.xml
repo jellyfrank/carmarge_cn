@@ -23,10 +23,10 @@
     </template>
 
     <template id="carmarge_product_cn.packaging_footer">
-      <div class="o_row text-right">
+      <div class="o_row text-right" style="font-size: 12px;">
         <span>MADE IN CHINA</span>
       </div>
-      <div class="o_row text-right">
+      <div class="o_row text-right" style="font-size: 12px;">
         <span>WWW.CARMARGE.COM</span>
       </div>
     </template>
@@ -37,26 +37,28 @@
           <t t-raw="0"/>
           <t t-foreach="docs" t-as="product">
             <div class="page" style="page-break-before: always;font-size: 15px;">
-
               <div class="o_row">
-                <img src="/carmarge_product_cn/static/image/logo.png" style="width: 150px;"/>
+                <img src="/carmarge_product_cn/static/image/logo.png" style="width: 200px;"/>
               </div>
-              <span t-field="product.packaging.product_id.name"/>
-              <div class="o_row" name="part_no">
-                <strong>Part No.:</strong>
-                <span t-field="product.packaging.product_id.default_code"/>
-              </div>
-              <div class="o_row" name="apply_to">
-                <strong>Apply to:</strong>
-                <span t-field="product.packaging.product_id.brand"/>
-              </div>
-              <div class="o_row" name="refer_no">
-                <strong>Ref No.:</strong>
-              </div>
-              <div class="o_row" name="qty">
-                <strong>Qty/Pkg:</strong>
-                <span t-field="product.packaging.qty"/>
-              </div>
+              <br/>
+              <div style="font-size: 16px;">
+                <span t-field="product.packaging.product_id.name"/>
+                <div class="o_row" name="part_no">
+                  <strong>Part No.:</strong>
+                  <span t-field="product.packaging.product_id.default_code"/>
+                </div>
+                <div class="o_row" name="apply_to">
+                  <strong>Apply to:</strong>
+                  <span t-field="product.packaging.product_id.brand"/>
+                </div>
+                <div class="o_row" name="refer_no">
+                  <strong>Ref No.:</strong>
+                </div>
+                <div class="o_row" name="qty">
+                  <strong>Qty/Pkg:</strong>
+                  <span t-field="product.packaging.qty"/>
+                </div>
+              </span>
               <t t-call="carmarge_product_cn.packaging_footer"/>
             </div>
           </t>
