@@ -70,8 +70,8 @@ class purchase_order_line(models.Model):
     packaging_volume = fields.Float(
         "包装体积", related="packaging.volume", store=True)
     total_packaging_weight = fields.Float("总包装毛重", compute="_compute_total")
-    total_packaging_net_weight = fields.Float("总包装毛重", compute="_compute_total")
-    total_packaging_volume = fields.Float("总包装毛重", compute="_compute_total")
+    total_packaging_net_weight = fields.Float("总包装净重", compute="_compute_total")
+    total_packaging_volume = fields.Float("总包装体积", compute="_compute_total")
     weight = fields.Float("毛重", related="product_id.weight")
     net_weight = fields.Float("净重", related="product_id.net_weight")
     volume = fields.Float("体积", related="product_id.volume")
