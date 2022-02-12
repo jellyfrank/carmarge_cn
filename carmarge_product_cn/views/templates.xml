@@ -4,6 +4,7 @@
       <div class="o_row">
         <img src="/carmarge_product_cn/static/image/logo.png" style="width: 150px;"/>
       </div>
+      <br/>
       <span t-field="packaging.product_id.name"/>
       <div class="o_row" name="part_no">
         <strong>Part No.:</strong>
@@ -72,8 +73,8 @@
         <div class="article o_report_layout_clean">
           <t t-raw="0"/>
           <t t-foreach="docs" t-as="packaging">
-            <div class="page" style="page-break-before: always;font-size: 13px;">
-
+            <div class="page" style="page-break-before: always;">
+              <div style="font-size: 13px;">
               <t t-call="carmarge_product_cn.packaging_header"/>
               <div class="o_row" name="weight">
                 <strong>Net weight.:</strong>
@@ -88,6 +89,7 @@
                 <span t-field="packaging.width"/>
                 <strong>Height:</strong>
                 <span t-field="packaging.height"/>
+              </div>
               </div>
               <t t-call="carmarge_product_cn.packaging_footer"/>
             </div>
