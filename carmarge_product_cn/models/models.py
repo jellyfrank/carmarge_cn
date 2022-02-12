@@ -12,7 +12,10 @@ class product_template(models.Model):
     def _get_packaging(self):
         """"""
         for product in self:
-            product.packaging = product.packaging_ids[0] if product.packaging_ids else None
+            if not product.packaging_ids:
+                product.packaging = None
+            else:
+                product.packaging = product.packaging_ids[0] if product.packaging_ids else None
 
     brand = fields.Many2many("product.brand", string="适用")
     comm_check = fields.Boolean("是否商检", default=False)
