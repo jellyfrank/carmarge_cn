@@ -43,7 +43,7 @@
                     <td class="text-right">
                         <span t-field="line.packaging.name"/>
                     </td>
-                     <td class="text-right">
+                    <td class="text-right">
                         <span t-field="line.packaging_qty"/>
                     </td>
                     <td class="text-right">
@@ -66,6 +66,20 @@
                         <span t-field="line.price_subtotal" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
                     </td>
                 </t>
+            </xpath>
+            <xpath expr="//tr[@class='border-black o_total']" position="before">
+                <tr>
+                    <td name="td_taxes_label">运费</td>
+                    <td class="text-right">
+                        <span t-field="o.delivery_cost" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td name="td_taxes_label">优惠</td>
+                    <td class="text-right">
+                        <span t-field="o.discount_manual" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+                    </td>
+                </tr>
             </xpath>
         </template>
 
