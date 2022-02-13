@@ -43,14 +43,14 @@
               </div>
               <br/>
               <div style="font-size: 16px;">
-                <span t-field="product.packaging.product_id.name"/>
+                <span t-field="product.name"/>
                 <div class="o_row" name="part_no">
                   <strong>Part No.:</strong>
-                  <span t-field="product.packaging.product_id.default_code"/>
+                  <span t-field="product.default_code"/>
                 </div>
                 <div class="o_row" name="apply_to">
                   <strong>Apply to:</strong>
-                  <span t-field="product.packaging.product_id.brand"/>
+                  <span t-field="product.brand"/>
                 </div>
                 <div class="o_row" name="refer_no">
                   <strong>Ref No.:</strong>
