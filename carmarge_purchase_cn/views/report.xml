@@ -8,6 +8,9 @@
                 <th name="th_package" class="text-right">
                     <strong>包裹</strong>
                 </th>
+                <th name="th_package_qty" class="text-rigiht">
+                    <strong>包裹数</strong>
+                </th>
                 <th name="th_weight" class="text-right">
                     <strong>总包装毛重</strong>
                 </th>
@@ -40,6 +43,9 @@
                     <td class="text-right">
                         <span t-field="line.packaging.name"/>
                     </td>
+                     <td class="text-right">
+                        <span t-field="line.packaging_qty"/>
+                    </td>
                     <td class="text-right">
                         <span t-field="line.total_packaging_weight"/>
                     </td>
@@ -70,6 +76,9 @@
                 <th name="th_package" class="text-right">
                     <strong>包裹</strong>
                 </th>
+                <th name="th_package_qty" class="text-rigiht">
+                    <strong>包裹数</strong>
+                </th>
                 <th name="th_weight" class="text-right">
                     <strong>总包装毛重</strong>
                 </th>
@@ -95,6 +104,9 @@
 
                     <td class="text-right">
                         <span t-field="order_line.packaging.name"/>
+                    </td>
+                    <td class="text-right">
+                        <span t-field="order_line.packaging_qty"/>
                     </td>
                     <td class="text-right">
                         <span t-field="order_line.total_packaging_weight"/>
