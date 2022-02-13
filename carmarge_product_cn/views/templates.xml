@@ -54,6 +54,7 @@
                 </div>
                 <div class="o_row" name="refer_no">
                   <strong>Ref No.:</strong>
+                  <span t-field="product.barcode"/>
                 </div>
                 <div class="o_row" name="qty">
                   <strong>Qty/Pkg:</strong>
