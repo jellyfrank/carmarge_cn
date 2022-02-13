@@ -19,7 +19,7 @@
       </div>
       <div class="o_row" name="qty">
         <strong>Qty/Pkg:</strong>
-        <span t-field="packaging.qty"/>Kg
+        <span t-esc="int(packaging.qty)"/>
       </div>
     </template>
 
@@ -57,7 +57,7 @@
                 </div>
                 <div class="o_row" name="qty">
                   <strong>Qty/Pkg:</strong>
-                  <span t-field="product.packaging.qty"/>Kg
+                  <span t-esc="int(product.packaging.qty)"/>
                 </div>
               </div>
             </div>

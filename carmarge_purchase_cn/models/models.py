@@ -18,9 +18,16 @@ class purchase_order(models.Model):
                 "amount_total": order.amount_total + order.delivery_cost - order.discount_manual
             })
 
+    def _prepare_invoice(self):
+        data = super(purchase_order,self)._prepare_invoice()
+        data.update({
+            "delivery_cost": self.delivery_cost,
+            "discount_manual": self.discount_manual
+        })
+        return data
+
     delivery_cost = fields.Monetary("运费")
     discount_manual = fields.Monetary("优惠")
-
 
 class purchase_order_line(models.Model):
 
