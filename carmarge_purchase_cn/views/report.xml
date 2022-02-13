@@ -6,10 +6,10 @@
             </xpath>
             <xpath expr="//th[@name='th_quantity']" position="after">
                 <th name="th_package" class="text-right">
-                    <strong>包裹</strong>
+                    <strong>包装规格</strong>
                 </th>
                 <th name="th_package_qty" class="text-rigiht">
-                    <strong>包裹数</strong>
+                    <strong>件数</strong>
                 </th>
                 <th name="th_weight" class="text-right">
                     <strong>总包装毛重</strong>
@@ -74,10 +74,10 @@
             </xpath>
             <xpath expr="//th[@name='th_quantity']" position="after">
                 <th name="th_package" class="text-right">
-                    <strong>包裹</strong>
+                    <strong>包装规格</strong>
                 </th>
                 <th name="th_package_qty" class="text-rigiht">
-                    <strong>包裹数</strong>
+                    <strong>件数</strong>
                 </th>
                 <th name="th_weight" class="text-right">
                     <strong>总包装毛重</strong>

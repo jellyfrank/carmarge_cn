@@ -35,17 +35,17 @@
       <field name="arch" type="xml">
         <xpath expr="//group[@name='delivery']" position="replace">
           <group>
-            <label for="length" string="包装长度"/>
+            <label for="length" string="包装长"/>
             <div class="o_row" name="length">
               <field name="length"/>
 厘米
             </div>
-            <label for="width" string="包装宽度"/>
+            <label for="width" string="包装宽"/>
             <div class="o_row" name="width">
               <field name="width"/>
 厘米
             </div>
-            <label for="height" string="包装高度"/>
+            <label for="height" string="包装高"/>
             <div class="o_row" name="height">
               <field name="height"/>
 厘米

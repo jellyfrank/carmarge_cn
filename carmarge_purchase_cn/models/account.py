@@ -23,7 +23,9 @@ class account_move(models.Model):
         'line_ids.amount_residual',
         'line_ids.amount_residual_currency',
         'line_ids.payment_id.state',
-        'line_ids.full_reconcile_id')
+        'line_ids.full_reconcile_id',
+        "delivery_cost",
+        "discount_manual")
     def _compute_amount(self):
         super(account_move,self)._compute_amount()
         for move in self:

@@ -7,17 +7,17 @@
             <field name="inherit_id" ref="product.product_packaging_form_view"/>
             <field name="arch" type="xml">
                 <xpath expr="//group[@name='qty']" position="inside">
-                    <label for="length" string="包装长度"/>
+                    <label for="length" string="包装长"/>
                     <div class="o_row" name="length">
                         <field name="length"/>
 厘米
                     </div>
-                    <label for="width" string="包装宽度"/>
+                    <label for="width" string="包装宽"/>
                     <div class="o_row" name="width">
                         <field name="width"/>
 厘米
                     </div>
-                    <label for="height" string="包装高度"/>
+                    <label for="height" string="包装高"/>
                     <div class="o_row" name="height">
                         <field name="height"/>
 厘米
@@ -47,9 +47,9 @@
             <field name="inherit_id" ref="product.product_packaging_tree_view2"/>
             <field name="arch" type="xml">
                 <field name="product_uom_id" position="after">
-                    <field name="length"/>
-                    <field name="width"/>
-                    <field name="height"/>
+                    <field name="length" string="包装长"/>
+                    <field name="width" string="包装宽"/>
+                    <field name="height" string="包装高"/>
                     <field name="volume"/>
                     <field name="net_weight"/>
                     <field name="weight"/>
