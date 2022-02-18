@@ -1,11 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data noupdate="True">
+        <!-- 产品条码后四位生成规则 -->
+        <record id="seq_product_barcode" model="ir.sequence">
+            <field name="name">条码</field>
+            <field name="code">product.template.barcode</field>
+            <field name="padding">4</field>
+        </record>
+
+        <!-- 产品计量单位默认值设置 -->
         <record id="product_uom_number" model="uom.uom">
             <field name="category_id" ref="uom.product_uom_categ_unit"/>
             <field name="name">个</field>
             <field name="factor_inv" eval="1000"/>
             <field name="uom_type">bigger</field>
+        </record>
+
+        <!-- 产品增添一键条码更新的服务器动作 -->
+        <record id="model_history_barcode_update" model="ir.actions.server">
+            <field name="name">历史数据条码更新</field>
+            <field name="model_id" ref="model_product_template"/>
+            <field name="binding_model_id" ref="model_product_template"/>
+            <field name="state">code</field>
+            <field name="code">action = records.action_barcode_onclick_update()</field>
         </record>
     </data>
 </odoo>

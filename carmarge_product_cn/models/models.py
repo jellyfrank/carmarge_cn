@@ -2,6 +2,8 @@
 # @Time    : 2022-01-24
 # @Author  : Kevin Kong (kfx2007@163.com)
 
+import re
+
 from odoo import fields, models, tools, api
 from odoo.tools.float_utils import float_round
 
@@ -99,6 +101,58 @@ class product_template(models.Model):
             'search_default_later_than_a_year_ago': True
         }
         return action
+
+    def _product_category_code(self, categ_id):
+        # 产品类别编码汇总
+        pattern = re.compile(r'^\d+')  # 是否有更漂亮的写法
+        re_obj = pattern.findall(categ_id.name) if categ_id.name else ''
+        category_code = re_obj[0] if re_obj else ''
+        if categ_id.parent_id:
+            return self._product_category_code(categ_id.parent_id) + category_code
+        else:
+            return category_code
+
+    def _update_barcode(self, categ_id):
+        return "CA" + self._product_category_code(categ_id)
+
+    @api.model
+    def create(self, vals):
+        if not vals.get('barcode'):
+            code_prefix = self._update_barcode(self.env['product.category'].browse(vals.get('categ_id')))
+            vals['barcode'] = code_prefix + self.env['ir.sequence'].next_by_code('product.template.barcode')
+        return super(product_template, self).create(vals)
+
+    def _check_barcode_is_active(self, code_prefix):
+        """ 添加 barcode 校验"""
+        barcode = code_prefix + self.env['ir.sequence'].next_by_code('product.template.barcode')
+        # 用sql查询比较快
+        self.env.cr.execute(f"""
+                        SELECT id FROM product_product WHERE barcode='{barcode}'
+                    """)
+        res_obj = self.env.cr.fetchall()
+        if res_obj:
+            self._check_barcode_is_active(barcode)
+        else:
+            return barcode
+
+    def action_barcode_onclick_update(self):
+        """ 一键更新历史产品数据条码值 """
+        # 将product.template.barcode设置为从0开始进行计值
+        sequence_obj = self.env['ir.sequence'].search(
+            [('code', '=', 'product.template.barcode'), ('active', '=', True)], limit=1)
+        sequence_obj.write({
+            "number_next_actual": 1
+        })
+        # 将所有的条码进行更新
+        product_obj = self.search([('active', '=', True)])
+        for product in product_obj:
+            # 因为 ”一个条形码只能分配给一个产品！“ 的_sql_constraints限制，所以添加barcode校验
+            code_prefix = self._update_barcode(product.categ_id)
+            barcode = self._check_barcode_is_active(code_prefix)
+            if barcode:
+                product.update({
+                    "barcode": barcode
+                })
 
 
 class product_brand(models.Model):
