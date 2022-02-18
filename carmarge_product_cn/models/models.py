@@ -122,6 +122,12 @@ class product_template(models.Model):
             vals['barcode'] = code_prefix + self.env['ir.sequence'].next_by_code('product.template.barcode')
         return super(product_template, self).create(vals)
 
+    def write(self, vals):
+        if vals.get('categ_id') and not vals.get("barcode"):
+            code_prefix = self._update_barcode(self.env['product.category'].browse(vals.get('categ_id')))
+            vals['barcode'] = code_prefix + self.barcode[-4:]
+        return super(product_template, self).write(vals)
+
     def _check_barcode_is_active(self, code_prefix):
         """ 添加 barcode 校验"""
         barcode = code_prefix + self.env['ir.sequence'].next_by_code('product.template.barcode')
