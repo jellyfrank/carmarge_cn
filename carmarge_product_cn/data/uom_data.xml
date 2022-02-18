@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="True">
+        <record id="product_uom_number" model="uom.uom">
+            <field name="category_id" ref="uom.product_uom_categ_unit"/>
+            <field name="name">个</field>
+            <field name="factor_inv" eval="1000"/>
+            <field name="uom_type">bigger</field>
+        </record>
+    </data>
+</odoo>

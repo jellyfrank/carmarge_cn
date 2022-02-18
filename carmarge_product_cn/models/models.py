@@ -2,11 +2,11 @@
 # @Time    : 2022-01-24
 # @Author  : Kevin Kong (kfx2007@163.com)
 
-from odoo import api, fields, models, _
+from odoo import fields, models, tools, api
+from odoo.tools.float_utils import float_round
 
 
 class product_template(models.Model):
-
     _inherit = "product.template"
 
     def _get_packaging(self):
@@ -36,9 +36,72 @@ class product_template(models.Model):
     weight = fields.Float(string="毛重")
     type = fields.Selection(default="product")
 
+    translate_name = fields.Char(string="英文名称")
+
+    @tools.ormcache()
+    def _get_default_uom_id(self):
+        return self.env.ref('carmarge_product_cn.product_uom_number')
+
+    uom_id = fields.Many2one(
+        'uom.uom', 'Unit of Measure',
+        default=_get_default_uom_id, required=True,
+        help="Default unit of measure used for all stock operations.")
+    uom_po_id = fields.Many2one(
+        'uom.uom', 'Purchase Unit of Measure',
+        default=_get_default_uom_id, required=True,
+        help="Default unit of measure used for purchase orders. It must be in the same category as the default unit of measure.")
+
+    other_purchases_count = fields.Float(string="其他采购数量", help="当当前产品存在合并产品时")
+    other_sales_count = fields.Float(string="其他销售数量", help="当当前产品存在合并产品时")
+
+    def _compute_purchased_product_qty(self):
+        for template in self:
+            template.purchased_product_qty = float_round(
+                sum([p.purchased_product_qty for p in template.product_variant_ids]),
+                precision_rounding=template.uom_id.rounding)
+            if template.other_purchases_count:
+                template.purchased_product_qty = template.purchased_product_qty + template.other_purchases_count
+
+    @api.depends('product_variant_ids.sales_count')
+    def _compute_sales_count(self):
+        for product in self:
+            product.sales_count = float_round(
+                sum([p.sales_count for p in product.with_context(active_test=False).product_variant_ids]),
+                precision_rounding=product.uom_id.rounding)
+
+            if product.other_sales_count:
+                product.sales_count = product.sales_count + product.other_sales_count
+
+    merge_temp_ids = fields.Char(string="被合并产品IDS")
+
+    def action_view_sales(self):
+        action = self.env["ir.actions.actions"]._for_xml_id("sale.report_all_channels_sales_action")
+        # 增添被合并商品id
+        is_merge = list(map(lambda value: int(value), self.merge_temp_ids.split(',')))
+        action['domain'] = [('product_tmpl_id', 'in', is_merge if is_merge else self.ids)]
+        action['context'] = {
+            'pivot_measures': ['product_uom_qty'],
+            'active_id': self._context.get('active_id'),
+            'active_model': 'sale.report',
+            'search_default_Sales': 1,
+            'time_ranges': {'field': 'date', 'range': 'last_365_days'}
+        }
+        return action
+
+    def action_view_po(self):
+        action = self.env["ir.actions.actions"]._for_xml_id("purchase.action_purchase_order_report_all")
+        # 增添被合并商品id
+        is_merge = list(map(lambda value: int(value), self.merge_temp_ids.split(',')))
+        action['domain'] = ['&', ('state', 'in', ['purchase', 'done']),
+                            ('product_tmpl_id', 'in', is_merge if is_merge else self.ids)]
+        action['context'] = {
+            'graph_measure': 'qty_ordered',
+            'search_default_later_than_a_year_ago': True
+        }
+        return action
+
 
 class product_brand(models.Model):
-
     _name = "product.brand"
 
     name = fields.Char("Product Brand")

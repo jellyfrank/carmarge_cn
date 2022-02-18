@@ -6,6 +6,12 @@
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_form_view"/>
             <field name="arch" type="xml">
+                <xpath expr="//div[@name='options']" position="before">
+                    <field name="merge_temp_ids" invisible="1"/>
+                    <field name="other_purchases_count" invisible="1"/>
+                    <field name="other_sales_count" invisible="1"/>
+                    <field name="translate_name" placeholder="英文名称"/>
+                </xpath>
                 <xpath expr="//div[@name='weight']" position="after">
                     <label for="net_weight" string="净重"/>
                     <div class="o_row" name="net_weight">
@@ -56,6 +62,12 @@
                 <field name="categ_id" position="attributes">
                     <attribute name="optional">show</attribute>
                 </field>
+                <field name="sequence" position="before">
+                    <field name="sequence" readonly="1" string="序号"/>
+                </field>
+                <field name="name" position="after">
+                    <field name="translate_name"/>
+                </field>
                 <field name="default_code" position="after">
                     <field name="barcode" position="move"/>
                     <field name="brand" widget="many2many_tags"/>
@@ -90,6 +102,10 @@
                 </field>
                 <field name="uom_id" position="attributes">
                     <attribute name="optional">hide</attribute>
+                </field>
+                <field name="uom_id" position="after">
+                    <field name="comm_check" optional="hide"/>
+                    <field name="is_brand_package" optional="hide"/>
                 </field>
             </field>
         </record>

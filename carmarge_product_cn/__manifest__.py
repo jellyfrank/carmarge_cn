@@ -25,12 +25,14 @@
     # always loaded
     'data': [
         'security/data.xml',
+        'data/uom_data.xml',
         'security/ir.model.access.csv',
         'views/views.xml',
         'views/templates.xml',
         'views/product.xml',
         'views/packaging.xml',
-        'views/report.xml'
+        'views/report.xml',
+        'wizard/product_merge_view.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
