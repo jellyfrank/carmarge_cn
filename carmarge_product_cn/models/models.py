@@ -62,13 +62,15 @@ class product_template(models.Model):
                 sum([p.purchased_product_qty for p in template.product_variant_ids]),
                 precision_rounding=template.uom_id.rounding)
             if template.other_purchases_count:
-                template.purchased_product_qty = template.purchased_product_qty + template.other_purchases_count
+                template.purchased_product_qty = template.purchased_product_qty + \
+                    template.other_purchases_count
 
     @api.depends('product_variant_ids.sales_count')
     def _compute_sales_count(self):
         for product in self:
             product.sales_count = float_round(
-                sum([p.sales_count for p in product.with_context(active_test=False).product_variant_ids]),
+                sum([p.sales_count for p in product.with_context(
+                    active_test=False).product_variant_ids]),
                 precision_rounding=product.uom_id.rounding)
 
             if product.other_sales_count:
@@ -77,10 +79,13 @@ class product_template(models.Model):
     merge_temp_ids = fields.Char(string="被合并产品IDS")
 
     def action_view_sales(self):
-        action = self.env["ir.actions.actions"]._for_xml_id("sale.report_all_channels_sales_action")
+        action = self.env["ir.actions.actions"]._for_xml_id(
+            "sale.report_all_channels_sales_action")
         # 增添被合并商品id
-        is_merge = list(map(lambda value: int(value), self.merge_temp_ids.split(',')))
-        action['domain'] = [('product_tmpl_id', 'in', is_merge if is_merge else self.ids)]
+        is_merge = list(map(lambda value: int(value),
+                        self.merge_temp_ids.split(',')))
+        action['domain'] = [
+            ('product_tmpl_id', 'in', is_merge if is_merge else self.ids)]
         action['context'] = {
             'pivot_measures': ['product_uom_qty'],
             'active_id': self._context.get('active_id'),
@@ -91,9 +96,11 @@ class product_template(models.Model):
         return action
 
     def action_view_po(self):
-        action = self.env["ir.actions.actions"]._for_xml_id("purchase.action_purchase_order_report_all")
+        action = self.env["ir.actions.actions"]._for_xml_id(
+            "purchase.action_purchase_order_report_all")
         # 增添被合并商品id
-        is_merge = list(map(lambda value: int(value), self.merge_temp_ids.split(',')))
+        is_merge = list(map(lambda value: int(value),
+                        self.merge_temp_ids.split(',')))
         action['domain'] = ['&', ('state', 'in', ['purchase', 'done']),
                             ('product_tmpl_id', 'in', is_merge if is_merge else self.ids)]
         action['context'] = {
@@ -113,24 +120,26 @@ class product_template(models.Model):
             return category_code
 
     def _update_barcode(self, categ_id):
-        return "CA" + self._product_category_code(categ_id)
+        return f"CA{self._product_category_code(categ_id)}"
 
     @api.model
     def create(self, vals):
         if not vals.get('barcode'):
-            code_prefix = self._update_barcode(self.env['product.category'].browse(vals.get('categ_id')))
-            vals['barcode'] = code_prefix + self.env['ir.sequence'].next_by_code('product.template.barcode')
+            code_prefix = self._update_barcode(
+                self.env['product.category'].browse(vals.get('categ_id')))
+            vals['barcode'] = f"{code_prefix}{self.env['ir.sequence'].next_by_code('product.template.barcode')}"
         return super(product_template, self).create(vals)
 
     def write(self, vals):
         if vals.get('categ_id') and not vals.get("barcode"):
-            code_prefix = self._update_barcode(self.env['product.category'].browse(vals.get('categ_id')))
-            vals['barcode'] = code_prefix + self.barcode[-4:]
+            code_prefix = self._update_barcode(
+                self.env['product.category'].browse(vals.get('categ_id')))
+            vals['barcode'] = f"{code_prefix}{self.barcode[-4:]}"
         return super(product_template, self).write(vals)
 
     def _check_barcode_is_active(self, code_prefix):
         """ 添加 barcode 校验"""
-        barcode = code_prefix + self.env['ir.sequence'].next_by_code('product.template.barcode')
+        barcode = f"{code_prefix }{self.env['ir.sequence'].next_by_code('product.template.barcode')}"
         # 用sql查询比较快
         self.env.cr.execute(f"""
                         SELECT id FROM product_product WHERE barcode='{barcode}'
