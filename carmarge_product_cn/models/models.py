@@ -108,29 +108,29 @@ class product_template(models.Model):
         re_obj = pattern.findall(categ_id.name) if categ_id.name else ''
         category_code = re_obj[0] if re_obj else ''
         if categ_id.parent_id:
-            return self._product_category_code(categ_id.parent_id) + category_code
+            return f"{self._product_category_code(categ_id.parent_id)}{category_code}"
         else:
             return category_code
 
     def _update_barcode(self, categ_id):
-        return "CA" + self._product_category_code(categ_id)
+        return f"CA{self._product_category_code(categ_id)}"
 
     @api.model
     def create(self, vals):
         if not vals.get('barcode'):
             code_prefix = self._update_barcode(self.env['product.category'].browse(vals.get('categ_id')))
-            vals['barcode'] = code_prefix + self.env['ir.sequence'].next_by_code('product.template.barcode')
+            vals['barcode'] = f"{code_prefix}{self.env['ir.sequence'].next_by_code('product.template.barcode')}"
         return super(product_template, self).create(vals)
 
     def write(self, vals):
         if vals.get('categ_id') and not vals.get("barcode"):
             code_prefix = self._update_barcode(self.env['product.category'].browse(vals.get('categ_id')))
-            vals['barcode'] = code_prefix + self.barcode[-4:]
+            vals['barcode'] = f"{code_prefix}{self.barcode[-4:] if self.barcode else self.env['ir.sequence'].next_by_code('product.template.barcode')}"
         return super(product_template, self).write(vals)
 
     def _check_barcode_is_active(self, code_prefix):
         """ 添加 barcode 校验"""
-        barcode = code_prefix + self.env['ir.sequence'].next_by_code('product.template.barcode')
+        barcode = f"{code_prefix}{self.env['ir.sequence'].next_by_code('product.template.barcode')}"
         # 用sql查询比较快
         self.env.cr.execute(f"""
                         SELECT id FROM product_product WHERE barcode='{barcode}'
