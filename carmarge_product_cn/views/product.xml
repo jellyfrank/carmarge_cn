@@ -62,9 +62,6 @@
                 <field name="categ_id" position="attributes">
                     <attribute name="optional">show</attribute>
                 </field>
-                <field name="sequence" position="before">
-                    <field name="sequence" readonly="1" string="序号"/>
-                </field>
                 <field name="name" position="after">
                     <field name="translate_name"/>
                 </field>

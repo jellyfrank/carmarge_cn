@@ -115,7 +115,7 @@ class product_template(models.Model):
         re_obj = pattern.findall(categ_id.name) if categ_id.name else ''
         category_code = re_obj[0] if re_obj else ''
         if categ_id.parent_id:
-            return self._product_category_code(categ_id.parent_id) + category_code
+            return f"{self._product_category_code(categ_id.parent_id)}{category_code}"
         else:
             return category_code
 
@@ -132,9 +132,8 @@ class product_template(models.Model):
 
     def write(self, vals):
         if vals.get('categ_id') and not vals.get("barcode"):
-            code_prefix = self._update_barcode(
-                self.env['product.category'].browse(vals.get('categ_id')))
-            vals['barcode'] = f"{code_prefix}{self.barcode[-4:]}"
+            code_prefix = self._update_barcode(self.env['product.category'].browse(vals.get('categ_id')))
+            vals['barcode'] = f"{code_prefix}{self.barcode[-4:] if self.barcode else self.env['ir.sequence'].next_by_code('product.template.barcode')}"
         return super(product_template, self).write(vals)
 
     def _check_barcode_is_active(self, code_prefix):
