@@ -63,7 +63,7 @@ class product_template(models.Model):
                 precision_rounding=template.uom_id.rounding)
             if template.other_purchases_count:
                 template.purchased_product_qty = template.purchased_product_qty + \
-                    template.other_purchases_count
+                                                 template.other_purchases_count
 
     @api.depends('product_variant_ids.sales_count')
     def _compute_sales_count(self):
@@ -83,7 +83,7 @@ class product_template(models.Model):
             "sale.report_all_channels_sales_action")
         # 增添被合并商品id
         is_merge = list(map(lambda value: int(value),
-                        self.merge_temp_ids.split(',')))
+                            self.merge_temp_ids.split(',')))
         action['domain'] = [
             ('product_tmpl_id', 'in', is_merge if is_merge else self.ids)]
         action['context'] = {
@@ -100,7 +100,7 @@ class product_template(models.Model):
             "purchase.action_purchase_order_report_all")
         # 增添被合并商品id
         is_merge = list(map(lambda value: int(value),
-                        self.merge_temp_ids.split(',')))
+                            self.merge_temp_ids.split(',')))
         action['domain'] = ['&', ('state', 'in', ['purchase', 'done']),
                             ('product_tmpl_id', 'in', is_merge if is_merge else self.ids)]
         action['context'] = {
@@ -133,12 +133,13 @@ class product_template(models.Model):
     def write(self, vals):
         if vals.get('categ_id') and not vals.get("barcode"):
             code_prefix = self._update_barcode(self.env['product.category'].browse(vals.get('categ_id')))
-            vals['barcode'] = f"{code_prefix}{self.barcode[-4:] if self.barcode else self.env['ir.sequence'].next_by_code('product.template.barcode')}"
+            vals[
+                'barcode'] = f"{code_prefix}{self.barcode[-4:] if self.barcode else self.env['ir.sequence'].next_by_code('product.template.barcode')}"
         return super(product_template, self).write(vals)
 
     def _check_barcode_is_active(self, code_prefix):
         """ 添加 barcode 校验"""
-        barcode = f"{code_prefix }{self.env['ir.sequence'].next_by_code('product.template.barcode')}"
+        barcode = f"{code_prefix}{self.env['ir.sequence'].next_by_code('product.template.barcode')}"
         # 用sql查询比较快
         self.env.cr.execute(f"""
                         SELECT id FROM product_product WHERE barcode='{barcode}'
