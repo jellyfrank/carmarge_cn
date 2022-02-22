@@ -139,11 +139,6 @@ class product_template(models.Model):
         }
         return action
 
-    @api.onchange("categ_id")
-    def _onchange_id(self):
-        """分类变更"""
-        self.barcode = False
-
     @api.model
     def create(self, vals):
         if not vals.get('barcode'):
@@ -159,7 +154,12 @@ class product_template(models.Model):
         if categ_id and not barcode:
             categ_id = self._validate_category_length(categ_id)
             code_prefix = self._update_barcode(categ_id)
-            vals[ 'barcode'] = f"{code_prefix}{self.barcode[-4:] if self.barcode else self.env['ir.sequence'].next_by_code('product.template.barcode')}"
+            if self.barcode:
+                new_code = f"{code_prefix}{self.barcode[-4:]}"
+                if new_code != self.barcode:
+                    vals[ 'barcode'] = f"{code_prefix}{self.barcode[-4:]}"
+            else:
+                vals['barcode'] = f"{code_prefix}{self.env['ir.sequence'].next_by_code('product.template.barcode')}"
         return super(product_template, self).write(vals)    
 
     def action_barcode_onclick_update(self):
