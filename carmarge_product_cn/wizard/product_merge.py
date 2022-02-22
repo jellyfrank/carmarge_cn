@@ -38,11 +38,8 @@ class MergeProductAutomatic(models.TransientModel):
 
     def action_product_merge(self):
         """ 合并产品 """
-        purchases_count = 0  # 采购数量值
-        sales_count = 0  # 销售数量值
-        qty_available = 0  # 在手数量
-        product_ids_list = []
-        barcode_list = []  # 条码
+        purchases_count,sales_count, qty_available = 0, 0, 0 # 采购数量值 销售数量值 在手数量
+        product_ids_list,barcode_list = [],[]
         for product_temp in self.product_temp_ids:
             qty_available += product_temp.qty_available
             product_ids_list.extend(product_temp.product_variant_ids.ids)
@@ -54,13 +51,15 @@ class MergeProductAutomatic(models.TransientModel):
                 # 将除目标产品外的产品进行归档
                 product_temp.active = False
         # 将归档产品的采购数量加总到保留产品上
-        # 将条码保存最小的
-        self.dst_product_temp_id.write({
+        data = {
             "other_purchases_count": purchases_count,
             "other_sales_count": sales_count,
             "merge_temp_ids": ','.join(list(map(lambda val: str(val), self.product_temp_ids.ids))),
-            "barcode": sorted(barcode_list)[0] if barcode_list else None
-        })
+        }
+        # 如果目标产品有条码 就用目标产品的条码 如果没有 就选最小的那个
+        if not self.dst_product_temp_id.barcode:
+            data['barcode'] = sorted(barcode_list)[0] if barcode_list else None
+        self.dst_product_temp_id.write(data)
         # 将在手数量进行更新
         inventory_obj = self.env["stock.inventory"].create({
             'product_ids': [(6, 0, product_ids_list)],
