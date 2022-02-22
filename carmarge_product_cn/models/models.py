@@ -139,6 +139,11 @@ class product_template(models.Model):
         }
         return action
 
+    @api.onchange("categ_id")
+    def _onchange_id(self):
+        """分类变更"""
+        self.barcode = False
+
     @api.model
     def create(self, vals):
         if not vals.get('barcode'):
