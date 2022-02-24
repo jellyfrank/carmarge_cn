@@ -10,6 +10,7 @@ from odoo.exceptions import UserError
 
 
 class product_template(models.Model):
+
     _inherit = "product.template"
 
     def _get_packaging(self):
@@ -44,7 +45,7 @@ class product_template(models.Model):
                 precision_rounding=template.uom_id.rounding)
             if template.other_purchases_count:
                 template.purchased_product_qty = template.purchased_product_qty + \
-                                                 template.other_purchases_count
+                    template.other_purchases_count
 
     @api.depends('product_variant_ids.sales_count')
     def _compute_sales_count(self):
@@ -76,6 +77,26 @@ class product_template(models.Model):
         if not categ_id.parent_id:
             raise UserError("产品分类必须精确到小类")
         return categ_id
+
+    @api.model
+    def _get_categ_next_sequence(self, prefix):
+        """get next sequence under the prefix"""
+        res = self.env['product.template'].search_read(
+            [('barcode', '=ilike', f'{prefix}%')], ['barcode'],)
+        if not res:
+            return f"{prefix}{1:04}"
+        else:
+            barcode = max([item['barcode'] for item in res])
+            if not barcode:
+                return f"{prefix}{1:04}"
+            number = barcode.split(prefix)[1]
+            if not number:
+                return f"{prefix}{1:04}"
+            try:
+                number = int(number)
+            except Exception as err:
+                return f"{prefix}{1:04}"
+            return f"{prefix}{number+1:04}"
 
     brand = fields.Many2many("product.brand", string="适用")
     comm_check = fields.Boolean("是否商检", default=False)
@@ -145,7 +166,8 @@ class product_template(models.Model):
             categ_id = vals.get('categ_id')
             categ_id = self._validate_category_length(categ_id)
             code_prefix = self._update_barcode(categ_id)
-            vals['barcode'] = f"{code_prefix}{self.env['ir.sequence'].next_by_code('product.template.barcode')}"
+            # vals['barcode'] = f"{code_prefix}{self.env['ir.sequence'].next_by_code('product.template.barcode')}"
+            vals['barcode'] = self._get_categ_next_sequence(code_prefix)
         return super(product_template, self).create(vals)
 
     def write(self, vals):
@@ -154,13 +176,14 @@ class product_template(models.Model):
         if categ_id and not barcode:
             categ_id = self._validate_category_length(categ_id)
             code_prefix = self._update_barcode(categ_id)
-            if self.barcode:
-                new_code = f"{code_prefix}{self.barcode[-4:]}"
-                if new_code != self.barcode:
-                    vals[ 'barcode'] = f"{code_prefix}{self.barcode[-4:]}"
-            else:
-                vals['barcode'] = f"{code_prefix}{self.env['ir.sequence'].next_by_code('product.template.barcode')}"
-        return super(product_template, self).write(vals)    
+            # if self.barcode:
+            #     new_code = f"{code_prefix}{self.barcode[-4:]}"
+            #     if new_code != self.barcode:
+            #         vals['barcode'] = f"{code_prefix}{self.barcode[-4:]}"
+            # else:
+            #     # vals['barcode'] = f"{code_prefix}{self.env['ir.sequence'].next_by_code('product.template.barcode')}"
+            vals['barcode'] = self._get_categ_next_sequence(code_prefix)
+        return super(product_template, self).write(vals)
 
     def action_barcode_onclick_update(self):
         """ 一键更新历史产品数据条码值 """
