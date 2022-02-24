@@ -195,7 +195,7 @@ class product_template(models.Model):
         # })
         # 将所有的条码进行更新
         products = self.search([])
-        products.write({'barcdoe': False})
+        products.write({'barcode': False})
         for product in products:
             # 因为 ”一个条形码只能分配给一个产品！“ 的_sql_constraints限制，所以添加barcode校验
             code_prefix = self._update_barcode(product.categ_id)
