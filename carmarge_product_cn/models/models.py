@@ -86,8 +86,6 @@ class product_template(models.Model):
         """get next sequence under the prefix"""
         res = self.env['product.template'].search_read(
             [('barcode', '=ilike', f'{prefix}%')], ['barcode'],)
-        print('========')
-        print(prefix, res)
         if not res:
             return f"{prefix}{1:04}"
         else:
