@@ -7,6 +7,9 @@ import re
 from odoo import fields, models, tools, api
 from odoo.tools.float_utils import float_round
 from odoo.exceptions import UserError
+import logging 
+
+_logger = logging.getLogger(__name__)
 
 
 class product_template(models.Model):
@@ -83,10 +86,13 @@ class product_template(models.Model):
         """get next sequence under the prefix"""
         res = self.env['product.template'].search_read(
             [('barcode', '=ilike', f'{prefix}%')], ['barcode'],)
+        print('========')
+        print(prefix, res)
         if not res:
             return f"{prefix}{1:04}"
         else:
-            barcode = max([item['barcode'] for item in res])
+            barcodes = [item['barcode'] for item in res if item['barcode']]
+            barcode = max(barcodes) if barcodes else None
             if not barcode:
                 return f"{prefix}{1:04}"
             number = barcode.split(prefix)[1]
@@ -194,16 +200,25 @@ class product_template(models.Model):
         #     "number_next_actual": 1
         # })
         # 将所有的条码进行更新
-        products = self.search([])
-        products.write({'barcode': False})
-        for product in products:
-            # 因为 ”一个条形码只能分配给一个产品！“ 的_sql_constraints限制，所以添加barcode校验
-            code_prefix = self._update_barcode(product.categ_id)
-            barcode = self._get_categ_next_sequence(code_prefix)
-            if barcode:
-                product.update({
-                    "barcode": barcode
-                })
+        try:
+            products = self.with_context(active_test=False).search([])
+            products.update({'barcode': False})
+            products = self.search([])
+            products.barcode = False
+            self.env.cr.commit()
+            for product in products:
+                # 因为 ”一个条形码只能分配给一个产品！“ 的_sql_constraints限制，所以添加barcode校验
+                # 只针对二级分类进行重置
+                if not product.categ_id.parent_id:
+                    continue
+                code_prefix = self._update_barcode(product.categ_id)
+                barcode = self._get_categ_next_sequence(code_prefix)
+                if barcode:
+                    product.update({
+                        "barcode": barcode
+                    })
+        except Exception as err:
+            _logger.exception("update error")
 
 
 class product_brand(models.Model):
