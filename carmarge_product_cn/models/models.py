@@ -176,29 +176,30 @@ class product_template(models.Model):
         if categ_id and not barcode:
             categ_id = self._validate_category_length(categ_id)
             code_prefix = self._update_barcode(categ_id)
-            # if self.barcode:
-            #     new_code = f"{code_prefix}{self.barcode[-4:]}"
-            #     if new_code != self.barcode:
-            #         vals['barcode'] = f"{code_prefix}{self.barcode[-4:]}"
-            # else:
-            #     # vals['barcode'] = f"{code_prefix}{self.env['ir.sequence'].next_by_code('product.template.barcode')}"
-            vals['barcode'] = self._get_categ_next_sequence(code_prefix)
+            if self.barcode:
+                new_code = f"{code_prefix}{self.barcode[-4:]}"
+                if new_code != self.barcode:
+                    vals['barcode'] = f"{code_prefix}{self.barcode[-4:]}"
+            else:
+                # vals['barcode'] = f"{code_prefix}{self.env['ir.sequence'].next_by_code('product.template.barcode')}"
+                vals['barcode'] = self._get_categ_next_sequence(code_prefix)
         return super(product_template, self).write(vals)
 
     def action_barcode_onclick_update(self):
         """ 一键更新历史产品数据条码值 """
         # 将product.template.barcode设置为从0开始进行计值
-        sequence_obj = self.env['ir.sequence'].search(
-            [('code', '=', 'product.template.barcode'), ('active', '=', True)], limit=1)
-        sequence_obj.write({
-            "number_next_actual": 1
-        })
+        # sequence_obj = self.env['ir.sequence'].search(
+        #     [('code', '=', 'product.template.barcode'), ('active', '=', True)], limit=1)
+        # sequence_obj.write({
+        #     "number_next_actual": 1
+        # })
         # 将所有的条码进行更新
-        product_obj = self.search([('active', '=', True)])
-        for product in product_obj:
+        products = self.search([])
+        products.write({'barcdoe': False})
+        for product in products:
             # 因为 ”一个条形码只能分配给一个产品！“ 的_sql_constraints限制，所以添加barcode校验
             code_prefix = self._update_barcode(product.categ_id)
-            barcode = self._check_barcode_is_active(code_prefix)
+            barcode = self._get_categ_next_sequence(code_prefix)
             if barcode:
                 product.update({
                     "barcode": barcode
