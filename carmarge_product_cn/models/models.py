@@ -138,7 +138,7 @@ class product_template(models.Model):
             "sale.report_all_channels_sales_action")
         # 增添被合并商品id
         is_merge = list(map(lambda value: int(value),
-                            self.merge_temp_ids.split(',')))
+                            self.merge_temp_ids.split(','))) if self.merge_temp_ids else []
         action['domain'] = [
             ('product_tmpl_id', 'in', is_merge if is_merge else self.ids)]
         action['context'] = {
@@ -155,7 +155,7 @@ class product_template(models.Model):
             "purchase.action_purchase_order_report_all")
         # 增添被合并商品id
         is_merge = list(map(lambda value: int(value),
-                            self.merge_temp_ids.split(',')))
+                            self.merge_temp_ids.split(','))) if self.merge_temp_ids else []
         action['domain'] = ['&', ('state', 'in', ['purchase', 'done']),
                             ('product_tmpl_id', 'in', is_merge if is_merge else self.ids)]
         action['context'] = {
