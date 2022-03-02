@@ -3,9 +3,10 @@
 # Date: 2022-02-17
 
 import datetime
-
 from odoo import fields, models, api
+import logging
 
+_logger = logging.getLogger(__name__)
 
 class MergeProductAutomatic(models.TransientModel):
     """
@@ -59,6 +60,9 @@ class MergeProductAutomatic(models.TransientModel):
         # 如果目标产品有条码 就用目标产品的条码 如果没有 就选最小的那个
         if not self.dst_product_temp_id.barcode:
             data['barcode'] = sorted(barcode_list)[0] if barcode_list else None
+        else:
+            data['barcode'] = self.self.dst_product_temp_id.barcode
+        _logger.debug(f"[产品合并]产品合并数据:{data}")
         self.dst_product_temp_id.write(data)
         # 将在手数量进行更新
         inventory_obj = self.env["stock.inventory"].create({
