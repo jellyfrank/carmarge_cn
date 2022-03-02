@@ -39,53 +39,57 @@ class MergeProductAutomatic(models.TransientModel):
 
     def action_product_merge(self):
         """ 合并产品 """
-        purchases_count,sales_count, qty_available = 0, 0, 0 # 采购数量值 销售数量值 在手数量
-        product_ids_list,barcode_list = [],[]
-        for product_temp in self.product_temp_ids:
-            qty_available += product_temp.qty_available
-            product_ids_list.extend(product_temp.product_variant_ids.ids)
-            barcode_list.append(product_temp.barcode)
-            if product_temp != self.dst_product_temp_id:
-                # 将归档产品的销售采购数量加总到保留产品上
-                purchases_count += product_temp.purchased_product_qty
-                sales_count += product_temp.sales_count
-                # 将除目标产品外的产品进行归档
-                product_temp.active = False
-        # 将归档产品的采购数量加总到保留产品上
-        data = {
-            "other_purchases_count": purchases_count,
-            "other_sales_count": sales_count,
-            "merge_temp_ids": ','.join(list(map(lambda val: str(val), self.product_temp_ids.ids))),
-        }
-        # 如果目标产品有条码 就用目标产品的条码 如果没有 就选最小的那个
-        if not self.dst_product_temp_id.barcode:
-            data['barcode'] = sorted(barcode_list)[0] if barcode_list else None
-        else:
-            data['barcode'] = self.self.dst_product_temp_id.barcode
-        _logger.debug(f"[产品合并]产品合并数据:{data}")
-        self.dst_product_temp_id.write(data)
-        # 将在手数量进行更新
-        inventory_obj = self.env["stock.inventory"].create({
-            'product_ids': [(6, 0, product_ids_list)],
-        })
-        # 复用系统原生库存盘点逻辑
-        for inventory in inventory_obj:
-            if inventory.state != 'draft':
-                continue
-            vals = {
-                'state': 'confirm',
-                'date': fields.Datetime.now()
+        try:
+            _logger.debug(f"[产品合并]开始合并产品")
+            purchases_count,sales_count, qty_available = 0, 0, 0 # 采购数量值 销售数量值 在手数量
+            product_ids_list,barcode_list = [],[]
+            for product_temp in self.product_temp_ids:
+                qty_available += product_temp.qty_available
+                product_ids_list.extend(product_temp.product_variant_ids.ids)
+                barcode_list.append(product_temp.barcode)
+                if product_temp != self.dst_product_temp_id:
+                    # 将归档产品的销售采购数量加总到保留产品上
+                    purchases_count += product_temp.purchased_product_qty
+                    sales_count += product_temp.sales_count
+                    # 将除目标产品外的产品进行归档
+                    product_temp.active = False
+            # 将归档产品的采购数量加总到保留产品上
+            data = {
+                "other_purchases_count": purchases_count,
+                "other_sales_count": sales_count,
+                "merge_temp_ids": ','.join(list(map(lambda val: str(val), self.product_temp_ids.ids))),
             }
-            if not inventory.line_ids and not inventory.start_empty:
-                line_values = inventory._get_inventory_lines_values()
-                # 将所有的产品进行盘点(在不修改原生逻辑的情况下)
-                for line in line_values:
-                    if line['product_id'] not in self.dst_product_temp_id.product_variant_ids.ids:
-                        line['product_qty'] = 0
-                    else:
-                        line['product_qty'] = qty_available
-                self.env['stock.inventory.line'].create(line_values)
-            inventory.write(vals)
-        inventory_obj._check_company()
-        # 验证盘点
-        inventory_obj.action_validate()
+            # 如果目标产品有条码 就用目标产品的条码 如果没有 就选最小的那个
+            if not self.dst_product_temp_id.barcode:
+                data['barcode'] = sorted(barcode_list)[0] if barcode_list else None
+            else:
+                data['barcode'] = self.self.dst_product_temp_id.barcode
+            _logger.debug(f"[产品合并]产品合并数据:{data}")
+            self.dst_product_temp_id.write(data)
+            # 将在手数量进行更新
+            inventory_obj = self.env["stock.inventory"].create({
+                'product_ids': [(6, 0, product_ids_list)],
+            })
+            # 复用系统原生库存盘点逻辑
+            for inventory in inventory_obj:
+                if inventory.state != 'draft':
+                    continue
+                vals = {
+                    'state': 'confirm',
+                    'date': fields.Datetime.now()
+                }
+                if not inventory.line_ids and not inventory.start_empty:
+                    line_values = inventory._get_inventory_lines_values()
+                    # 将所有的产品进行盘点(在不修改原生逻辑的情况下)
+                    for line in line_values:
+                        if line['product_id'] not in self.dst_product_temp_id.product_variant_ids.ids:
+                            line['product_qty'] = 0
+                        else:
+                            line['product_qty'] = qty_available
+                    self.env['stock.inventory.line'].create(line_values)
+                inventory.write(vals)
+            inventory_obj._check_company()
+            # 验证盘点
+            inventory_obj.action_validate()
+        except Exception as err:
+            _logger.exception(f"合并产品异常")
