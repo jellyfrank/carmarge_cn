@@ -14,17 +14,17 @@
                         你可以从这个列表中移除联系人以避免合并它们
                     </p>
                     <group>
-                        <field name="dst_product_temp_id" domain="[('id', 'in', product_temp_ids or False)]" required="1"/>
+                        <field name="dst_product_temp_id" domain="[('id', 'in', context.get('active_ids'))]" required="1"/>
                     </group>
-                    <field name="product_temp_ids" nolabel="1">
+                    <field name="lines" nolabel="1">
                         <tree string="产品">
-                            <field name="id"/>
-                            <field name="categ_id"/>
-                            <field name="name"/>
-                            <field name="default_code"/>
-                            <field name="barcode"/>
-                            <field name="brand"/>
-                            <field name="packaging_ids"/>
+                            <field name="product_tmpl_id" invisible="1"/>
+                            <field name="categ_id" string="分类"/>
+                            <field name="name" string="名称"/>
+                            <field name="default_code" string="编码"/>
+                            <field name="barcode" string="条码"/>
+                            <!-- <field name="brand"/> -->
+                            <!-- <field name="packaging_ids"/> -->
                         </tree>
                     </field>
                 </sheet>
