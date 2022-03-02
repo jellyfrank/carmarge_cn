@@ -180,13 +180,13 @@ class product_template(models.Model):
         if categ_id and not barcode:
             categ_id = self._validate_category_length(categ_id)
             code_prefix = self._update_barcode(categ_id)
-            if self.barcode:
-                new_code = f"{code_prefix}{self.barcode[-4:]}"
-                if new_code != self.barcode:
-                    vals['barcode'] = f"{code_prefix}{self.barcode[-4:]}"
-            else:
-                # vals['barcode'] = f"{code_prefix}{self.env['ir.sequence'].next_by_code('product.template.barcode')}"
-                vals['barcode'] = self._get_categ_next_sequence(code_prefix)
+            # if self.barcode:
+            #     new_code = f"{code_prefix}{self.barcode[-4:]}"
+            #     if new_code != self.barcode:
+            #         vals['barcode'] = f"{code_prefix}{self.barcode[-4:]}"
+            # else:
+            # vals['barcode'] = f"{code_prefix}{self.env['ir.sequence'].next_by_code('product.template.barcode')}"
+            vals['barcode'] = self._get_categ_next_sequence(code_prefix)
         return super(product_template, self).write(vals)
 
     def action_barcode_onclick_update(self):
