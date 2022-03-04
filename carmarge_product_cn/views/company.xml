@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_res_company_form" model="ir.ui.view">
+        <field name="name">res company form</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='general_info']" position="after">
+                <page string="银行信息">
+                    <group>
+                        <group>
+                            <field name="acc_number"/>
+                            <field name="bank_id"/>
+                            <field name="acc_type"/>
+                            <field name="acc_number"/>
+                            <field name="swift_code"/>
+                            <field name="address"/>
+                        </group>
+                        <group>
+                            <field name="bank_currency_id"/>
+                            <field name="bank_partner_id"/>
+                            <field name="acc_holder_name"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_res_partner_bank_form" model="ir.ui.view">
+        <field name="name">res partner bank form</field>
+        <field name="model">res.partner.bank</field>
+        <field name="inherit_id" ref="base.view_partner_bank_form"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="swift_code"/>
+                <field name="address"/>
+            </field>
+        </field>
+    </record>
+</odoo>

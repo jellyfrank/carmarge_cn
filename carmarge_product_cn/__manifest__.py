@@ -32,6 +32,7 @@
         'views/product.xml',
         'views/packaging.xml',
         'views/report.xml',
+        'views/company.xml',
         'wizard/product_merge_view.xml'
     ],
     # only loaded in demonstration mode
