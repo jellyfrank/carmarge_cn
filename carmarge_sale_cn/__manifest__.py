@@ -20,11 +20,11 @@
     'version': '14.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['sale'],
+    'depends': ['carmarge_product_cn','sale'],
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'views/views.xml',
         'views/templates.xml',
     ],
