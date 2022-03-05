@@ -26,8 +26,34 @@ class purchase_order(models.Model):
         })
         return data
 
+    def _set_sale_name(self,sale_id):
+        """关联销售订单"""
+        # 搜索当前销售订单关联的采购订单数量
+        purchase_count = self.sudo().search([('sale_id','=',sale_id)])
+        if not purchase_count:
+            index = 1
+        else:
+            index = len(purchase_count)
+
+        sale_order = self.env['sale.order'].browse(int(sale_id))
+
+        return f"{sale_order.name}{index:02}"
+
     delivery_cost = fields.Monetary("运费")
     discount_manual = fields.Monetary("优惠")
+    sale_id = fields.Many2one("sale.order",string="销售单")
+
+
+    @api.model
+    def create(self,vals):
+        if vals.get("sale_id",None):
+            vals['name'] = self._set_sale_name(vals['sale_id'])
+        return super(purchase_order,self).create(vals)
+
+    def write(self,vals):
+        if vals.get("sale_id",None):
+            vals['name'] = self._set_sale_name(vals['sale_id'])
+        return super(purchase_order,self).write(vals)
 
 class purchase_order_line(models.Model):
 
