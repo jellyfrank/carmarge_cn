@@ -19,7 +19,7 @@
           <attribute name='sum'>total</attribute>
         </xpath>
         <xpath expr="//field[@name='order_line']//tree//field[@name='price_unit']" position="after">
-          <field name="packaging"/>
+          <field name="packaging" invisible="1"/>
           <field name="packaging_qty" sum="total"/>
           <field name="weight" optional="hide" />
           <field name="net_weight" optional="hide"/>
