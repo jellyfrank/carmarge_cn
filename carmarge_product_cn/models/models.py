@@ -218,6 +218,19 @@ class product_template(models.Model):
         except Exception as err:
             _logger.exception("update error")
 
+    @api.model
+    def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
+        """
+            继承read_group隐藏产品分组中 长、宽、高、体积、净重、毛重 汇总金额值
+        """
+        drops = ['length', 'width', 'height', 'volume', 'net_weight', 'weight']
+        for drop in drops:
+            if drop in fields:
+                fields.remove(drop)
+
+        return super(product_template, self).read_group(domain, fields, groupby, offset=offset, limit=limit,
+                                                     orderby=orderby, lazy=lazy)
+
 
 class product_brand(models.Model):
     _name = "product.brand"

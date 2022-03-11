@@ -5,7 +5,11 @@
         <script type="text/javascript" src="/carmarge_product_cn/static/src/js/base.js"></script>
       </xpath>
       <xpath expr="link[last()]" position="after">
+<<<<<<< HEAD
         <link type="text/css" rel="stylesheet" href="/carmarge_product_cn/static/src/css/list.css"/>        
+=======
+        <link type="text/css" rel="stylesheet" href="/carmarge_product_cn/static/src/css/list.css"/>
+>>>>>>> yinzhaoxia_0310
       </xpath>
     </template>
   </data>

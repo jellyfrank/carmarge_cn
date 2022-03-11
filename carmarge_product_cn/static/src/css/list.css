@@ -1,3 +1,7 @@
 table.o_list_table {
-    table-layout:auto !important
+    table-layout: auto !important;
+}
+
+table thead {
+    text-align: center;
 }
