@@ -22,7 +22,7 @@
                     <span t-if="doc.state not in ['draft','sent']">Order # </span>
                     <span t-if="doc.state in ['draft','sent']">Quotation # </span>
                 </t>
-                <span t-field="doc.name"/>
+                <span t-field="doc.name" t-if="not is_pro_forma"/>
             </h2>
             <h2 t-if="is_pro_forma">
                 <div class="text-center">PROFOMA INVOICE</div>
