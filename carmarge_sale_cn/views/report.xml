@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="report_saleorder_document" inherit_id="sale.report_saleorder_document">
-        <xpath expr="//h2[@class='mt16']" position="after">
+        <xpath expr="//h2[@class='mt16']" position="replace">
             <!-- <div class="row">
               <div class="col-6">
                 <strong>Customer Name:<span><t t-esc="doc.partner_id.name"/></span></strong><br/>
@@ -17,6 +17,13 @@
                 <strong>Bank Address:<span><t t-esc="doc.company_id.address"/></span></strong><br/>
               </div>
             </div> -->
+            <h2 class="mt16">
+                <t t-if="not (env.context.get('proforma', False) or is_pro_forma)">
+                    <span t-if="doc.state not in ['draft','sent']">Order # </span>
+                    <span t-if="doc.state in ['draft','sent']">Quotation # </span>
+                </t>
+                <span t-field="doc.name"/>
+            </h2>
             <h2 t-if="is_pro_forma">
                 <div class="text-center">PROFOMA INVOICE</div>
             </h2>
