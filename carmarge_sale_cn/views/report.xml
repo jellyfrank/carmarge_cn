@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="report_saleorder_document" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//div[@id='informations']" position="attributes">
+            <attribute name='t-if'>not is_pro_forma</attribute>
+        </xpath>
         <xpath expr="//h2[@class='mt16']" position="replace">
             <!-- <div class="row">
               <div class="col-6">
