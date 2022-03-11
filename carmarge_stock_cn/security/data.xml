@@ -2,7 +2,7 @@
 <odoo>
     <data>
         <record model="ir.actions.report" id="carmarge_stock_cn.picking_list">
-            <field name="name">包装单打印</field>
+            <field name="name">装箱单打印</field>
             <field name="model">stock.picking</field>
             <field name="report_type">qweb-pdf</field>
             <field name="report_name">carmarge_stock_cn.picking_list</field>

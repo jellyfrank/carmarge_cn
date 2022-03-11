@@ -30,6 +30,7 @@
             <h2 t-if="is_pro_forma">
                 <div class="text-center">PROFOMA INVOICE</div>
             </h2>
+            <div class="text-right" t-if="is_pro_forma"><t t-esc="doc.date_order"/></div>
             <table class="table table-sm o_main_table" t-if="is_pro_forma">
                 <tbody>
                     <tr><td style="width: 20%;"><strong>Customer Name</strong></td><td><span><t t-esc="doc.partner_id.name"/></span></td></tr>
