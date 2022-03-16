@@ -18,7 +18,7 @@
                                 <!-- <span t-field="o.name"/> -->
                                 <div class="text-center">PICKING LIST</div>
                             </h2>
-                            <div class="text-right"><t t-esc="o.date"/></div>
+                            <div class="text-right"><span t-field="o.date" t-options='{"format": "MM/dd/yyyy"}'/></div>
                             <table class="table table-sm o_main_table">
                                 <tbody>
                                     <tr>

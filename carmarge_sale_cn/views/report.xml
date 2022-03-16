@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="report_saleorder_document" inherit_id="sale.report_saleorder_document">
-        <xpath expr="//div[@id='informations']" position="attributes">
-            <attribute name='t-if'>not is_pro_forma</attribute>
+        <xpath expr="//div[@id='informations']" position="replace">
+            <!-- <attribute name='t-if'>not is_pro_forma</attribute> -->
         </xpath>
         <xpath expr="//h2[@class='mt16']" position="replace">
             <!-- <div class="row">
@@ -21,16 +21,18 @@
               </div>
             </div> -->
             <h2 class="mt16">
-                <t t-if="not (env.context.get('proforma', False) or is_pro_forma)">
-                    <span t-if="doc.state not in ['draft','sent']">Order # </span>
-                    <span t-if="doc.state in ['draft','sent']">Quotation # </span>
-                </t>
-                <span t-field="doc.name" t-if="not is_pro_forma"/>
+                <div class="text-center">
+                    <t t-if="not (env.context.get('proforma', False) or is_pro_forma)">
+                        <span t-if="doc.state not in ['draft','sent']">Order # </span>
+                        <span t-if="doc.state in ['draft','sent']">Quotation # </span>
+                    </t>
+                    <span t-field="doc.name" t-if="not is_pro_forma"/>
+                </div>
             </h2>
             <h2 t-if="is_pro_forma">
                 <div class="text-center">PROFOMA INVOICE</div>
             </h2>
-            <div class="text-right" t-if="is_pro_forma"><t t-esc="doc.date_order"/></div>
+            <div class="text-right"><span t-field="doc.date_order" t-options='{"format": "MM/dd/yyyy"}'/></div>
             <table class="table table-sm o_main_table" t-if="is_pro_forma">
                 <tbody>
                     <tr><td style="width: 20%;"><strong>Customer Name</strong></td><td><span><t t-esc="doc.partner_id.name"/></span></td></tr>
@@ -133,7 +135,7 @@
         <xpath expr="//div[@name='so_total_summary']" position="replace">
             <div class="clearfix" name="so_total_summary">
                 <div id="total" class="row" name="total">
-                    <div t-attf-class="#{'col-4' if report_type != 'html' else 'col-sm-7 col-md-5'} ml-auto">
+                    <div t-attf-class="#{'col-4' if report_type != 'html' else 'col-sm-7 col-md-5'} ml-auto" style="flex: auto;max-width: 100%;">
                         <table class="table table-sm">
                             <tr class="border-black o_subtotal" style="">
                                 <td name="td_amount_untaxed_label">
@@ -163,6 +165,9 @@
                     </div>
                 </div>
             </div>
+        </xpath>
+
+        <xpath expr="//p[@t-field='doc.note']" position="replace">
         </xpath>
     </template>
 </odoo>
