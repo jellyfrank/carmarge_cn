@@ -36,3 +36,15 @@ class account_move(models.Model):
     amount_total = fields.Monetary(string='Total', store=True, readonly=True,
         compute='_compute_amount',
         inverse='_inverse_amount_total')
+
+    @api.model
+    def default_get(self,fields):
+        """获取默认值"""
+        print('=========')
+        print(self.env.context)
+        res = super(account_move,self).default_get(fields)
+        if self.env.context.get("active_model") == "sale.order":
+            sale_order = self.env['sale.order'].sudo().browse(self.env.context.get("active_id"))
+            res['delivery_cost'] = sale_order.delivery_cost
+            res['discount_manual'] = sale_order.discount_manual
+        return res

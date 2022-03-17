@@ -40,9 +40,10 @@ class sale_order_line(models.Model):
         """获取包裹数量"""
         # 取产品库存包装信息中的第一条
         for line in self:
-            line.packaging = line.product_id.packaging_ids[0] if line.product_id.packaging_ids else None
+            # line.packaging = line.product_id.packaging_ids[0] if line.product_id.packaging_ids else None
+            line.packaging = line.product_packaging
 
-    @api.depends("packaging", "product_qty")
+    @api.depends("packaging", "product_qty","product_packaging")
     def _compute_packaging_qty(self):
         """计算包裹数量"""
         for line in self:

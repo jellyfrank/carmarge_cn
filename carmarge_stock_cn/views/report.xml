@@ -79,7 +79,7 @@
                             <table class="table table-sm o_main_table">
                                 <tbody>
                                     <tr>
-                                        <td style="width: 20%;">Supplier Name</td>
+                                        <td style="width: 20%;"><strong>Supplier Name</strong></td>
                                         <td>
                                             <span>
                                                 <t t-esc="o.company_id.name"/>
@@ -113,6 +113,8 @@
                             </table>
 
                         </div>
+                        <div class="clearfix" name="so_total_summary">
+                            <div id="total" class="row" name="total">
                         <table class="table table-sm text-center" name="stock_move_table">
                             <thead>
                                 <tr>
@@ -170,14 +172,14 @@
                                         <t t-esc="move.total_packaging_volume"/>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr class="border-black o_total">
                                     <td></td>
-                                    <td>
+                                    <td name="td_amount_total_label">
                                         <strong>Total:</strong>
                                     </td>
                                     <td>
                                     </td>
-                                    <td>
+                                    <td name="td_amount_total">
                                         <strong>
                                             <t t-esc="round(sum(move.quantity_done for move in lines),2)"/>
                                         </strong>
@@ -205,6 +207,9 @@
                                 </tr>
                             </tbody>
                         </table>
+
+                                </div>
+                        </div>
                         
                         <t t-set="backorders" t-value="o.backorder_ids.filtered(lambda x: x.state not in ('done', 'cancel'))"/>
                         <t t-if="o.backorder_ids and backorders">
