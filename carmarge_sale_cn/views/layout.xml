@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="layout_boxed" inherit_id="web.external_layout_boxed">
+
         <xpath expr="//ul[@class='list-inline']" position="replace">            
         </xpath>
+
+        <xpath expr="//div[@name='company_address']" position="replace">
+        </xpath>
+
     </template>
 </odoo>
