@@ -67,12 +67,13 @@ class purchase_order_line(models.Model):
             line.discount_manual_line = line.order_id.discount_manual / \
                 len(line.order_id.order_line)
 
-    @api.depends("product_id")
+    @api.depends("product_id","books/")
     def _get_product_packaging(self):
         """获取包裹数量"""
         # 取产品库存包装信息中的第一条
         for line in self:
-            line.packaging = line.product_id.packaging_ids[0] if line.product_id.packaging_ids else None
+            # line.packaging = line.product_id.packaging_ids[0] if line.product_id.packaging_ids else None
+            line.packaging = line.product_packaging
 
     @api.depends("packaging", "product_qty")
     def _compute_packaging_qty(self):
@@ -93,7 +94,7 @@ class purchase_order_line(models.Model):
     discount_manual_line = fields.Monetary(
         "优惠", compute="_compute_line", store=True)
     packaging = fields.Many2one(
-        "product.packaging", string="包装规格", compute="_get_product_packaging")
+        "product.packaging", string="包装规格")
     packaging_qty = fields.Float(
         "件数", compute="_compute_packaging_qty", store=True)
     packaging_weight = fields.Float(

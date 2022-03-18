@@ -35,7 +35,7 @@ class sale_order_line(models.Model):
             line.discount_manual_line = line.order_id.discount_manual / \
                 len(line.order_id.order_line)
 
-    @api.depends("product_id")
+    @api.depends("product_id","product_packaging")
     def _get_product_packaging(self):
         """获取包裹数量"""
         # 取产品库存包装信息中的第一条
