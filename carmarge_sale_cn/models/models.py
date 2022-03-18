@@ -16,7 +16,7 @@ class sale_order(models.Model):
         # 当前减去order.amount_tax(税金)是因为客户输入的单价已经是含税单价了，所以把系统本身加上的税金再在这里减去
         for order in self:
             order.update({
-                "amount_total": order.amount_total + order.delivery_cost - order.discount_manual - order.amount_tax
+                "amount_total": order.amount_total + order.delivery_cost - order.discount_manual
             })
 
     delivery_cost = fields.Monetary("海运费")
