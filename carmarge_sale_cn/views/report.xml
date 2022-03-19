@@ -36,7 +36,7 @@
             <table class="table table-sm o_main_table" t-if="is_pro_forma">
                 <tbody>
                     <tr><td style="width: 20%;"><strong>Customer Name</strong></td><td><span><t t-esc="doc.partner_id.name"/></span></td></tr>
-                    <tr><td><strong>Address</strong></td><td><span><t t-esc="doc.partner_id.state_id.name"/></span></td></tr>
+                    <tr><td><strong>Address</strong></td><td><span><t t-esc="doc.partner_id.city"/><t t-esc="doc.partner_id.state_id.name"/><t t-esc="doc.partner_id.country_id.name"/></span></td></tr>
                     <tr><td><strong>Inovice No</strong></td><td><span><t t-esc="doc.name"/></span></td></tr>
                     <tr><td><strong>Payment Terms</strong></td><td><span><t t-esc="doc.payment_term_id.name"/></span></td></tr>
                 </tbody>
@@ -45,7 +45,7 @@
                 <tbody>
                     <tr><td style="
     width: 20%;
-">Beneficiary Name</td><td><span><t t-esc="doc.company_id.name"/></span></td></tr>
+"><strong>Beneficiary Name</strong></td><td><span><t t-esc="doc.company_id.name"/></span></td></tr>
                     <tr><td><strong>Account Number</strong></td><td><span><t t-esc="doc.company_id.acc_number"/></span></td></tr>
                     <tr><td><strong>Bank Name</strong></td><td><span><t t-esc="doc.company_id.bank_id.name"/></span></td></tr>
                     <tr><td><strong>SWIFT CODE</strong></td><td><span><t t-esc="doc.company_id.swift_code"/></span></td></tr>
@@ -147,7 +147,7 @@
                                 </td>
                                 <td name="td_amount_untaxed" class="text-right">
                                     <!-- <span t-field="doc.amount_untaxed"/> -->
-                                    <span t-esc="doc.amount_untaxed + doc.amount_tax" />
+                                    $<span t-esc="doc.amount_untaxed + doc.amount_tax" />
                                 </td>
                             </tr>
                             <!-- <t t-foreach="doc.amount_by_group" t-as="amount_by_group">
