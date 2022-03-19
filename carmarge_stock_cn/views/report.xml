@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="carmarge_stock_cn.picking_list" name="carmarge_stock_cn.picking_list">
+    <template id="carmarge_stock_cn.picking_list">
         <t t-name="carmarge_stock_cn.picking_list">
             <t t-foreach="docs" t-as="o">
                 <t t-call="web.html_container">
