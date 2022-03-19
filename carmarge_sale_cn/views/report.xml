@@ -147,7 +147,7 @@
                                 </td>
                                 <td name="td_amount_untaxed" class="text-right">
                                     <!-- <span t-field="doc.amount_untaxed"/> -->
-                                    $<span t-esc="doc.amount_untaxed + doc.amount_tax" />
+                                    $<span t-esc="round(doc.amount_untaxed + doc.amount_tax,2)" />
                                 </td>
                             </tr>
                             <!-- <t t-foreach="doc.amount_by_group" t-as="amount_by_group">
