@@ -15,9 +15,9 @@
         <field name="payment_term_id" position="after">
           <field name="port_city"/>
         </field>
-        <xpath expr="//field[@name='order_line']//tree//field[@name='product_code']" position="attributes">
+        <!-- <xpath expr="//field[@name='order_line']//tree//field[@name='product_code']" position="attributes">
           <attribute name='invisible'>1</attribute>
-        </xpath>
+        </xpath> -->
         <xpath expr="//field[@name='order_line']//tree//field[@name='price_tax']" position="attributes">
           <attribute name='invisible'>0</attribute>
         </xpath>
