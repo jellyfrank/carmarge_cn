@@ -57,6 +57,9 @@ class sale_order_line(models.Model):
             line.total_packaging_volume = line.packaging_qty * line.packaging.volume
             line.total_packaging_net_weight = line.packaging_qty * line.packaging_net_weight
 
+    def _compute_sale_price_update_group(self):
+        self.group_use_sale_price_update = self.user_has_groups('carmarge_sale_cn.group_use_sale_price_update')
+
     delivery_cost_line = fields.Monetary(
         "运费", compute="_compute_line", store=True)
     discount_manual_line = fields.Monetary(
@@ -80,3 +83,6 @@ class sale_order_line(models.Model):
     weight = fields.Float("毛重", related="product_id.weight")
     net_weight = fields.Float("净重", related="product_id.net_weight")
     volume = fields.Float("体积", related="product_id.volume")
+
+    group_use_sale_price_update = fields.Boolean(string="单价是否可编辑", compute="_compute_sale_price_update_group")
+

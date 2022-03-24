@@ -13,7 +13,7 @@
           <attribute name="invisible">1</attribute>
         </field> -->
         <field name="payment_term_id" position="after">
-          <field name="port_city"/>
+          <field name="port_city" required="1"/>
         </field>
         <!-- <xpath expr="//field[@name='order_line']//tree//field[@name='product_code']" position="attributes">
           <attribute name='invisible'>1</attribute>
@@ -24,6 +24,10 @@
         <xpath expr="//field[@name='order_line']//tree//field[@name='product_uom_qty']" position="attributes">
           <attribute name='sum'>total</attribute>
         </xpath>
+<!--        <xpath expr="//field[@name='order_line']//tree//field[@name='price_unit']" position="attributes">-->
+<!--          <attribute name='attrs'>{'readonly':[('group_use_sale_price_update','=',False)]}</attribute>-->
+<!--        </xpath>-->
+
         <xpath expr="//field[@name='order_line']//tree//field[@name='price_unit']" position="after">
           <field name="packaging" invisible="1"/>
           <field name="packaging_qty" sum="total"/>
@@ -36,6 +40,7 @@
           <field name="total_packaging_weight" sum="total"/>
           <field name="total_packaging_net_weight" sum="total"/>
           <field name="total_packaging_volume" sum="total"/>
+          <field name="group_use_sale_price_update"/>
         </xpath>
       </field>
     </record>

@@ -4,4 +4,10 @@
         <field name="prefix">TZA%(y)s%(month)s%(day)s</field>
         <field name="padding">4</field>
     </record>
+
+    <record id="group_use_sale_price_update" model="res.groups">
+        <field name="name">销售单产品价格修改</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+
+    </record>
 </odoo>

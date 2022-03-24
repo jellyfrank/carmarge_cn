@@ -49,6 +49,11 @@ class MergeProductAutomatic(models.TransientModel):
         purchases_count, sales_count, qty_available = 0, 0, 0  # 采购数量值 销售数量值 在手数量
         product_ids_list, barcode_list = [], []
         print( self.lines)
+        purchase_info_ids, seller_ids = [], []
+        purchase_infos = self.dst_product_temp_id.seller_ids
+        if purchase_infos:
+            for pi in purchase_infos:
+                purchase_info_ids.append(pi.name.id)
         for line in self.lines:
             product_temp = line.product_tmpl_id
             qty_available += product_temp.qty_available
@@ -60,11 +65,26 @@ class MergeProductAutomatic(models.TransientModel):
                 sales_count += product_temp.sales_count
                 # 将除目标产品外的产品进行归档
                 product_temp.active = False
+
+                for info in product_temp.seller_ids:
+                    if info.name.id not in purchase_info_ids:
+                        seller_ids.append((0,False,{
+                            'name':info.name.id,
+                            'price':info.price,
+                            'delay':info.delay,
+                            'product_id':info.product_id.id if info.product_id else False,
+                            'product_name':info.product_name if info.product_code else False,
+                            'product_code':info.product_code if info.product_code else False,
+                            'date_start':info.date_start if info.date_start else False,
+                            'date_end':info.date_end if info.date_end else False,
+                            'min_qty':info.min_qty
+                        }))
         # 将归档产品的采购数量加总到保留产品上
         data = {
             "other_purchases_count": purchases_count,
             "other_sales_count": sales_count,
-            "merge_temp_ids": ','.join(str(p.id) for p in self.lines.product_tmpl_id)
+            "merge_temp_ids": ','.join(str(p.id) for p in self.lines.product_tmpl_id),
+            "seller_ids":seller_ids
         }
         # 如果目标产品有条码 就用目标产品的条码 如果没有 就选最小的那个
         if not self.dst_product_temp_id.barcode:
