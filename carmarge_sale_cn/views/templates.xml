@@ -1,9 +1,15 @@
 <odoo>
     <data>
-      <template id="minial_layout_inhert" inherit_id="web.report_assets_common">
-        <xpath expr="//link[last()]" position="after">
-          <link rel='stylesheet' href="/carmarge_sale_cn/static/src/css/report.css"/>
-        </xpath>
-      </template>
+        <template id="minial_layout_inhert" inherit_id="web.report_assets_common">
+            <xpath expr="//link[last()]" position="after">
+                <link rel='stylesheet' href="/carmarge_sale_cn/static/src/css/report.css"/>
+            </xpath>
+        </template>
+
+        <template id="minial_layout_inhert" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel='stylesheet' href="/carmarge_sale_cn/static/src/css/sale.css"/>
+            </xpath>
+        </template>
     </data>
 </odoo>
