@@ -1,3 +1,7 @@
 table.table-sm.o_main_table tr td{
         border: 1px solid #495057;
 }
+
+.o_list_view .o_list_table thead > tr > th:not(.o_list_record_selector).o_list_number_th{
+        text-align: center;
+}

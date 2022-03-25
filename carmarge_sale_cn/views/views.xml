@@ -29,8 +29,8 @@
           <attribute name='invisible'>1</attribute>
         </xpath>
 
-        <xpath expr="//field[@name='order_line']//tree//field[@name='price_tax']" position="before">
-          <field name="tax_after_total" sum="total"/>
+        <xpath expr="//field[@name='order_line']//tree//field[@name='price_subtotal']" position="attributes">
+          <attribute name='string'>税后小计</attribute>
         </xpath>
 
         <xpath expr="//field[@name='order_line']//tree//field[@name='price_unit']" position="attributes">

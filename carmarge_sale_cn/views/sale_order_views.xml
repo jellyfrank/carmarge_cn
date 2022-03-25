@@ -48,6 +48,10 @@
           <field name="active" eval="False"/>
       </record>
 
+        <record id="sale.res_partner_menu" model="ir.ui.menu">
+          <field name="active" eval="False"/>
+      </record>
+
         <menuitem id="menu_sale_quotations"
                   name="报价单"
                   action="sale.action_quotations_with_onboarding"
@@ -66,11 +70,11 @@
                   groups="sales_team.group_sale_manager"
                   action="sales_team.crm_team_salesteams_act"
                   sequence="3"/>
-        <menuitem id="res_partner_menu"
-                  name="客户"
-                  parent="sale.sale_menu_root"
-                  action="account.res_partner_action_customer"
-                  sequence="4" groups="sales_team.group_sale_salesman"/>
+<!--        <menuitem id="res_partner_menu"-->
+<!--                  name="客户"-->
+<!--                  parent="sale.sale_menu_root"-->
+<!--                  action="account.res_partner_action_customer"-->
+<!--                  sequence="4" groups="sales_team.group_sale_salesman"/>-->
 
     </data>
 </odoo>

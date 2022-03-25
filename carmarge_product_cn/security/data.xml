@@ -14,5 +14,11 @@
             <field name="header_spacing">10</field>
             <field name="dpi">90</field>
         </record>
+
+        <record id="group_use_product_standard_price_update" model="res.groups">
+            <field name="name">产品采购成本修改</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+
+    </record>
     </data>
 </odoo>

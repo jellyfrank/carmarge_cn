@@ -7,7 +7,9 @@ import re
 from odoo import fields, models, tools, api
 from odoo.tools.float_utils import float_round
 from odoo.exceptions import UserError
-import logging 
+import logging
+from dateutil.relativedelta import relativedelta
+from datetime import timedelta,time
 
 _logger = logging.getLogger(__name__)
 
@@ -40,26 +42,6 @@ class product_template(models.Model):
     @tools.ormcache()
     def _get_default_uom_id(self):
         return self.env.ref('carmarge_product_cn.product_uom_number')
-
-    def _compute_purchased_product_qty(self):
-        for template in self:
-            template.purchased_product_qty = float_round(
-                sum([p.purchased_product_qty for p in template.product_variant_ids]),
-                precision_rounding=template.uom_id.rounding)
-            if template.other_purchases_count:
-                template.purchased_product_qty = template.purchased_product_qty + \
-                    template.other_purchases_count
-
-    @api.depends('product_variant_ids.sales_count')
-    def _compute_sales_count(self):
-        for product in self:
-            product.sales_count = float_round(
-                sum([p.sales_count for p in product.with_context(
-                    active_test=False).product_variant_ids]),
-                precision_rounding=product.uom_id.rounding)
-
-            if product.other_sales_count:
-                product.sales_count = product.sales_count + product.other_sales_count
 
     def _check_barcode_is_active(self, code_prefix):
         """ 添加 barcode 校验"""
@@ -102,6 +84,13 @@ class product_template(models.Model):
                 return f"{prefix}{1:04}"
             return f"{prefix}{number+1:04}"
 
+    def _compute_standard_price_update_group(self):
+        self.group_use_product_standard_price_update = self.user_has_groups('carmarge_product_cn.group_use_product_standard_price_update')
+
+    @api.model
+    def _default_standard_price_update(self):
+        return self.user_has_groups('carmarge_product_cn.group_use_product_standard_price_update')
+
     brand = fields.Many2many("product.brand", string="适用")
     comm_check = fields.Boolean("是否商检", default=False)
     default_code = fields.Char(string="配件编号")
@@ -132,6 +121,9 @@ class product_template(models.Model):
     other_purchases_count = fields.Float(string="其他采购数量", help="当当前产品存在合并产品时")
     other_sales_count = fields.Float(string="其他销售数量", help="当当前产品存在合并产品时")
     merge_temp_ids = fields.Char(string="被合并产品IDS")
+
+    group_use_product_standard_price_update = fields.Boolean(string="采购成本是否可编辑", default=_default_standard_price_update,
+                                                 compute="_compute_standard_price_update_group")
 
     def action_view_sales(self):
         action = self.env["ir.actions.actions"]._for_xml_id(
@@ -236,3 +228,57 @@ class product_brand(models.Model):
     _name = "product.brand"
 
     name = fields.Char("Product Brand")
+
+
+class ProductProduct(models.Model):
+
+    _inherit = 'product.product'
+
+    def _compute_purchased_product_qty(self):
+        date_from = fields.Datetime.to_string(fields.Date.context_today(self) - relativedelta(years=1))
+        domain = [
+            ('order_id.state', 'in', ['purchase', 'done']),
+            ('product_id', 'in', self.ids),
+            ('order_id.date_approve', '>=', date_from)
+        ]
+        order_lines = self.env['purchase.order.line'].read_group(domain, ['product_id', 'product_uom_qty'], ['product_id'])
+        purchased_data = dict([(data['product_id'][0], data['product_uom_qty']) for data in order_lines])
+        for product in self:
+            if not product.id:
+                product.purchased_product_qty = 0.0
+                continue
+            product.purchased_product_qty = float_round(purchased_data.get(product.id, 0), precision_rounding=product.uom_id.rounding)
+
+            if product.product_tmpl_id.other_purchases_count:
+                product.purchased_product_qty = product.purchased_product_qty + product.product_tmpl_id.other_purchases_count
+
+
+    def _compute_sales_count(self):
+        r = {}
+        self.sales_count = 0
+        if not self.user_has_groups('sales_team.group_sale_salesman'):
+            return r
+        date_from = fields.Datetime.to_string(fields.datetime.combine(fields.datetime.now() - timedelta(days=365),
+                                                                      time.min))
+
+        done_states = self.env['sale.report']._get_done_states()
+
+        domain = [
+            ('state', 'in', done_states),
+            ('product_id', 'in', self.ids),
+            ('date', '>=', date_from),
+        ]
+        for group in self.env['sale.report'].read_group(domain, ['product_id', 'product_uom_qty'], ['product_id']):
+            r[group['product_id'][0]] = group['product_uom_qty']
+        sales_count =0
+        for product in self:
+            if not product.id:
+                product.sales_count = 0.0
+                continue
+            sales_count = float_round(r.get(product.id, 0), precision_rounding=product.uom_id.rounding)
+            if product.product_tmpl_id.other_sales_count:
+                product.sales_count = sales_count + product.product_tmpl_id.other_sales_count
+            else:
+                product.sales_count = sales_count
+
+        return r

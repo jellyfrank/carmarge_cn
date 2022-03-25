@@ -26,6 +26,30 @@ class sale_order(models.Model):
     port_city = fields.Many2one("carmarge.ship.city","发货地")
 
 
+    @api.model
+    def create(self, vals):
+        partner_id = self.env['res.partner'].sudo().browse(vals.get('partner_id'))
+        if 'company_id' in vals:
+            self = self.with_company(vals['company_id'])
+        if vals.get('name', _('New')) == _('New'):
+            seq_date = None
+            if 'date_order' in vals:
+                seq_date = fields.Datetime.context_timestamp(self, fields.Datetime.to_datetime(vals['date_order']))
+            vals_name = self.env['ir.sequence'].next_by_code('sale.order', sequence_date=seq_date) or _('New')
+            if vals_name!='New':
+                vals['name'] = partner_id.country_id.code + vals_name
+
+        # Makes sure partner_invoice_id', 'partner_shipping_id' and 'pricelist_id' are defined
+        if any(f not in vals for f in ['partner_invoice_id', 'partner_shipping_id', 'pricelist_id']):
+            partner = self.env['res.partner'].browse(vals.get('partner_id'))
+            addr = partner.address_get(['delivery', 'invoice'])
+            vals['partner_invoice_id'] = vals.setdefault('partner_invoice_id', addr['invoice'])
+            vals['partner_shipping_id'] = vals.setdefault('partner_shipping_id', addr['delivery'])
+            vals['pricelist_id'] = vals.setdefault('pricelist_id', partner.property_product_pricelist.id)
+        result = super(sale_order, self).create(vals)
+        return result
+
+
 class sale_order_line(models.Model):
 
     _inherit = "sale.order.line"
@@ -67,14 +91,6 @@ class sale_order_line(models.Model):
     def _default_sale_order_update(self):
         return self.user_has_groups('carmarge_sale_cn.group_use_sale_price_update')
 
-    @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_id')
-    def _compute_tax_after_total(self):
-        amount = 0
-        for line in self:
-            for tax in line.tax_id:
-                amount = line.product_uom_qty * line.price_unit * (1- (tax.amount or 0.0) / 100.0)
-            line.tax_after_total = amount
-
     delivery_cost_line = fields.Monetary(
         "运费", compute="_compute_line", store=True)
     discount_manual_line = fields.Monetary(
@@ -98,8 +114,6 @@ class sale_order_line(models.Model):
     weight = fields.Float("毛重", related="product_id.weight")
     net_weight = fields.Float("净重", related="product_id.net_weight")
     volume = fields.Float("体积", related="product_id.volume")
-
-    tax_after_total = fields.Float("税后小计", compute="_compute_tax_after_total", store=True)
 
     group_use_sale_price_update = fields.Boolean(string="单价是否可编辑", default=_default_sale_order_update, compute="_compute_sale_price_update_group")
 

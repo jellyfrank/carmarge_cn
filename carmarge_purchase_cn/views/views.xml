@@ -1,79 +1,110 @@
 <odoo>
-  <data>
-    <record id="view_purchase_order_form" model="ir.ui.view">
-      <field name="name">purchase order form</field>
-      <field name="model">purchase.order</field>
-      <field name="inherit_id" ref="purchase.purchase_order_form"/>
-      <field name="arch" type="xml">
-        <field name="amount_tax" position="after">
-          <field name="delivery_cost"/>
-          <field name="discount_manual"/>
-        </field>
-        <xpath expr="//field[@name='order_line']//tree//field[@name='price_unit']" position="after">
-          <field name="packaging"/>
-          <field name="packaging_qty"/>
-          <field name="weight" optional="hide"/>
-          <field name="net_weight" optional="hide"/>
-          <field name="volume" optional="hide"/>
-          <field name="packaging_weight" optional="hide"/>
-          <field name="packaging_net_weight" optional="hide"/>
-          <field name="packaging_volume" optional="hide"/>
-          <field name="total_packaging_weight"/>
-          <field name="total_packaging_net_weight"/>
-          <field name="total_packaging_volume"/>
-        </xpath>
-        <xpath expr="//field[@name='order_line']//tree//field[@name='name']" position="attributes">
-          <attribute name="invisible">1</attribute>
-        </xpath>
-        <field name="currency_id" position="after">
-            <field name="sale_id"/>
-        </field>
-      </field>
-    </record>
+    <data>
+        <record id="view_purchase_order_form" model="ir.ui.view">
+            <field name="name">purchase order form</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <field name="amount_tax" position="after">
+                    <field name="delivery_cost"/>
+                    <field name="discount_manual"/>
+                </field>
+                <xpath expr="//field[@name='order_line']//tree//field[@name='product_qty']" position="attributes">
+                    <attribute name='sum'>total</attribute>
+                </xpath>
 
-    <record id="view_package_delivery_form" model="ir.ui.view">
-      <field name="name">product package delivery</field>
-      <field name="model">product.packaging</field>
-      <field name="inherit_id" ref="delivery.product_packaging_delivery_form"/>
-      <field name="arch" type="xml">
-        <xpath expr="//group[@name='delivery']" position="replace">
-          <group>
-            <label for="length" string="包装长"/>
-            <div class="o_row" name="length">
-              <field name="length"/>
-厘米
-            </div>
-            <label for="width" string="包装宽"/>
-            <div class="o_row" name="width">
-              <field name="width"/>
-厘米
-            </div>
-            <label for="height" string="包装高"/>
-            <div class="o_row" name="height">
-              <field name="height"/>
-厘米
-            </div>
-            <label for="volume" string="包装体积"/>
-            <div class="o_row" name="volume">
-              <field name="volume"/>
-立方米
-            </div>
-            <label for="net_weight" string="包装净重"/>
-            <div class="o_row" name="net_weight">
-              <field name="net_weight"/>
-千克
-            </div>
-            <label for="weight" string="包装毛重"/>
-            <div class="o_row" name="weight">
-              <field name="weight"/>
-千克
-            </div>
-          </group>
-        </xpath>
-      </field>
-    </record>
+                <xpath expr="//field[@name='order_line']//tree//field[@name='price_subtotal']" position="attributes">
+                    <attribute name='string'>税后小计</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='order_line']//tree//field[@name='product_id']" position="attributes">
+                    <attribute name='options'>{'no_create': True, 'no_edit': True}</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='order_line']//tree//field[@name='price_unit']" position="after">
+                    <field name="packaging" options="{'no_create': True, 'no_edit': True}"/>
+                    <field name="packaging_qty" sum="total"/>
+                    <field name="weight" optional="hide"/>
+                    <field name="net_weight" optional="hide"/>
+                    <field name="volume" optional="hide"/>
+                    <field name="packaging_weight" optional="hide"/>
+                    <field name="packaging_net_weight" optional="hide"/>
+                    <field name="packaging_volume" optional="hide"/>
+                    <field name="total_packaging_weight" sum="total"/>
+                    <field name="total_packaging_net_weight" sum="total"/>
+                    <field name="total_packaging_volume" sum="total"/>
+                </xpath>
+                <xpath expr="//field[@name='order_line']//tree//field[@name='name']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <field name="currency_id" position="after">
+                    <field name="sale_id"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_package_delivery_form" model="ir.ui.view">
+            <field name="name">product package delivery</field>
+            <field name="model">product.packaging</field>
+            <field name="inherit_id" ref="delivery.product_packaging_delivery_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='delivery']" position="replace">
+                    <group>
+                        <label for="length" string="包装长"/>
+                        <div class="o_row" name="length">
+                            <field name="length"/>
+                            厘米
+                        </div>
+                        <label for="width" string="包装宽"/>
+                        <div class="o_row" name="width">
+                            <field name="width"/>
+                            厘米
+                        </div>
+                        <label for="height" string="包装高"/>
+                        <div class="o_row" name="height">
+                            <field name="height"/>
+                            厘米
+                        </div>
+                        <label for="volume" string="包装体积"/>
+                        <div class="o_row" name="volume">
+                            <field name="volume"/>
+                            立方米
+                        </div>
+                        <label for="net_weight" string="包装净重"/>
+                        <div class="o_row" name="net_weight">
+                            <field name="net_weight"/>
+                            千克
+                        </div>
+                        <label for="weight" string="包装毛重"/>
+                        <div class="o_row" name="weight">
+                            <field name="weight"/>
+                            千克
+                        </div>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="purchase.menu_procurement_management" model="ir.ui.menu">
+            <field name="active" eval="False"/>
+        </record>
+        <record id="purchase.menu_procurement_management_supplier_name" model="ir.ui.menu">
+            <field name="active" eval="False"/>
+        </record>
 
 
+        <menuitem action="purchase.purchase_rfq" id="menu_purchase_rfq"
+                  name="询价单"
+                  parent="purchase.menu_purchase_root"
+                  sequence="0"/>
 
-  </data>
+        <menuitem name="采购订单" action="purchase.purchase_form_action" id="menu_purchase_form_action"
+                  parent="purchase.menu_purchase_root" sequence="1"/>
+
+<!--        <menuitem id="menu_procurement_management_supplier_name" name="供应商"-->
+<!--                  parent="purchase.menu_purchase_root"-->
+<!--                  action="account.res_partner_action_supplier" sequence="2"/>-->
+
+
+    </data>
 </odoo>

@@ -1,0 +1,59 @@
+<odoo>
+    <data>
+        <record id="view_partner_simple_form" model="ir.ui.view">
+            <field name="name">res partner form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='company_type']" position="attributes">
+                    <attribute name='invisible'>1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='company_type']" position="after">
+                    <field name="partner_type" options="{'horizontal': true}" class="oe_edit_only" widget="radio"
+                           groups="base.group_no_one" required="True"/>
+                </xpath>
+
+                <xpath expr="//field[@name='country_id']" position="attributes">
+                    <attribute name='required'>1</attribute>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="view_res_partner_search_inherit" model="ir.ui.view">
+            <field name="name">res.partner.search2.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//filter[@name='inactive']" position="before">
+                    <filter string="汽配经销商" name="partner_type" domain="[('partner_type','=', 'distributor')]"/>
+                    <filter string="车队" name="partner_type" domain="[('partner_type','=', 'fleet')]"/>
+                    <filter string="供应商" name="partner_type" domain="[('partner_type','=', 'supplier')]"/>
+                    <separator/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="res_partner_view_search_account" model="ir.ui.view">
+            <field name="name">res.partner.search.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="account.res_partner_view_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='customer']" position="attributes">
+                    <attribute name='invisible'>1</attribute>
+
+                </xpath>
+
+                <xpath expr="//filter[@name='supplier']" position="attributes">
+                    <attribute name='invisible'>1</attribute>
+
+                </xpath>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

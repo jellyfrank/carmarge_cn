@@ -89,6 +89,24 @@ class purchase_order_line(models.Model):
             line.total_packaging_volume = line.packaging_qty * line.packaging.volume
             line.total_packaging_net_weight = line.packaging_qty * line.packaging_net_weight
 
+    @api.onchange('product_id')
+    def _onchange_product_packaging(self):
+        '''
+        根据产品获取包装规格
+        '''
+        product_ids = []
+        self.packaging=False
+        product_data = self.product_id
+        if product_data and product_data.packaging_ids:
+            for pack in product_data.packaging_ids:
+                product_ids.append(pack.id)
+        return {
+            'domain':{
+                'packaging':[('id','in',product_ids)]
+            }
+        }
+
+
     delivery_cost_line = fields.Monetary(
         "运费", compute="_compute_line", store=True)
     discount_manual_line = fields.Monetary(
