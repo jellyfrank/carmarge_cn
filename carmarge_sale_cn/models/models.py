@@ -19,9 +19,12 @@ class sale_order(models.Model):
                 "amount_total": order.amount_total + order.delivery_cost - order.discount_manual
             })
 
+
+
     delivery_cost = fields.Monetary("海运费")
     discount_manual = fields.Monetary("优惠")
     port_city = fields.Many2one("carmarge.ship.city","发货地")
+
 
 class sale_order_line(models.Model):
 
@@ -60,6 +63,18 @@ class sale_order_line(models.Model):
     def _compute_sale_price_update_group(self):
         self.group_use_sale_price_update = self.user_has_groups('carmarge_sale_cn.group_use_sale_price_update')
 
+    @api.model
+    def _default_sale_order_update(self):
+        return self.user_has_groups('carmarge_sale_cn.group_use_sale_price_update')
+
+    @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_id')
+    def _compute_tax_after_total(self):
+        amount = 0
+        for line in self:
+            for tax in line.tax_id:
+                amount = line.product_uom_qty * line.price_unit * (1- (tax.amount or 0.0) / 100.0)
+            line.tax_after_total = amount
+
     delivery_cost_line = fields.Monetary(
         "运费", compute="_compute_line", store=True)
     discount_manual_line = fields.Monetary(
@@ -84,5 +99,8 @@ class sale_order_line(models.Model):
     net_weight = fields.Float("净重", related="product_id.net_weight")
     volume = fields.Float("体积", related="product_id.volume")
 
-    group_use_sale_price_update = fields.Boolean(string="单价是否可编辑", compute="_compute_sale_price_update_group")
+    tax_after_total = fields.Float("税后小计", compute="_compute_tax_after_total", store=True)
+
+    group_use_sale_price_update = fields.Boolean(string="单价是否可编辑", default=_default_sale_order_update, compute="_compute_sale_price_update_group")
+
 
