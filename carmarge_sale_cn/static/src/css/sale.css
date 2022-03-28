@@ -1,3 +1,6 @@
 .o_list_view .o_list_table thead > tr > th:not(.o_list_record_selector).o_list_number_th{
         text-align: center !important;
 }
+.o_list_view .o_list_table tbody > tr > td:not(.o_list_record_selector):not(.o_handle_cell):not(.o_list_button){
+        text-align: center;
+}
