@@ -55,5 +55,11 @@
         </record>
 
 
+        <record id="contacts.action_contacts" model="ir.actions.act_window">
+            <field name="domain">['|',('customer_rank', '>', 0), ('supplier_rank', '>', 0)]</field>
+
+        </record>
+
+
     </data>
 </odoo>
