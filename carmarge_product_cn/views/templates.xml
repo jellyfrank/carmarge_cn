@@ -5,7 +5,7 @@
         <img src="/carmarge_product_cn/static/image/logo.png" style="width: 150px;"/>
       </div>
       <br/>
-      <span t-field="packaging.product_id.name"/>
+      <span t-field="packaging.product_id.translate_name"/>
       <div class="o_row" name="part_no">
         <strong>Part No.:</strong>
         <span t-field="packaging.product_id.default_code"/>
