@@ -5,7 +5,7 @@
         <img src="/carmarge_product_cn/static/image/logo.png" style="width: 150px;"/>
       </div>
       <br/>
-      <span t-field="packaging.product_id.translate_name"/>
+      <strong><span t-field="packaging.product_id.translate_name"/></strong>
       <div class="o_row" name="part_no">
         <strong>Part No.:</strong>
         <span t-field="packaging.product_id.default_code"/>
@@ -37,13 +37,13 @@
         <div class="article o_report_layout_clean">
           <t t-raw="0"/>
           <t t-foreach="docs" t-as="product">
-            <div class="page" style="page-break-before: always;font-size: 15px;">
+            <div class="page" style="page-break-before: always;font-size: 13px;">
               <div class="o_row">
                 <img src="/carmarge_product_cn/static/image/logo.png" style="width: 200px;"/>
               </div>
               <br/>
-              <div style="font-size: 16px;">
-                <span t-field="product.name"/>
+              <div style="font-size: 12x;">
+                <strong><span t-field="product.translate_name"/></strong>
                 <div class="o_row" name="part_no">
                   <strong>Part No.:</strong>
                   <span t-field="product.default_code"/>
