@@ -75,7 +75,7 @@
           <t t-raw="0"/>
           <t t-foreach="docs" t-as="packaging">
             <div class="page" style="page-break-before: always;">
-              <div style="font-size: 13px;">
+              <div style="font-size: 12px;">
               <t t-call="carmarge_product_cn.packaging_header"/>
               <div class="o_row" name="weight">
                 <strong>Net weight.:</strong>
