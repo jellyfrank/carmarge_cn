@@ -2,7 +2,7 @@
 # @Time    : 2022-01-25
 # @Author  : Kevin Kong (kfx2007@163.com)
 
-from odoo import api, fields, models, _
+from odoo import api, fields, models, _, exceptions
 
 
 class sale_order(models.Model):
@@ -24,6 +24,8 @@ class sale_order(models.Model):
     delivery_cost = fields.Monetary("海运费")
     discount_manual = fields.Monetary("优惠")
     port_city = fields.Many2one("carmarge.ship.city","发货地")
+
+    incoterm_code = fields.Char("贸易术语code",related='incoterm.code')
 
 
     @api.model
@@ -48,6 +50,21 @@ class sale_order(models.Model):
             vals['pricelist_id'] = vals.setdefault('pricelist_id', partner.property_product_pricelist.id)
         result = super(sale_order, self).create(vals)
         return result
+
+    def action_confirm(self):
+        if self.state =='draft':
+            raise exceptions.Warning('当前报价单未发送报价！')
+        result = super(sale_order, self).action_confirm()
+        return result
+
+    @api.onchange('pricelist_id')
+    def _onchange_order_line_price_unit(self):
+        if self.pricelist_id and self.partner_id and self.order_line:
+            for line in self.order_line:
+                line.product_id_change()
+
+
+
 
 
 class sale_order_line(models.Model):
@@ -117,4 +134,10 @@ class sale_order_line(models.Model):
 
     group_use_sale_price_update = fields.Boolean(string="单价是否可编辑", default=_default_sale_order_update, compute="_compute_sale_price_update_group")
 
-
+    @api.onchange('product_id')
+    def product_id_change(self):
+        result = super(sale_order_line, self).product_id_change()
+        if not self.order_id.pricelist_id:
+            self.update({
+                'price_unit':self.product_id.list_price
+            })

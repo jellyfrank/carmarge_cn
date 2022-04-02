@@ -30,6 +30,7 @@ class account_move(models.Model):
         super(account_move,self)._compute_amount()
         for move in self:
             move.amount_total = move.amount_total + move.delivery_cost - move.discount_manual
+            move.amount_residual = move.amount_total
 
     delivery_cost = fields.Monetary("运费")
     discount_manual = fields.Monetary("优惠")
