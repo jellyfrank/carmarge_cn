@@ -27,7 +27,6 @@ class sale_order(models.Model):
 
     incoterm_code = fields.Char("贸易术语code",related='incoterm.code')
 
-
     @api.model
     def create(self, vals):
         partner_id = self.env['res.partner'].sudo().browse(vals.get('partner_id'))
@@ -52,8 +51,8 @@ class sale_order(models.Model):
         return result
 
     def action_confirm(self):
-        if self.state =='draft':
-            raise exceptions.Warning('当前报价单未发送报价！')
+        # if self.state =='draft':
+        #     raise exceptions.Warning('当前报价单未发送报价！')
         result = super(sale_order, self).action_confirm()
         return result
 
