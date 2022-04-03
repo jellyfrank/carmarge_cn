@@ -51,8 +51,8 @@ class sale_order(models.Model):
         return result
 
     def action_confirm(self):
-        # if self.state =='draft':
-        #     raise exceptions.Warning('当前报价单未发送报价！')
+        if self.state =='draft':
+            raise exceptions.Warning('当前报价单未发送报价！')
         result = super(sale_order, self).action_confirm()
         return result
 
