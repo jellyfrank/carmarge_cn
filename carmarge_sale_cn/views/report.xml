@@ -4,6 +4,22 @@
         <xpath expr="//div[@id='informations']" position="replace">
             <!-- <attribute name='t-if'>not is_pro_forma</attribute> -->
         </xpath>
+        <xpath expr="//div[@class='page']" position="attributes">
+                <attribute name="style">position:absolute</attribute>
+
+        </xpath>
+        <xpath expr="//div[@class='page']" position="inside">
+                <img t-if="doc.company_id.logo and is_pro_forma" t-att-src="image_data_uri(doc.company_id.logo)" style="position: absolute;
+                opacity: 0.25;
+                z-index: 1000;
+                transform: rotate(300deg);
+                -webkit-transform: rotate(300deg);
+                text-align:center;
+                width: 70%;
+                left:20%;
+                top:50%" alt="Company Logo"/>
+
+        </xpath>
         <xpath expr="//h2[@class='mt16']" position="replace">
             <!-- <div class="row">
               <div class="col-6">
@@ -20,6 +36,7 @@
                 <strong>Bank Address:<span><t t-esc="doc.company_id.address"/></span></strong><br/>
               </div>
             </div> -->
+
             <h2 class="mt16">
                 <div class="text-center">
                     <t t-if="not (env.context.get('proforma', False) or is_pro_forma)">
@@ -33,7 +50,7 @@
                 <div class="text-center">PROFOMA INVOICE</div>
             </h2>
             <div class="text-right row justify-content-end">
-                <div class=" col-3 mb-2 mr-2">
+                <div class="col-3 mb-2 mr-2">
                     <span>Issuing Date:</span>
                     <span t-field="doc.date_order" t-options='{"format": "MM/dd/yyyy"}'/>
                 </div>
