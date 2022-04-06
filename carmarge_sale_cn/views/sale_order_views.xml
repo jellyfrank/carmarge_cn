@@ -14,16 +14,42 @@
                     <attribute name='options'>{'no_create': True, 'no_edit': True}</attribute>
                 </xpath>
 
+                <xpath expr="//button[@name='action_quotation_send'][1]" position="after">
+                    <button name="action_qita_send" string="通过其他形式发送" type="object" states="draft" class="btn-primary"/>
+                </xpath>
+
                 <xpath expr="//button[@name='action_quotation_send'][2]" position="attributes">
-                    <attribute name="string">通过其他形式发送</attribute>
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_quotation_send'][3]" position="attributes">
+                    <attribute name="attrs">{'invisible': [('state', '!=', 'sale')]}</attribute>
+                    <attribute name="class">btn-primary</attribute>
                 </xpath>
 
                 <xpath expr="//field[@name='partner_id']" position="attributes">
                     <attribute name='options'>{'no_create': True, 'no_edit': True}</attribute>
                 </xpath>
 
+                <xpath expr="//field[@name='date_order']" position="attributes">
+                    <attribute name='required'>1</attribute>
+                </xpath>
+
             </field>
         </record>
+
+        <record id="sale_order_form_quote" model="ir.ui.view">
+            <field name="name">sale order form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale_management.sale_order_form_quote"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='sale_order_template_id']" position="after">
+                    <field name="incoterm" string="交易方式" required="1"/>
+                </xpath>
+
+            </field>
+        </record>
+
 
         <record id="view_delivery_sale_inherit_form" model="ir.ui.view">
             <field name="name">sale order form</field>

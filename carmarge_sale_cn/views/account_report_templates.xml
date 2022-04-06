@@ -35,12 +35,12 @@
                 </h2>
 
                 <div class="text-right row justify-content-end">
-                    <div class=" col-3 mb-2 mr-2">
+                    <div class=" col-4 mb-2 mr-2">
                         <span>Issuing Date:</span>
                         <span t-field="doc.invoice_date" t-options='{"format": "MM/dd/yyyy"}'/>
                     </div>
-                    <div class=" col-3 mb-2">
-                        <span>Date Of Expiry:</span>
+                    <div class=" col-4 mb-2">
+                        <span>Expiry Date:</span>
                         <span t-field="doc.invoice_date_due" t-options='{"format": "MM/dd/yyyy"}'/>
                     </div>
                 </div>
@@ -81,7 +81,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <strong>交易方式</strong>
+                                <strong>Trade Term</strong>
                             </td>
                             <td>
                                 <span>

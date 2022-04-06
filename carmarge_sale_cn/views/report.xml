@@ -5,7 +5,7 @@
             <!-- <attribute name='t-if'>not is_pro_forma</attribute> -->
         </xpath>
         <xpath expr="//div[@class='page']" position="attributes">
-                <attribute name="style">position:absolute</attribute>
+                <attribute name="style">position:relative;width:100%</attribute>
 
         </xpath>
         <xpath expr="//div[@class='page']" position="inside">
@@ -47,17 +47,18 @@
                 </div>
             </h2>
             <h2 t-if="is_pro_forma">
-                <div class="text-center">PROFOMA INVOICE</div>
+                <div class="text-center">PROFORMA INVOICE</div>
             </h2>
             <div class="text-right row justify-content-end">
-                <div class="col-3 mb-2 mr-2">
+                <div class="col-4 mb-2 mr-2">
                     <span>Issuing Date:</span>
                     <span t-field="doc.date_order" t-options='{"format": "MM/dd/yyyy"}'/>
                 </div>
-                <div class=" col-3 mb-2">
-                    <span>Date Of Expiry:</span>
+                <div class=" col-4 mb-2">
+                    <span>Expiry Date:</span>
                     <span t-field="doc.validity_date" t-options='{"format": "MM/dd/yyyy"}'/>
                 </div>
+
             </div>
             <table class="table table-sm o_main_table" t-if="is_pro_forma">
                 <tbody>
@@ -95,7 +96,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <strong>交易方式</strong>
+                            <strong>Trade Term</strong>
                         </td>
                         <td>
                             <span>
@@ -271,8 +272,7 @@
                                     <strong>TOTAL <span t-field="doc.incoterm.code"/> VALUE</strong>
                                 </td>
                                 <td name="td_amount_untaxed" class="text-right">
-                                    $
-                                    <span t-field="doc.amount_untaxed"/>
+                                    $<span t-field="doc.amount_untaxed"/>
                                     <!--                                    $<span t-esc="round(doc.amount_untaxed + doc.amount_tax,2)" />-->
                                 </td>
                             </tr>

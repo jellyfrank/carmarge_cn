@@ -25,7 +25,10 @@ class sale_order(models.Model):
     discount_manual = fields.Monetary("优惠")
     port_city = fields.Many2one("carmarge.ship.city","发货地")
 
+    incoterm = fields.Many2one(
+        'account.incoterms', domain="[('code','in',['FOB','CIF'])]")
     incoterm_code = fields.Char("贸易术语code",related='incoterm.code')
+
 
     @api.model
     def create(self, vals):
@@ -61,6 +64,10 @@ class sale_order(models.Model):
         if self.pricelist_id and self.partner_id and self.order_line:
             for line in self.order_line:
                 line.product_id_change()
+
+
+    def action_qita_send(self):
+        self.state = 'sent'
 
 
 
