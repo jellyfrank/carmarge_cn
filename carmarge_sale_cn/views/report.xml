@@ -60,6 +60,7 @@
                 </div>
 
             </div>
+
             <table class="table table-sm o_main_table" t-if="is_pro_forma">
                 <tbody>
                     <tr>
@@ -269,11 +270,12 @@
                         <table class="table table-sm">
                             <tr class="border-black o_subtotal" style="">
                                 <td name="td_amount_untaxed_label">
-                                    <strong>TOTAL <span t-field="doc.incoterm.code"/> VALUE</strong>
+                                    <strong>TOTAL FOB VALUE</strong>
                                 </td>
                                 <td name="td_amount_untaxed" class="text-right">
-                                    $<span t-field="doc.amount_untaxed"/>
-                                    <!--                                    $<span t-esc="round(doc.amount_untaxed + doc.amount_tax,2)" />-->
+                                    <span t-if="doc.incoterm.code == 'CIF'">$</span><span t-esc="round(doc.amount_untaxed + doc.amount_tax,2)" t-if="doc.incoterm.code == 'CIF'"/>
+                                    <span t-field="doc.amount_total" t-if="doc.incoterm.code == 'FOB'"/>
+
                                 </td>
                             </tr>
                             <!-- <t t-foreach="doc.amount_by_group" t-as="amount_by_group">
@@ -297,23 +299,23 @@
                                     </t>
                                 </tr>
                             </t> -->
-                            <!--                            <tr class="border-black o_subtotal" style="">-->
-                            <!--                                <td name="td_amount_untaxed_label">-->
-                            <!--                                    <strong>Sea Freight and Insurance Fee</strong>-->
-                            <!--                                </td>-->
-                            <!--                                <td name="td_amount_untaxed" class="text-right">-->
-                            <!--                                    <span t-field="doc.delivery_cost"/>-->
-                            <!--                                </td>-->
-                            <!--                            </tr>-->
-                            <!--                            -->
-                            <!--                            <tr class="border-black o_total">-->
-                            <!--                                <td name="td_amount_total_label">-->
-                            <!--                                    <strong>TOTAL CIF VALUE</strong>-->
-                            <!--                                </td>-->
-                            <!--                                <td name="td_amount_total" class="text-right">-->
-                            <!--                                    <span t-field="doc.amount_total"/>-->
-                            <!--                                </td>-->
-                            <!--                            </tr>-->
+                            <tr class="border-black o_subtotal" style="" t-if="doc.incoterm.code == 'CIF'">
+                                <td name="td_amount_untaxed_label">
+                                    <strong>Sea Freight and Insurance Fee</strong>
+                                </td>
+                                <td name="td_amount_untaxed" class="text-right">
+                                    <span t-field="doc.delivery_cost"/>
+                                </td>
+                            </tr>
+
+                            <tr class="border-black o_total" t-if="doc.incoterm.code == 'CIF'">
+                                <td name="td_amount_total_label">
+                                    <strong>TOTAL CIF VALUE</strong>
+                                </td>
+                                <td name="td_amount_total" class="text-right">
+                                    <span t-field="doc.amount_total"/>
+                                </td>
+                            </tr>
                         </table>
                     </div>
                 </div>
