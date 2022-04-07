@@ -16,16 +16,16 @@
                     <span t-field="doc.partner_id.vat"/>
                 </div>
             </t>
-            <div class="page" style="position:absolute">
-                <img t-if="doc.company_id.logo" t-att-src="image_data_uri(doc.company_id.logo)" style="position: absolute;
+            <div class="page" style="position:relative;width:100%">
+                <img t-if="doc.company_id.watermark_img" t-att-src="image_data_uri(doc.company_id.watermark_img)" style="position: absolute;
                 opacity: 0.25;
                 z-index: 1000;
                 transform: rotate(300deg);
                 -webkit-transform: rotate(300deg);
                 text-align:center;
-                width: 70%;
+                width: 60%;
                 left:20%;
-                top:70%" alt="Company Logo"/>
+                top:60%" alt="Company Logo"/>
                 <div class="oe_structure"/>
 
                 <h2 class="mt16">
