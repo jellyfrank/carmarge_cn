@@ -17,7 +17,8 @@
                 </div>
             </t>
             <div class="page" style="position:relative;width:100%">
-                <img t-if="doc.company_id.watermark_img" t-att-src="image_data_uri(doc.company_id.watermark_img)" style="position: absolute;
+                <img t-if="doc.company_id.watermark_img" t-att-src="image_data_uri(doc.company_id.watermark_img)"
+                     style="position: absolute;
                 opacity: 0.25;
                 z-index: 1000;
                 transform: rotate(300deg);
@@ -159,8 +160,6 @@
                 </table>
 
 
-
-
                 <table class="table table-sm o_main_table">
                     <!-- In case we want to repeat the header, remove "display: table-row-group" -->
                     <thead style="display: table-row-group">
@@ -261,15 +260,32 @@
                             <table class="table table-sm">
                                 <tr class="border-black o_subtotal" style="">
                                     <td name="td_amount_untaxed_label">
-                                        <strong>TOTAL
-                                            <span t-field="doc.invoice_incoterm_id.code"/>
-                                            VALUE
-                                        </strong>
+                                        <strong>TOTAL FOB VALUE</strong>
                                     </td>
                                     <td name="td_amount_untaxed" class="text-right">
-                                        $
-                                        <span t-field="doc.amount_untaxed"/>
-                                        <!--                                    $<span t-esc="round(doc.amount_untaxed + doc.amount_tax,2)" />-->
+                                        <span t-if="doc.invoice_incoterm_id.code == 'CIF'">$</span>
+                                        <span t-esc="round(doc.amount_untaxed + doc.amount_tax,2)"
+                                              t-if="doc.invoice_incoterm_id.code == 'CIF'"/>
+                                        <span t-field="doc.amount_total" t-if="doc.invoice_incoterm_id.code == 'FOB'"/>
+
+                                    </td>
+                                </tr>
+
+                                <tr class="border-black o_subtotal" style="" t-if="doc.invoice_incoterm_id.code == 'CIF'">
+                                    <td name="td_amount_untaxed_label">
+                                        <strong>Sea Freight and Insurance Fee</strong>
+                                    </td>
+                                    <td name="td_amount_untaxed" class="text-right">
+                                        <span t-field="doc.delivery_cost"/>
+                                    </td>
+                                </tr>
+
+                                <tr class="border-black o_total" t-if="doc.invoice_incoterm_id.code == 'CIF'">
+                                    <td name="td_amount_total_label">
+                                        <strong>TOTAL CIF VALUE</strong>
+                                    </td>
+                                    <td name="td_amount_total" class="text-right">
+                                        <span t-field="doc.amount_total"/>
                                     </td>
                                 </tr>
 
