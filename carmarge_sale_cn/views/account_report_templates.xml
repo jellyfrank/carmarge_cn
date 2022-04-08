@@ -182,15 +182,18 @@
                     </thead>
                     <tbody class="sale_tbody">
 
+                        <t t-set="product_id" t-value="doc.sudo()._get_deposit_default_product_id()"/>
+
                         <t t-set="current_subtotal" t-value="0"/>
-                        <t t-foreach="doc.invoice_line_ids" t-as="line">
+                        <t t-foreach="doc.invoice_line_ids" t-as="line" t-if="line.product_id.id !=product_id and line.name !='首付款'">
 
                             <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal"
                                groups="account.group_show_line_subtotals_tax_excluded"/>
                             <t t-set="current_subtotal" t-value="current_subtotal + line.price_total"
                                groups="account.group_show_line_subtotals_tax_included"/>
 
-                            <tr t-att-class="'bg-200 font-weight-bold o_line_section' if line.display_type == 'line_section' else 'font-italic o_line_note' if line.display_type == 'line_note' else ''">
+
+                            <tr  t-att-class="'bg-200 font-weight-bold o_line_section' if line.display_type == 'line_section' else 'font-italic o_line_note' if line.display_type == 'line_note' else ''">
                                 <td class="text-center">
                                     <t t-esc="line_index +1"/>
                                 </td>
@@ -240,12 +243,12 @@
                                 <td></td>
                             </tr>
 
-                            <t t-if="current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')">
+                            <t t-if="current_section and (line_last or doc.invoice_line_ids[line_index+1].display_type == 'line_section')">
                                 <tr class="is-subtotal text-right">
                                     <td name="td_section_subtotal" colspan="99">
                                         <strong class="mr16">Subtotal</strong>
                                         <span t-esc="current_subtotal"
-                                              t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: doc.pricelist_id.currency_id}"/>
+                                              t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: doc.currency_id}"/>
                                     </td>
                                 </tr>
                             </t>
@@ -254,40 +257,47 @@
                 </table>
 
                 <div class="clearfix" name="so_total_summary">
+
                     <div id="total" class="row" name="total">
                         <div t-attf-class="#{'col-4' if report_type != 'html' else 'col-sm-7 col-md-5'} ml-auto"
                              style="flex: auto;max-width: 100%;">
                             <table class="table table-sm">
-                                <tr class="border-black o_subtotal" style="">
-                                    <td name="td_amount_untaxed_label">
-                                        <strong>TOTAL FOB VALUE</strong>
-                                    </td>
-                                    <td name="td_amount_untaxed" class="text-right">
-                                        <span t-if="doc.invoice_incoterm_id.code == 'CIF'">$</span>
-                                        <span t-esc="round(doc.amount_untaxed + doc.amount_tax,2)"
-                                              t-if="doc.invoice_incoterm_id.code == 'CIF'"/>
-                                        <span t-field="doc.amount_total" t-if="doc.invoice_incoterm_id.code == 'FOB'"/>
+                                <t t-set="payments_vals" t-value="doc.sudo()._get_sale_order_amount()"/>
+                                <t t-foreach="payments_vals" t-as="payment_vals">
+                                    <tr class="border-black o_subtotal" style="">
+                                        <td name="td_amount_untaxed_label">
+                                            <strong>TOTAL FOB VALUE</strong>
+                                        </td>
+                                        <td name="td_amount_untaxed" class="text-right">
 
-                                    </td>
-                                </tr>
+                                            $
+                                            <span t-esc="round(payment_vals['amount_untaxed'] + payment_vals['amount_tax'],2)"
+                                                  t-if="doc.invoice_incoterm_id.code == 'CIF'"/>
+                                            <span t-esc="payment_vals['amount_total']"
+                                                  t-if="doc.invoice_incoterm_id.code == 'FOB'"/>
 
-                                <tr class="border-black o_subtotal" style="" t-if="doc.invoice_incoterm_id.code == 'CIF'">
-                                    <td name="td_amount_untaxed_label">
-                                        <strong>Sea Freight and Insurance Fee</strong>
-                                    </td>
-                                    <td name="td_amount_untaxed" class="text-right">
-                                        <span t-field="doc.delivery_cost"/>
-                                    </td>
-                                </tr>
+                                        </td>
+                                    </tr>
 
-                                <tr class="border-black o_total" t-if="doc.invoice_incoterm_id.code == 'CIF'">
-                                    <td name="td_amount_total_label">
-                                        <strong>TOTAL CIF VALUE</strong>
-                                    </td>
-                                    <td name="td_amount_total" class="text-right">
-                                        <span t-field="doc.amount_total"/>
-                                    </td>
-                                </tr>
+                                    <tr class="border-black o_subtotal" style=""
+                                        t-if="doc.invoice_incoterm_id.code == 'CIF'">
+                                        <td name="td_amount_untaxed_label">
+                                            <strong>Sea Freight and Insurance Fee</strong>
+                                        </td>
+                                        <td name="td_amount_untaxed" class="text-right">
+                                            $<span t-esc="payment_vals['delivery_cost']"/>
+                                        </td>
+                                    </tr>
+
+                                    <tr class="border-black o_total" t-if="doc.invoice_incoterm_id.code == 'CIF'">
+                                        <td name="td_amount_total_label">
+                                            <strong>TOTAL CIF VALUE</strong>
+                                        </td>
+                                        <td name="td_amount_total" class="text-right">
+                                            $<span t-esc="payment_vals['amount_total']"/>
+                                        </td>
+                                    </tr>
+                                </t>
 
                             </table>
                         </div>
