@@ -15,7 +15,7 @@
                 transform: rotate(300deg);
                 -webkit-transform: rotate(300deg);
                 text-align:center;
-                width: 60%;
+                width: 10%;
                 left:20%;
                 top:60%" alt="Company Logo"/>
 
