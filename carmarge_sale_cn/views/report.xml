@@ -10,12 +10,12 @@
         </xpath>
         <xpath expr="//div[@class='page']" position="inside">
                 <img t-if="doc.company_id.watermark_img and is_pro_forma" t-att-src="image_data_uri(doc.company_id.watermark_img)" style="position: absolute;
-                opacity: 0.25;
+                opacity: 0.55;
                 z-index: 1000;
                 transform: rotate(300deg);
                 -webkit-transform: rotate(300deg);
                 text-align:center;
-                width: 10%;
+                width: 20%;
                 left:20%;
                 top:60%" alt="Company Logo"/>
 
