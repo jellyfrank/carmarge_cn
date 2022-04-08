@@ -5,3 +5,11 @@ table.table-sm.o_main_table tr td{
 .o_list_view .o_list_table thead > tr > th:not(.o_list_record_selector).o_list_number_th{
         text-align: center !important;
 }
+
+.o_company_1_layout.o_report_layout_boxed #total strong {
+        /* color: #000000; */
+}
+
+.o_report_layout_boxed #total strong {
+        /* color: black; */
+}

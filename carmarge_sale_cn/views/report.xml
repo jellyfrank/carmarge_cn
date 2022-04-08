@@ -269,7 +269,10 @@
                          style="flex: auto;max-width: 100%;">
                         <table class="table table-sm">
                             <tr class="border-black o_subtotal" style="">
-                                <td name="td_amount_untaxed_label">
+                                <td name="td_amount_untaxed_label" t-if="doc.incoterm.code == 'CIF'">
+                                    <strong>TOTAL FOB VALUE</strong>
+                                </td>
+                                <td name="td_amount_untaxed_label" t-if="doc.incoterm.code == 'FOB'">
                                     <strong style="color: white;">TOTAL FOB VALUE</strong>
                                 </td>
                                 <td name="td_amount_untaxed" class="text-right">
