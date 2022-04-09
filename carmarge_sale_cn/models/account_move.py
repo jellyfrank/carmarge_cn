@@ -5,6 +5,21 @@ from odoo import api, fields, models, _
 class AccountMove(models.Model):
     _inherit = "account.move"
 
+    def _compute_sale_order(self):
+        """
+        获取关联的销售订单
+        """
+        for move in self:
+            if not move.invoice_line_ids:
+                move.sale_order = None
+            else:
+                move.sale_order = move.invoice_line_ids[0].sale_line_ids[0].order_id
+            
+
+
+
+    sale_order = fields.Many2one("sale.order",string="关联的销售订单", compute="_compute_sale_order")
+
     def _get_sale_order_amount(self):
         '''
         获取销售订单的总金额
