@@ -20,7 +20,7 @@
     'version': '14.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['carmarge_product_cn','sale','account'],
+    'depends': ['carmarge_purchase_cn','sale','account'],
 
     # always loaded
     'data': [
