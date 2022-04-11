@@ -267,13 +267,14 @@
                                         <td name="td_amount_untaxed_label" t-if="doc.invoice_incoterm_id.code  == 'FOB'">
                                             <strong style="color: white;">TOTAL FOB VALUE</strong>
                                         </td>
-                                        <td name="td_amount_untaxed" class="text-right">
+                                        <td name="td_amount_untaxed" class="text-right" t-if="doc.invoice_incoterm_id.code  == 'CIF'">
 
-                                            $                                            <span t-esc="round(line_sum_subtotal + doc.discount_manual,2)"/>
-                                            <!--                                            <span t-esc="round(payment_vals['amount_untaxed'] + payment_vals['amount_tax'],2)"-->
-                                            <!-- t-if="doc.invoice_incoterm_id.code == 'CIF'"/>-->
-                                            <!--                                            <span t-esc="payment_vals['amount_total']"-->
-                                            <!-- t-if="doc.invoice_incoterm_id.code == 'FOB'"/>-->
+                                            $ <span t-esc="round(line_sum_subtotal,2)"/>
+
+                                        </td>
+                                        <td name="td_amount_untaxed" class="text-right" t-if="doc.invoice_incoterm_id.code  == 'FOB'">
+
+                                            $ <span t-esc="round(line_sum_subtotal + doc.discount_manual,2)"/>
 
                                         </td>
                                     </tr>
