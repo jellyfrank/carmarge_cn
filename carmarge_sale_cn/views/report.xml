@@ -194,12 +194,14 @@
 
         <xpath expr="//table[@class='table table-sm o_main_table']//tbody[@class='sale_tbody']" position="replace">
             <t t-set="current_subtotal" t-value="0"/>
-            <t t-foreach="doc.order_line" t-as="line">
+            <t t-set="line_sum_subtotal" t-value="0"/>
+            <t t-foreach="doc.order_line" t-as="line" t-if="line.product_id.type !='service' and line.name !='首付款'">
 
                 <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal"
                    groups="account.group_show_line_subtotals_tax_excluded"/>
                 <t t-set="current_subtotal" t-value="current_subtotal + line.price_total"
                    groups="account.group_show_line_subtotals_tax_included"/>
+                <t t-set="line_sum_subtotal" t-value="line_sum_subtotal + line.price_total"></t>
 
                 <tr t-att-class="'bg-200 font-weight-bold o_line_section' if line.display_type == 'line_section' else 'font-italic o_line_note' if line.display_type == 'line_note' else ''">
                     <td class="text-center">
@@ -273,8 +275,9 @@
                                     <strong>TOTAL FOB VALUE</strong>
                                 </td>
                                 <td name="td_amount_untaxed" class="text-right">
-                                    <span t-if="doc.incoterm.code == 'CIF'">$</span><span t-esc="round(doc.amount_untaxed + doc.amount_tax,2)" t-if="doc.incoterm.code == 'CIF'"/>
-                                    <span t-field="doc.amount_total" t-if="doc.incoterm.code == 'FOB'"/>
+                                    $ <span t-esc="round(line_sum_subtotal,2)"/>
+<!--                                    <span t-if="doc.incoterm.code == 'CIF'">$</span><span t-esc="round(doc.amount_untaxed + doc.amount_tax,2)" t-if="doc.incoterm.code == 'CIF'"/>-->
+<!--                                    <span t-field="doc.amount_total" t-if="doc.incoterm.code == 'FOB'"/>-->
 
                                 </td>
                             </tr>
