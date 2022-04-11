@@ -160,7 +160,10 @@ class product_template(models.Model):
     def create(self, vals):
         if not vals.get('barcode'):
             categ_id = vals.get('categ_id')
-            categ_id = self._validate_category_length(categ_id)
+            if vals['type'] != 'service':
+                categ_id = self._validate_category_length(categ_id)
+            else:
+                categ_id = self.env['product.category'].browse(categ_id)
             code_prefix = self._update_barcode(categ_id)
             # vals['barcode'] = f"{code_prefix}{self.env['ir.sequence'].next_by_code('product.template.barcode')}"
             vals['barcode'] = self._get_categ_next_sequence(code_prefix)

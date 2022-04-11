@@ -9,52 +9,83 @@ class sale_order(models.Model):
 
     _inherit = "sale.order"
 
-    @api.depends('order_line.price_total', "delivery_cost", "discount_manual")
-    def _amount_all(self):
-        super(sale_order, self)._amount_all()
-        # 添加运费和优惠
-        # 当前减去order.amount_tax(税金)是因为客户输入的单价已经是含税单价了，所以把系统本身加上的税金再在这里减去
-        for order in self:
-            order.update({
-                "amount_total": order.amount_total + order.delivery_cost - order.discount_manual
-            })
+    # @api.depends('order_line.price_total', "delivery_cost", "discount_manual")
+    # def _amount_all(self):
+    #     super(sale_order, self)._amount_all()
+    #     # 添加运费和优惠
+    #     # 当前减去order.amount_tax(税金)是因为客户输入的单价已经是含税单价了，所以把系统本身加上的税金再在这里减去
+    #     for order in self:
+    #         order.update({
+    #             "amount_total": order.amount_total + order.delivery_cost - order.discount_manual
+    #         })
 
+    @api.depends("order_line.product_id", "order_line.price_unit")
+    def _compute_delivery_discount(self):
+        """计算海运费和优惠"""
+        delivery_product_id = self.env.ref(
+            "carmarge_sale_cn.service_delivery_cost")
+        discount_product_id = self.env.ref(
+            "carmarge_sale_cn.service_discount")
+        if not delivery_product_id:
+            self.delivery_cost = 0
+        if not discount_product_id:
+            self.discount_manual = 0
 
+        if delivery_product_id.product_variant_id in self.order_line.product_id:
+            delivery_line = self.order_line.filtered(
+                lambda l: l.product_id == delivery_product_id.product_variant_id)
+            self.delivery_cost = delivery_line.price_subtotal
+        else:
+            self.delivery_cost = 0
 
-    delivery_cost = fields.Monetary("海运费")
-    discount_manual = fields.Monetary("优惠")
-    port_city = fields.Many2one("carmarge.ship.city","发货地")
+        if not discount_product_id.product_variant_id in self.order_line.product_id:
+            self.discount_manual = 0
+
+        discount_line = self.order_line.filtered(
+            lambda l: l.product_id == discount_product_id.product_variant_id)
+        self.discount_manual = discount_line.price_subtotal
+
+    delivery_cost = fields.Monetary(
+        "海运费", compute="_compute_delivery_discount", store=True)
+    discount_manual = fields.Monetary(
+        "优惠", compute="_compute_delivery_discount", store=True)
+    port_city = fields.Many2one("carmarge.ship.city", "发货地")
 
     incoterm = fields.Many2one(
         'account.incoterms', domain="[('code','in',['FOB','CIF'])]")
-    incoterm_code = fields.Char("贸易术语code",related='incoterm.code')
-
+    incoterm_code = fields.Char("贸易术语code", related='incoterm.code')
 
     @api.model
     def create(self, vals):
-        partner_id = self.env['res.partner'].sudo().browse(vals.get('partner_id'))
+        partner_id = self.env['res.partner'].sudo().browse(
+            vals.get('partner_id'))
         if 'company_id' in vals:
             self = self.with_company(vals['company_id'])
         if vals.get('name', _('New')) == _('New'):
             seq_date = None
             if 'date_order' in vals:
-                seq_date = fields.Datetime.context_timestamp(self, fields.Datetime.to_datetime(vals['date_order']))
-            vals_name = self.env['ir.sequence'].next_by_code('sale.order', sequence_date=seq_date) or _('New')
-            if vals_name!='New':
+                seq_date = fields.Datetime.context_timestamp(
+                    self, fields.Datetime.to_datetime(vals['date_order']))
+            vals_name = self.env['ir.sequence'].next_by_code(
+                'sale.order', sequence_date=seq_date) or _('New')
+            if vals_name != 'New':
                 vals['name'] = partner_id.country_id.code + vals_name
 
         # Makes sure partner_invoice_id', 'partner_shipping_id' and 'pricelist_id' are defined
         if any(f not in vals for f in ['partner_invoice_id', 'partner_shipping_id', 'pricelist_id']):
             partner = self.env['res.partner'].browse(vals.get('partner_id'))
             addr = partner.address_get(['delivery', 'invoice'])
-            vals['partner_invoice_id'] = vals.setdefault('partner_invoice_id', addr['invoice'])
-            vals['partner_shipping_id'] = vals.setdefault('partner_shipping_id', addr['delivery'])
-            vals['pricelist_id'] = vals.setdefault('pricelist_id', partner.property_product_pricelist.id)
+            vals['partner_invoice_id'] = vals.setdefault(
+                'partner_invoice_id', addr['invoice'])
+            vals['partner_shipping_id'] = vals.setdefault(
+                'partner_shipping_id', addr['delivery'])
+            vals['pricelist_id'] = vals.setdefault(
+                'pricelist_id', partner.property_product_pricelist.id)
         result = super(sale_order, self).create(vals)
         return result
 
     def action_confirm(self):
-        if self.state =='draft':
+        if self.state == 'draft':
             raise exceptions.Warning('当前报价单未发送报价！')
         result = super(sale_order, self).action_confirm()
         return result
@@ -65,26 +96,25 @@ class sale_order(models.Model):
             for line in self.order_line:
                 line.product_id_change()
 
-
     def action_qita_send(self):
         self.state = 'sent'
-
 
     def _find_mail_template(self, force_confirmation_template=False):
         template_id = False
 
         if force_confirmation_template or (not self.env.context.get('proforma', False)):
-            template_id = int(self.env['ir.config_parameter'].sudo().get_param('sale.default_confirmation_template'))
-            template_id = self.env['mail.template'].search([('id', '=', template_id)]).id
+            template_id = int(self.env['ir.config_parameter'].sudo(
+            ).get_param('sale.default_confirmation_template'))
+            template_id = self.env['mail.template'].search(
+                [('id', '=', template_id)]).id
             if not template_id:
-                template_id = self.env['ir.model.data'].xmlid_to_res_id('sale.mail_template_sale_confirmation', raise_if_not_found=False)
+                template_id = self.env['ir.model.data'].xmlid_to_res_id(
+                    'sale.mail_template_sale_confirmation', raise_if_not_found=False)
         if not template_id:
-            template_id = self.env['ir.model.data'].xmlid_to_res_id('sale.email_template_edi_sale', raise_if_not_found=False)
+            template_id = self.env['ir.model.data'].xmlid_to_res_id(
+                'sale.email_template_edi_sale', raise_if_not_found=False)
 
         return template_id
-
-
-
 
 
 class sale_order_line(models.Model):
@@ -99,7 +129,7 @@ class sale_order_line(models.Model):
             line.discount_manual_line = line.order_id.discount_manual / \
                 len(line.order_id.order_line)
 
-    @api.depends("product_id","product_packaging")
+    @api.depends("product_id", "product_packaging")
     def _get_product_packaging(self):
         """获取包裹数量"""
         # 取产品库存包装信息中的第一条
@@ -107,7 +137,7 @@ class sale_order_line(models.Model):
             # line.packaging = line.product_id.packaging_ids[0] if line.product_id.packaging_ids else None
             line.packaging = line.product_packaging
 
-    @api.depends("packaging", "product_qty","product_packaging","product_uom_qty")
+    @api.depends("packaging", "product_qty", "product_packaging", "product_uom_qty")
     def _compute_packaging_qty(self):
         """计算包裹数量"""
         for line in self:
@@ -122,7 +152,8 @@ class sale_order_line(models.Model):
             line.total_packaging_net_weight = line.packaging_qty * line.packaging_net_weight
 
     def _compute_sale_price_update_group(self):
-        self.group_use_sale_price_update = self.user_has_groups('carmarge_sale_cn.group_use_sale_price_update')
+        self.group_use_sale_price_update = self.user_has_groups(
+            'carmarge_sale_cn.group_use_sale_price_update')
 
     @api.model
     def _default_sale_order_update(self):
@@ -152,12 +183,13 @@ class sale_order_line(models.Model):
     net_weight = fields.Float("净重", related="product_id.net_weight")
     volume = fields.Float("体积", related="product_id.volume")
 
-    group_use_sale_price_update = fields.Boolean(string="单价是否可编辑", default=_default_sale_order_update, compute="_compute_sale_price_update_group")
+    group_use_sale_price_update = fields.Boolean(
+        string="单价是否可编辑", default=_default_sale_order_update, compute="_compute_sale_price_update_group")
 
     @api.onchange('product_id')
     def product_id_change(self):
         result = super(sale_order_line, self).product_id_change()
         if not self.order_id.pricelist_id:
             self.update({
-                'price_unit':self.product_id.list_price
+                'price_unit': self.product_id.list_price
             })

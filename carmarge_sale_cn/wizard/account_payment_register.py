@@ -14,7 +14,7 @@ class account_payment_register(models.TransientModel):
         计算支付金额 加上运费和优惠
         """
         res = super(account_payment_register,self)._get_wizard_values_from_batch(batch_result)
-        move = self.line_ids[0].move_id
-        res['source_amount_currency'] = res['source_amount_currency'] + move.delivery_cost - move.discount_manual
+        # move = self.line_ids[0].move_id
+        # res['source_amount_currency'] = res['source_amount_currency'] + move.delivery_cost - move.discount_manual
         return res
 
