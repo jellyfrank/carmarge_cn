@@ -278,7 +278,7 @@
                                     <strong style="color: white;">TOTAL FOB VALUE</strong>
                                 </td>
                                 <td name="td_amount_untaxed" class="text-right">
-                                    $ <span t-esc="round(line_sum_subtotal,2)"/>
+                                    $ <span t-esc="round(line_sum_subtotal + doc.discount_manual,2)"/>
 <!--                                    <span t-if="doc.incoterm.code == 'CIF'">$</span><span t-esc="round(doc.amount_untaxed + doc.amount_tax,2)" t-if="doc.incoterm.code == 'CIF'"/>-->
 <!--                                    <span t-field="doc.amount_total" t-if="doc.incoterm.code == 'FOB'"/>-->
 
