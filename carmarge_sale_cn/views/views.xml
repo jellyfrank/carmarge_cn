@@ -5,8 +5,16 @@
       <field name="model">sale.order</field>
       <field name="inherit_id" ref="sale.view_order_form"/>
       <field name="arch" type="xml">
+        <xpath expr="//field[@name='amount_untaxed']" position="attributes">
+            <attribute name='invisible'>1</attribute>
+        </xpath>
+        <xpath expr="//field[@name='amount_tax']" position="attributes">
+            <attribute name='invisible'>1</attribute>
+        </xpath>
+
         <field name="amount_tax" position="after">
           <field name="incoterm_code" invisible="1"/>
+          <field name="amount_payment"/>
           <field name="delivery_cost" attrs="{'readonly':[('incoterm_code','=','FOB')]}"/>
           <field name="discount_manual"/>
         </field>
@@ -40,6 +48,11 @@
 
         <xpath expr="//field[@name='order_line']//tree//field[@name='price_subtotal']" position="after">
           <field name="price_total" string="含税小计" sum="total"/>
+        </xpath>
+
+        <xpath expr="//field[@name='order_line']//tree//field[@name='name']" position="attributes">
+          <attribute name='invisible'>0</attribute>
+          <attribute name='readonly'>0</attribute>
         </xpath>
 
         <xpath expr="//field[@name='order_line']//tree//field[@name='price_unit']" position="after">

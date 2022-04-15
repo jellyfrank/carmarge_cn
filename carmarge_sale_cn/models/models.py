@@ -45,6 +45,44 @@ class sale_order(models.Model):
             lambda l: l.product_id == discount_product_id.product_variant_id)
         self.discount_manual = discount_line.price_subtotal
 
+    @api.depends("order_line.price_total")
+    def _compute_amount_payment(self):
+        '''计算货款'''
+        delivery_product_id = self.env.ref(
+            "carmarge_sale_cn.service_delivery_cost")
+        discount_product_id = self.env.ref(
+            "carmarge_sale_cn.service_discount")
+        amount = 0
+        for line in self.order_line:
+            if line.product_id not in [delivery_product_id.product_variant_id,discount_product_id.product_variant_id]:
+                print(line.price_total)
+                amount = amount + line.price_total
+        self.update({
+            "amount_payment":amount
+        })
+
+    @api.depends('order_line.margin', 'amount_payment','discount_manual')
+    def _compute_margin(self):
+        if not all(self._ids):
+            for order in self:
+                order.margin = sum(order.order_line.mapped('margin'))
+                payment = order.amount_payment - abs(order.discount_manual)
+                order.margin_percent = order.margin / payment if payment != 0 else 0
+        else:
+            self.env["sale.order.line"].flush(['margin'])
+            # On batch records recomputation (e.g. at install), compute the margins
+            # with a single read_group query for better performance.
+            # This isn't done in an onchange environment because (part of) the data
+            # may not be stored in database (new records or unsaved modifications).
+            grouped_order_lines_data = self.env['sale.order.line'].read_group(
+                [
+                    ('order_id', 'in', self.ids),
+                ], ['margin', 'order_id'], ['order_id'])
+            mapped_data = {m['order_id'][0]: m['margin'] for m in grouped_order_lines_data}
+            for order in self:
+                order.margin = mapped_data.get(order.id, 0.0)
+                order.margin_percent = order.amount_untaxed and order.margin / order.amount_untaxed
+
     delivery_cost = fields.Monetary(
         "海运费", compute="_compute_delivery_discount", store=True)
     discount_manual = fields.Monetary(
@@ -54,6 +92,8 @@ class sale_order(models.Model):
     incoterm = fields.Many2one(
         'account.incoterms', domain="[('code','in',['FOB','CIF'])]")
     incoterm_code = fields.Char("贸易术语code", related='incoterm.code')
+
+    amount_payment = fields.Monetary("货款", compute="_compute_amount_payment", store=True)
 
     @api.model
     def create(self, vals):
@@ -189,6 +229,9 @@ class sale_order_line(models.Model):
     @api.onchange('product_id')
     def product_id_change(self):
         result = super(sale_order_line, self).product_id_change()
+        self.update({
+            'name':''
+        })
         if not self.order_id.pricelist_id:
             self.update({
                 'price_unit': self.product_id.list_price

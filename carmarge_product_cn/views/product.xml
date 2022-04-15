@@ -114,6 +114,13 @@
                     <field name="comm_check" optional="hide"/>
                     <field name="is_brand_package" optional="hide"/>
                 </field>
+
+                <field name="qty_available" position="before">
+                    <field name="purchased_product_qty" string="已采购数量"/>
+                </field>
+                <field name="virtual_available" position="after">
+                    <field name="sales_count" string="已销售数量"/>
+                </field>
             </field>
         </record>
 

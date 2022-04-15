@@ -33,7 +33,8 @@
         'views/sale_order_views.xml',
         'views/account_report.xml',
         'views/account_report_templates.xml',
-        'views/res_company_views.xml'
+        'views/res_company_views.xml',
+        'views/account_move_views.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

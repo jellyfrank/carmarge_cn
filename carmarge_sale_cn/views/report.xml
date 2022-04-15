@@ -244,12 +244,11 @@
                         <t t-set="current_section" t-value="line"/>
                         <t t-set="current_subtotal" t-value="0"/>
                     </t>
-                    <t t-if="line.display_type == 'line_note'">
+                    <t>
                         <td name="td_note_line" colspan="99" class="text-center">
                             <span t-field="line.name"/>
                         </td>
                     </t>
-                    <td></td>
                 </tr>
 
                 <t t-if="current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')">
