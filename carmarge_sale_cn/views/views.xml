@@ -15,7 +15,7 @@
         <field name="amount_tax" position="after">
           <field name="incoterm_code" invisible="1"/>
           <field name="amount_payment"/>
-          <field name="delivery_cost" attrs="{'readonly':[('incoterm_code','=','FOB')]}"/>
+          <field name="delivery_cost" readonly="1"/>
           <field name="discount_manual"/>
         </field>
         <!-- <field name="amount_tax" position="attributes">
