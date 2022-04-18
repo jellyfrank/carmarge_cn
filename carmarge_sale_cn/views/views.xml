@@ -68,8 +68,7 @@
           <field name="total_packaging_net_weight" sum="total"/>
           <field name="total_packaging_volume" sum="total"/>
           <field name="group_use_sale_price_update" invisible="1"/>
-
-
+          <field name="note"/>
         </xpath>
       </field>
     </record>

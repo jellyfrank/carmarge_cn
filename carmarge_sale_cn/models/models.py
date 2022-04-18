@@ -226,14 +226,16 @@ class sale_order_line(models.Model):
 
     group_use_sale_price_update = fields.Boolean(
         string="单价是否可编辑", default=_default_sale_order_update, compute="_compute_sale_price_update_group")
+    note = fields.Char("备注")
+    
 
-    @api.onchange('product_id')
-    def product_id_change(self):
-        result = super(sale_order_line, self).product_id_change()
-        self.update({
-            'name':''
-        })
-        if not self.order_id.pricelist_id:
-            self.update({
-                'price_unit': self.product_id.list_price
-            })
+    # @api.onchange('product_id')
+    # def product_id_change(self):
+    #     result = super(sale_order_line, self).product_id_change()
+    #     self.update({
+    #         'name':''
+    #     })
+    #     if not self.order_id.pricelist_id:
+    #         self.update({
+    #             'price_unit': self.product_id.list_price
+    #         })
