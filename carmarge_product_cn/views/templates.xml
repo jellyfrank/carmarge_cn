@@ -15,13 +15,20 @@
         <span t-field="packaging.product_id.brand"/>
       </div>
       <div class="o_row" name="refer_no">
-        <strong>CA No.:</strong>
-        <span t-field="packaging.product_id.barcode"/>
+        <span>
+          <strong>CA No.:</strong>
+          <span t-field="packaging.product_id.barcode"/>
+        </span>
+        <span>
+           <strong>Qty/Pkg:</strong>
+          <span t-esc="int(packaging.qty)"/>
+        </span>
+
       </div>
-      <div class="o_row" name="qty">
-        <strong>Qty/Pkg:</strong>
-        <span t-esc="int(packaging.qty)"/>
-      </div>
+<!--      <div class="o_row" name="qty">-->
+<!--        <strong>Qty/Pkg:</strong>-->
+<!--        <span t-esc="int(packaging.qty)"/>-->
+<!--      </div>-->
     </template>
 
     <template id="carmarge_product_cn.packaging_footer">
