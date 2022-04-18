@@ -22,28 +22,29 @@ class sale_order(models.Model):
     @api.depends("order_line.product_id", "order_line.price_unit")
     def _compute_delivery_discount(self):
         """计算海运费和优惠"""
-        delivery_product_id = self.env.ref(
-            "carmarge_sale_cn.service_delivery_cost")
-        discount_product_id = self.env.ref(
-            "carmarge_sale_cn.service_discount")
-        if not delivery_product_id:
-            self.delivery_cost = 0
-        if not discount_product_id:
-            self.discount_manual = 0
+        for order in self:
+            delivery_product_id = order.env.ref(
+                "carmarge_sale_cn.service_delivery_cost")
+            discount_product_id = order.env.ref(
+                "carmarge_sale_cn.service_discount")
+            if not delivery_product_id:
+                order.delivery_cost = 0
+            if not discount_product_id:
+                order.discount_manual = 0
 
-        if delivery_product_id.product_variant_id in self.order_line.product_id:
-            delivery_line = self.order_line.filtered(
-                lambda l: l.product_id == delivery_product_id.product_variant_id)
-            self.delivery_cost = delivery_line.price_subtotal
-        else:
-            self.delivery_cost = 0
+            if delivery_product_id.product_variant_id in order.order_line.product_id:
+                delivery_line = order.order_line.filtered(
+                    lambda l: l.product_id == delivery_product_id.product_variant_id)
+                order.delivery_cost = delivery_line.price_subtotal
+            else:
+                order.delivery_cost = 0
 
-        if not discount_product_id.product_variant_id in self.order_line.product_id:
-            self.discount_manual = 0
+            if not discount_product_id.product_variant_id in order.order_line.product_id:
+                order.discount_manual = 0
 
-        discount_line = self.order_line.filtered(
-            lambda l: l.product_id == discount_product_id.product_variant_id)
-        self.discount_manual = discount_line.price_subtotal
+            discount_line = order.order_line.filtered(
+                lambda l: l.product_id == discount_product_id.product_variant_id)
+            order.discount_manual = discount_line.price_subtotal
 
     @api.depends("order_line.price_total")
     def _compute_amount_payment(self):
