@@ -246,7 +246,7 @@
                     </t>
                     <t>
                         <td name="td_note_line" colspan="99" class="text-center">
-                            <span t-field="line.name"/>
+                            <span t-field="line.note"/>
                         </td>
                     </t>
                 </tr>
