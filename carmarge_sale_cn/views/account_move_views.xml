@@ -10,7 +10,17 @@
                     <field name="amount_total" string="合计美金" sum="Total"/>
                     <field name="amount_residual" string="到期美金" sum="Total"/>
                 </xpath>
+            </field>
+        </record>
 
+        <record id="view_account_move_form" model="ir.ui.view">
+            <field name="name">account move form</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='invoice_line_ids']//tree//field[@name='balance']" position="after">
+                    <field name="note"/>
+                </xpath>
             </field>
         </record>
     </data>

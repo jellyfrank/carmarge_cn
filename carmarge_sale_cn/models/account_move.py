@@ -14,9 +14,6 @@ class AccountMove(models.Model):
                 move.sale_order = None
             else:
                 move.sale_order = move.invoice_line_ids[0].sale_line_ids[0].order_id
-            
-
-
 
     sale_order = fields.Many2one("sale.order",string="关联的销售订单", compute="_compute_sale_order")
 
@@ -41,3 +38,9 @@ class AccountMove(models.Model):
         product = self.env['ir.config_parameter'].sudo().get_param('sale.default_deposit_product_id')
         product_id = self.env['product.product'].browse(int(product)).exists()
         return product_id.id
+
+
+class account_move_line(models.Model):
+    _inherit = 'account.move.line'
+
+    note = fields.Char("备注")

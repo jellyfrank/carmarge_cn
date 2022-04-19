@@ -84,17 +84,18 @@ class sale_order(models.Model):
                 order.margin = mapped_data.get(order.id, 0.0)
                 order.margin_percent = order.amount_untaxed and order.margin / order.amount_untaxed
 
+    
+
     delivery_cost = fields.Monetary(
         "海运费", compute="_compute_delivery_discount", store=True)
     discount_manual = fields.Monetary(
         "优惠", compute="_compute_delivery_discount", store=True)
     port_city = fields.Many2one("carmarge.ship.city", "发货地")
-
     incoterm = fields.Many2one(
         'account.incoterms', domain="[('code','in',['FOB','CIF'])]")
     incoterm_code = fields.Char("贸易术语code", related='incoterm.code')
-
     amount_payment = fields.Monetary("货款", compute="_compute_amount_payment", store=True)
+    
 
     @api.model
     def create(self, vals):
@@ -195,6 +196,12 @@ class sale_order_line(models.Model):
     def _compute_sale_price_update_group(self):
         self.group_use_sale_price_update = self.user_has_groups(
             'carmarge_sale_cn.group_use_sale_price_update')
+
+    def _prepare_invoice_line(self,**optional_values):
+        """添加备注"""
+        res = super(sale_order_line,self)._prepare_invoice_line(**optional_values)
+        res['note'] = self.note
+        return res
 
     @api.model
     def _default_sale_order_update(self):
