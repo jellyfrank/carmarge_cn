@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
     <template id="report_saleorder_document" inherit_id="sale.report_saleorder_document">
         <xpath expr="//div[@id='informations']" position="replace">
             <!-- <attribute name='t-if'>not is_pro_forma</attribute> -->
@@ -8,8 +9,9 @@
                 <attribute name="style">position:relative;width:100%</attribute>
 
         </xpath>
+
         <xpath expr="//div[@class='page']" position="inside">
-                <img t-if="doc.company_id.watermark_img and is_pro_forma" t-att-src="image_data_uri(doc.company_id.watermark_img)" style="position: absolute;
+                <img t-if="doc.company_id.watermark_img and is_pro_forma"  t-att-src="image_data_uri(doc.company_id.watermark_img)" style="position: absolute;
                 opacity: 0.55;
                 z-index: 1000;
                 transform: rotate(300deg);
@@ -120,9 +122,7 @@
             <table class="table table-sm o_main_table" t-if="is_pro_forma">
                 <tbody>
                     <tr>
-                        <td style="
-    width: 20%;
-">
+                        <td style="width: 20%;">
                             <strong>Beneficiary Name</strong>
                         </td>
                         <td>

@@ -56,7 +56,6 @@ class sale_order(models.Model):
         amount = 0
         for line in self.order_line:
             if line.product_id not in [delivery_product_id.product_variant_id,discount_product_id.product_variant_id]:
-                print(line.price_total)
                 amount = amount + line.price_total
         self.update({
             "amount_payment":amount
@@ -111,7 +110,7 @@ class sale_order(models.Model):
             vals_name = self.env['ir.sequence'].next_by_code(
                 'sale.order', sequence_date=seq_date) or _('New')
             if vals_name != 'New':
-                vals['name'] = partner_id.country_id.code + vals_name
+                vals['name'] = str(partner_id.country_id.code) + str(vals_name)
 
         # Makes sure partner_invoice_id', 'partner_shipping_id' and 'pricelist_id' are defined
         if any(f not in vals for f in ['partner_invoice_id', 'partner_shipping_id', 'pricelist_id']):

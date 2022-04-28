@@ -12,10 +12,22 @@ class purchase_order(models.Model):
     @api.depends('order_line.price_total', "delivery_cost", "discount_manual")
     def _amount_all(self):
         super(purchase_order, self)._amount_all()
+        delivery_product_id = self.env.ref(
+            "carmarge_sale_cn.service_delivery_cost")
+        discount_product_id = self.env.ref(
+            "carmarge_sale_cn.service_discount")
         # 添加运费和优惠
         for order in self:
+            amount_untaxed = amount_tax = 0.0
+            for line in order.order_line:
+                if line.product_id not in [delivery_product_id.product_variant_id,discount_product_id.product_variant_id]:
+                    amount_untaxed += line.price_subtotal
+                    amount_tax += line.price_tax
+            currency = order.currency_id or order.partner_id.property_purchase_currency_id or self.env.company.currency_id
             order.update({
-                "amount_total": order.amount_total + order.delivery_cost - order.discount_manual
+                "amount_total": order.amount_total + order.delivery_cost - order.discount_manual,
+                "amount_untaxed":currency.round(amount_untaxed),
+                "amount_tax":currency.round(amount_tax),
             })
 
     def _prepare_invoice(self):
@@ -33,7 +45,7 @@ class purchase_order(models.Model):
         if not purchase_count:
             index = 1
         else:
-            index = len(purchase_count)
+            index = len(purchase_count)+1
 
         sale_order = self.env['sale.order'].browse(int(sale_id))
 
