@@ -1,0 +1,40 @@
+<odoo>
+  <data>
+    <record id="view_res_company_emark" model="ir.ui.view">
+      <field name="name">电子印章</field>
+      <field name="model">res.company</field>
+      <field name="inherit_id" ref="base.view_company_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//page[@name='general_info']" position="after">
+          <page string="电子印章设置">
+            <group>
+              <group>
+                <field name="emark_sale" widget="image" width="180px" height="180px"/>
+                <field name="emark_purchase" widget="image" width="180px" height="180px"/>
+              </group>
+              <group>
+                <field name="emark_delivery" widget="image" width="180px" height="180px"/>
+                <field name="emark_invoice" widget="image" width="180px" height="180px"/>
+              </group>
+            </group>
+          </page>
+        </xpath>
+      </field>
+    </record>
+
+
+    <record id="view_base_document_layout" model="ir.ui.view">
+      <field name="name">Document Layout</field>
+      <field name="model">base.document.layout</field>
+      <field name="inherit_id" ref="web.view_base_document_layout"/>
+      <field name="arch" type="xml">
+        <field name="paperformat_id" position="after">
+          <field name="emark_margin_left"/>
+          <field name="emark_margin_top"/>
+          <field name="emark_img_size"/>
+        </field>
+      </field>
+    </record>
+
+  </data>
+</odoo>

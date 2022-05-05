@@ -24,11 +24,12 @@ class purchase_order(models.Model):
                     amount_untaxed += line.price_subtotal
                     amount_tax += line.price_tax
             currency = order.currency_id or order.partner_id.property_purchase_currency_id or self.env.company.currency_id
-            order.update({
-                "amount_total": order.amount_total + order.delivery_cost - order.discount_manual,
+            data ={
+                "amount_total": amount_untaxed + order.amount_tax + order.delivery_cost - order.discount_manual,
                 "amount_untaxed":currency.round(amount_untaxed),
                 "amount_tax":currency.round(amount_tax),
-            })
+            }
+            order.update(data)
 
     def _prepare_invoice(self):
         data = super(purchase_order,self)._prepare_invoice()
