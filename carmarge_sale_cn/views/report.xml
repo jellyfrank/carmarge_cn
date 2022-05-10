@@ -269,6 +269,24 @@
                     <div t-attf-class="#{'col-4' if report_type != 'html' else 'col-sm-7 col-md-5'} ml-auto"
                          style="flex: auto;max-width: 100%;">
                         <table class="table table-sm">
+
+                            <tr class="border-black o_subtotal" t-if="is_pro_forma">
+                                <td name="td_amount_payment_label">
+                                    <strong>Subtotal</strong>
+                                </td>
+                                <td name="td_amount_payment" class="text-right">
+                                    <span t-field="doc.amount_payment"/>
+                                </td>
+                            </tr>
+                            <tr class="border-black o_subtotal" t-if="is_pro_forma">
+                                <td name="td_discount_manual_label">
+                                    <strong>Discount</strong>
+                                </td>
+                                <td name="td_amount_payment" class="text-right">
+                                    <span t-field="doc.discount_manual"/>
+                                </td>
+                            </tr>
+
                             <tr class="border-black o_subtotal" style="">
                                 <td name="td_amount_untaxed_label" t-if="doc.incoterm.code == 'CIF'">
                                     <strong>TOTAL FOB VALUE</strong>

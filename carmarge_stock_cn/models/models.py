@@ -44,3 +44,4 @@ class stock_move(models.Model):
         "总包装净重", compute="_compute_total", store=True)
     total_packaging_volume = fields.Float(
         "总包装体积", compute="_compute_total", store=True)
+

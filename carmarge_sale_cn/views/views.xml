@@ -64,9 +64,9 @@
           <field name="packaging_weight" optional="hide"/>
           <field name="packaging_net_weight" optional="hide"/>
           <field name="packaging_volume" optional="hide"/>
-          <field name="total_packaging_weight" sum="total"/>
-          <field name="total_packaging_net_weight" sum="total"/>
-          <field name="total_packaging_volume" sum="total"/>
+          <field name="total_packaging_weight" sum="total" optional="hide"/>
+          <field name="total_packaging_net_weight" sum="total" optional="hide"/>
+          <field name="total_packaging_volume" sum="total" optional="hide"/>
           <field name="group_use_sale_price_update" invisible="1"/>
           <field name="note"/>
         </xpath>

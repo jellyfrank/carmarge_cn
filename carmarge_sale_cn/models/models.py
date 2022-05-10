@@ -233,6 +233,8 @@ class sale_order_line(models.Model):
     group_use_sale_price_update = fields.Boolean(
         string="单价是否可编辑", default=_default_sale_order_update, compute="_compute_sale_price_update_group")
     note = fields.Char("备注")
+
+    translate_name = fields.Char(string="英文名称",related="product_id.translate_name")
     
 
     # @api.onchange('product_id')
@@ -245,3 +247,19 @@ class sale_order_line(models.Model):
     #         self.update({
     #             'price_unit': self.product_id.list_price
     #         })
+
+    @api.onchange('product_uom', 'product_uom_qty')
+    def product_uom_change(self):
+        if not self.product_uom or not self.product_id:
+            self.price_unit = 0.0
+            return
+        if self.order_id.pricelist_id and self.order_id.partner_id:
+            product = self.product_id.with_context(
+                lang=self.order_id.partner_id.lang,
+                partner=self.order_id.partner_id,
+                quantity=self.product_uom_qty,
+                date=self.order_id.date_order,
+                pricelist=self.order_id.pricelist_id.id,
+                uom=self.product_uom.id,
+                fiscal_position=self.env.context.get('fiscal_position')
+            )

@@ -113,6 +113,7 @@
                 <field name="uom_id" position="after">
                     <field name="comm_check" optional="hide"/>
                     <field name="is_brand_package" optional="hide"/>
+                    <field name="create_date" widget='date' optional="hide"/>
                 </field>
 
                 <field name="qty_available" position="before">
@@ -132,7 +133,6 @@
                 <xpath expr="//field[@name='default_code']" position="attributes">
                     <attribute name="required">1</attribute>
                 </xpath>
-
 
             </field>
         </record>
