@@ -10,6 +10,7 @@ from odoo.exceptions import UserError
 import logging
 from dateutil.relativedelta import relativedelta
 from datetime import timedelta,time
+from odoo.tools.safe_eval import safe_eval as eval
 
 _logger = logging.getLogger(__name__)
 
@@ -91,6 +92,46 @@ class product_template(models.Model):
     def _default_standard_price_update(self):
         return self.user_has_groups('carmarge_product_cn.group_use_product_standard_price_update')
 
+    @api.model
+    def _search_purchase_qty(self,operator,operand):
+        """搜索采购数量"""
+        if operator not in ('>', '>=', '<', '<=', '='):
+            return []
+        if type(operand) not in (float, int):
+            return []
+        if operator == '=':
+            operator = '==' 
+        records = self.search([])
+        result = records.filtered(lambda record: eval(f"record.purchased_product_qty {operator} {operand}",locals_dict={'record':record}))
+        return [('id','in',result.ids)]
+
+    @api.model
+    def _searhc_virtual_available(self,operator,operand):
+        """搜索预测数量"""
+        if operator not in ('>', '>=', '<', '<=', '='):
+            return []
+        if type(operand) not in (float, int):
+            return []
+        if operator == '=':
+            operator = '==' 
+        records = self.search([])
+        result = records.filtered(lambda record: eval(f"record.virtual_available {operator} {operand}",locals_dict={'record':record}))
+        return [('id','in',result.ids)]
+
+    
+    @api.model
+    def _search_sales_count(self,operator,operand):
+        """搜索预测数量"""
+        if operator not in ('>', '>=', '<', '<=', '='):
+            return []
+        if type(operand) not in (float, int):
+            return []
+        if operator == '=':
+            operator = '==' 
+        records = self.search([])
+        result = records.filtered(lambda record: eval(f"record.sales_count {operator} {operand}",locals_dict={'record':record}))
+        return [('id','in',result.ids)]
+
     brand = fields.Many2many("product.brand", string="适用")
     comm_check = fields.Boolean("是否商检", default=False)
     default_code = fields.Char(string="配件编号")
@@ -124,6 +165,9 @@ class product_template(models.Model):
 
     group_use_product_standard_price_update = fields.Boolean(string="采购成本是否可编辑", default=_default_standard_price_update,
                                                  compute="_compute_standard_price_update_group")
+    purchased_product_qty = fields.Float(search=_search_purchase_qty)
+    virtual_available = fields.Float(search=_searhc_virtual_available)
+    sales_count = fields.Float(search=_search_sales_count)
 
     def action_view_sales(self):
         action = self.env["ir.actions.actions"]._for_xml_id(
@@ -285,3 +329,5 @@ class ProductProduct(models.Model):
                 product.sales_count = sales_count
 
         return r
+
+    
