@@ -12,6 +12,9 @@
           <field name="total_packaging_net_weight"/>
           <field name="total_packaging_volume"/>
         </field>
+        <button name="action_assign" position="after">
+          <button name="button_fill_quantity" type="object" string="填充完成数量" />
+        </button>
       </field>
     </record>
 
