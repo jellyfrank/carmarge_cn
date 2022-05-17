@@ -272,7 +272,7 @@
                                             <strong>Discount</strong>
                                         </td>
                                         <td name="td_amount_payment" class="text-right">
-                                            <span t-field="doc.discount_manual"/>
+                                            $ <span t-esc="'%.2f'%(abs(doc.discount_manual))"/>
                                         </td>
                                     </tr>
 
@@ -286,12 +286,12 @@
                                         </td>
                                         <td name="td_amount_untaxed" class="text-right" t-if="doc.invoice_incoterm_id.code  == 'CIF'">
 
-                                            $ <span t-esc="round(line_sum_subtotal,2)"/>
+                                            $ <span t-esc="'%.2f'%(line_sum_subtotal)"/>
 
                                         </td>
                                         <td name="td_amount_untaxed" class="text-right" t-if="doc.invoice_incoterm_id.code  == 'FOB'">
 
-                                            $ <span t-esc="round(line_sum_subtotal + doc.discount_manual,2)"/>
+                                            $ <span t-esc="'%.2f'%(line_sum_subtotal + doc.discount_manual)"/>
 
                                         </td>
                                     </tr>
@@ -301,7 +301,7 @@
                                             <strong>Sea Freight and Insurance Fee</strong>
                                         </td>
                                         <td name="td_amount_untaxed" class="text-right">
-                                            $                                            <span t-esc="payment_vals['delivery_cost']"/>
+                                            $ <span t-esc="'%.2f'%(payment_vals['delivery_cost'])"/>
                                         </td>
                                     </tr>
 
