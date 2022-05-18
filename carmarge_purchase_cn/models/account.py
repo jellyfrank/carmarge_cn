@@ -9,28 +9,33 @@ class account_move(models.Model):
 
     _inherit = "account.move"
 
-    # @api.depends(
-    #     'line_ids.matched_debit_ids.debit_move_id.move_id.payment_id.is_matched',
-    #     'line_ids.matched_debit_ids.debit_move_id.move_id.line_ids.amount_residual',
-    #     'line_ids.matched_debit_ids.debit_move_id.move_id.line_ids.amount_residual_currency',
-    #     'line_ids.matched_credit_ids.credit_move_id.move_id.payment_id.is_matched',
-    #     'line_ids.matched_credit_ids.credit_move_id.move_id.line_ids.amount_residual',
-    #     'line_ids.matched_credit_ids.credit_move_id.move_id.line_ids.amount_residual_currency',
-    #     'line_ids.debit',
-    #     'line_ids.credit',
-    #     'line_ids.currency_id',
-    #     'line_ids.amount_currency',
-    #     'line_ids.amount_residual',
-    #     'line_ids.amount_residual_currency',
-    #     'line_ids.payment_id.state',
-    #     'line_ids.full_reconcile_id',
-    #     "delivery_cost",
-    #     "discount_manual")
-    # def _compute_amount(self):
-    #     super(account_move,self)._compute_amount()
-    #     for move in self:
-    #         move.amount_total = move.amount_total + move.delivery_cost - move.discount_manual
-    #         move.amount_residual = move.amount_total
+    @api.depends(
+        'line_ids.matched_debit_ids.debit_move_id.move_id.payment_id.is_matched',
+        'line_ids.matched_debit_ids.debit_move_id.move_id.line_ids.amount_residual',
+        'line_ids.matched_debit_ids.debit_move_id.move_id.line_ids.amount_residual_currency',
+        'line_ids.matched_credit_ids.credit_move_id.move_id.payment_id.is_matched',
+        'line_ids.matched_credit_ids.credit_move_id.move_id.line_ids.amount_residual',
+        'line_ids.matched_credit_ids.credit_move_id.move_id.line_ids.amount_residual_currency',
+        'line_ids.debit',
+        'line_ids.credit',
+        'line_ids.currency_id',
+        'line_ids.amount_currency',
+        'line_ids.amount_residual',
+        'line_ids.amount_residual_currency',
+        'line_ids.payment_id.state',
+        'line_ids.full_reconcile_id',
+        "delivery_cost",
+        "discount_manual")
+    def _compute_amount(self):
+        super(account_move,self)._compute_amount()
+        for move in self:
+            print(move.move_type)
+            if move.move_type == "in_invoice":
+                # 减掉明细行多算的 运费和优惠
+                move.amount_total = move.amount_total - move.delivery_cost - move.discount_manual
+                move.amount_total = move.amount_total + move.delivery_cost - move.discount_manual
+                print(move.amount_total)
+                # move.· = move.amount_total
 
     @api.depends("invoice_line_ids.product_id", "invoice_line_ids.price_unit")
     def _compute_delivery_discount(self):
