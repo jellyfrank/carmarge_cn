@@ -33,15 +33,16 @@ class AccountMove(models.Model):
     def _compute_amount(self):
         super(AccountMove,self)._compute_amount()
         # 去掉海运费和优惠
-        if self.move_type == "out_invoice":
-            delivery_product_id = self.env.ref(
-                "carmarge_sale_cn.service_delivery_cost")
-            discount_product_id = self.env.ref(
-                "carmarge_sale_cn.service_discount")
-            for line in self.invoice_line_ids:
-                if line.product_id.id in (delivery_product_id.product_variant_id.id,discount_product_id.product_variant_id.id):
-                    line.amount_untaxed -= line.price_subtotal
-                    line.amount_total  -= 2* line.price_subtotal
+        for move in self:
+            if move.move_type == "out_invoice":
+                delivery_product_id = move.env.ref(
+                    "carmarge_sale_cn.service_delivery_cost")
+                discount_product_id = move.env.ref(
+                    "carmarge_sale_cn.service_discount")
+                for line in move.invoice_line_ids:
+                    if line.product_id.id in (delivery_product_id.product_variant_id.id,discount_product_id.product_variant_id.id):
+                        line.amount_untaxed -= line.price_subtotal
+                        line.amount_total  -= 2* line.price_subtotal
 
     sale_order = fields.Many2one("sale.order",string="关联的销售订单", compute="_compute_sale_order")
 
