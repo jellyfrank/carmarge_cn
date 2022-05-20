@@ -34,6 +34,7 @@ class account_move(models.Model):
             # move.amount_total = move.amount_total - move.delivery_cost - move.discount_manual
             # move.amount_total = move.amount_total + move.delivery_cost - move.discount_manual
             move.amount_total = move.amount_untaxed +move.amount_tax + move.delivery_cost - move.discount_manual
+            move.amount_residual -= (move.delivery_cost + move.discount_manual)
             # move.· = move.amount_total
 
     @api.depends("invoice_line_ids.product_id", "invoice_line_ids.price_unit")
