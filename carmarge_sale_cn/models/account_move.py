@@ -15,34 +15,34 @@ class AccountMove(models.Model):
             else:
                 move.sale_order = move.invoice_line_ids[0].sale_line_ids[0].order_id
 
-    @api.depends(
-        'line_ids.matched_debit_ids.debit_move_id.move_id.payment_id.is_matched',
-        'line_ids.matched_debit_ids.debit_move_id.move_id.line_ids.amount_residual',
-        'line_ids.matched_debit_ids.debit_move_id.move_id.line_ids.amount_residual_currency',
-        'line_ids.matched_credit_ids.credit_move_id.move_id.payment_id.is_matched',
-        'line_ids.matched_credit_ids.credit_move_id.move_id.line_ids.amount_residual',
-        'line_ids.matched_credit_ids.credit_move_id.move_id.line_ids.amount_residual_currency',
-        'line_ids.debit',
-        'line_ids.credit',
-        'line_ids.currency_id',
-        'line_ids.amount_currency',
-        'line_ids.amount_residual',
-        'line_ids.amount_residual_currency',
-        'line_ids.payment_id.state',
-        'line_ids.full_reconcile_id')
-    def _compute_amount(self):
-        super(AccountMove,self)._compute_amount()
-        # 去掉海运费和优惠
-        for move in self:
-            if move.move_type == "out_invoice":
-                delivery_product_id = move.env.ref(
-                    "carmarge_sale_cn.service_delivery_cost")
-                discount_product_id = move.env.ref(
-                    "carmarge_sale_cn.service_discount")
-                for line in move.invoice_line_ids:
-                    if line.product_id.id in (delivery_product_id.product_variant_id.id,discount_product_id.product_variant_id.id):
-                        move.amount_untaxed -= line.price_subtotal
-                        move.amount_total  -= 2* line.price_subtotal
+    # @api.depends(
+    #     'line_ids.matched_debit_ids.debit_move_id.move_id.payment_id.is_matched',
+    #     'line_ids.matched_debit_ids.debit_move_id.move_id.line_ids.amount_residual',
+    #     'line_ids.matched_debit_ids.debit_move_id.move_id.line_ids.amount_residual_currency',
+    #     'line_ids.matched_credit_ids.credit_move_id.move_id.payment_id.is_matched',
+    #     'line_ids.matched_credit_ids.credit_move_id.move_id.line_ids.amount_residual',
+    #     'line_ids.matched_credit_ids.credit_move_id.move_id.line_ids.amount_residual_currency',
+    #     'line_ids.debit',
+    #     'line_ids.credit',
+    #     'line_ids.currency_id',
+    #     'line_ids.amount_currency',
+    #     'line_ids.amount_residual',
+    #     'line_ids.amount_residual_currency',
+    #     'line_ids.payment_id.state',
+    #     'line_ids.full_reconcile_id')
+    # def _compute_amount(self):
+    #     super(AccountMove,self)._compute_amount()
+    #     # 去掉海运费和优惠
+    #     for move in self:
+    #         if move.move_type == "out_invoice":
+    #             delivery_product_id = move.env.ref(
+    #                 "carmarge_sale_cn.service_delivery_cost")
+    #             discount_product_id = move.env.ref(
+    #                 "carmarge_sale_cn.service_discount")
+    #             for line in move.invoice_line_ids:
+    #                 if line.product_id.id in (delivery_product_id.product_variant_id.id,discount_product_id.product_variant_id.id):
+    #                     move.amount_untaxed -= line.price_subtotal
+    #                     move.amount_total  -= 2* line.price_subtotal
 
     sale_order = fields.Many2one("sale.order",string="关联的销售订单", compute="_compute_sale_order")
 
