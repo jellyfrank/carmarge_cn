@@ -46,9 +46,9 @@
           <attribute name='attrs'>{'readonly':[('group_use_sale_price_update','=',False)]}</attribute>
         </xpath>
 
-        <xpath expr="//field[@name='order_line']//tree//field[@name='price_subtotal']" position="after">
+        <!-- <xpath expr="//field[@name='order_line']//tree//field[@name='price_subtotal']" position="after">
           <field name="price_total" string="含税小计" sum="total"/>
-        </xpath>
+        </xpath> -->
 
         <xpath expr="//field[@name='order_line']//tree//field[@name='name']" position="attributes">
           <attribute name='invisible'>0</attribute>
