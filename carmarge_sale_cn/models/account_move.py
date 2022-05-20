@@ -41,8 +41,8 @@ class AccountMove(models.Model):
                     "carmarge_sale_cn.service_discount")
                 for line in move.invoice_line_ids:
                     if line.product_id.id in (delivery_product_id.product_variant_id.id,discount_product_id.product_variant_id.id):
-                        line.amount_untaxed -= line.price_subtotal
-                        line.amount_total  -= 2* line.price_subtotal
+                        move.amount_untaxed -= line.price_subtotal
+                        move.amount_total  -= 2* line.price_subtotal
 
     sale_order = fields.Many2one("sale.order",string="关联的销售订单", compute="_compute_sale_order")
 
