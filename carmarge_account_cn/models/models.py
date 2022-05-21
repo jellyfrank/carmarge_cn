@@ -26,16 +26,112 @@ class account_move(models.Model):
         "delivery_cost",
         "discount_manual")
     def _compute_amount(self):
-        super(account_move,self)._compute_amount()
         for move in self:
-            # if move.move_type == "in_invoice":
-            # 减掉明细行多算的 运费和优惠
+            print('******carmarge compute amount*********')
+            print(move.amount_residual) # 115.0
+            if move.payment_state == 'invoicing_legacy':
+                # invoicing_legacy state is set via SQL when setting setting field
+                # invoicing_switch_threshold (defined in account_accountant).
+                # The only way of going out of this state is through this setting,
+                # so we don't recompute it here.
+                move.payment_state = move.payment_state
+                continue
+
+            total_untaxed = 0.0
+            total_untaxed_currency = 0.0
+            total_tax = 0.0
+            total_tax_currency = 0.0
+            total_to_pay = 0.0
+            total_residual = 0.0
+            total_residual_currency = 0.0
+            total = 0.0
+            total_currency = 0.0
+            currencies = move._get_lines_onchange_currency().currency_id
+
+            for line in move.line_ids:
+                if move.is_invoice(include_receipts=True):
+                    # === Invoices ===
+                    if not line.exclude_from_invoice_tab:
+                        print('******carmarge compute amount 2*********')
+                        # Untaxed amount.
+                        total_untaxed += line.balance
+                        total_untaxed_currency += line.amount_currency
+                        total += line.balance
+                        total_currency += line.amount_currency
+                    elif line.tax_line_id:
+                        print('******carmarge compute amount 3*********')
+                        # Tax amount.
+                        total_tax += line.balance
+                        total_tax_currency += line.amount_currency
+                        total += line.balance
+                        total_currency += line.amount_currency
+                    elif line.account_id.user_type_id.type in ('receivable', 'payable'):
+                        # Residual amount.
+                        total_to_pay += line.balance
+                        total_residual += line.amount_residual
+                        total_residual_currency += line.amount_residual_currency
+                    print(total_residual_currency)
+                else:
+                    # === Miscellaneous journal entry ===
+                    if line.debit:
+                        total += line.balance
+                        total_currency += line.amount_currency
+
+            if move.move_type == 'entry' or move.is_outbound():
+                sign = 1
+            else:
+                sign = -1
+            move.amount_untaxed = sign * (total_untaxed_currency if len(currencies) == 1 else total_untaxed)
+            move.amount_tax = sign * (total_tax_currency if len(currencies) == 1 else total_tax)
+            move.amount_total = sign * (total_currency if len(currencies) == 1 else total)
+            move.amount_residual = -sign * (total_residual_currency if len(currencies) == 1 else total_residual)
+            move.amount_untaxed_signed = -total_untaxed
+            move.amount_tax_signed = -total_tax
+            move.amount_total_signed = abs(total) if move.move_type == 'entry' else -total
+            move.amount_residual_signed = total_residual
+
+            currency = len(currencies) == 1 and currencies or move.company_id.currency_id
+
+            # Compute 'payment_state'.
+            new_pmt_state = 'not_paid' if move.move_type != 'entry' else False
+
+            if move.is_invoice(include_receipts=True) and move.state == 'posted':
+
+                if currency.is_zero(move.amount_residual):
+                    reconciled_payments = move._get_reconciled_payments()
+                    if not reconciled_payments or all(payment.is_matched for payment in reconciled_payments):
+                        new_pmt_state = 'paid'
+                    else:
+                        new_pmt_state = move._get_invoice_in_payment_state()
+                elif currency.compare_amounts(total_to_pay, total_residual) != 0:
+                    new_pmt_state = 'partial'
+
+            if new_pmt_state == 'paid' and move.move_type in ('in_invoice', 'out_invoice', 'entry'):
+                reverse_type = move.move_type == 'in_invoice' and 'in_refund' or move.move_type == 'out_invoice' and 'out_refund' or 'entry'
+                reverse_moves = self.env['account.move'].search([('reversed_entry_id', '=', move.id), ('state', '=', 'posted'), ('move_type', '=', reverse_type)])
+
+                # We only set 'reversed' state in cas of 1 to 1 full reconciliation with a reverse entry; otherwise, we use the regular 'paid' state
+                reverse_moves_full_recs = reverse_moves.mapped('line_ids.full_reconcile_id')
+                if reverse_moves_full_recs.mapped('reconciled_line_ids.move_id').filtered(lambda x: x not in (reverse_moves + reverse_moves_full_recs.mapped('exchange_move_id'))) == move:
+                    new_pmt_state = 'reversed'
+
+            move.payment_state = new_pmt_state
+
+            # 排除海运费和优惠
             move.amount_untaxed -= (move.delivery_cost + move.discount_manual)
-            # move.amount_total = move.amount_total - move.delivery_cost - move.discount_manual
-            # move.amount_total = move.amount_total + move.delivery_cost - move.discount_manual
             move.amount_total = move.amount_untaxed +move.amount_tax + move.delivery_cost - move.discount_manual
-            move.amount_residual -= (move.delivery_cost + move.discount_manual)
-            # move.· = move.amount_total
+            move.amount_residual -= 2* move.discount_manual
+
+
+        # for move in self:
+        #     # if move.move_type == "in_invoice":
+        #     # 减掉明细行多算的 运费和优惠
+        #     # move.amount_total = move.amount_total - move.delivery_cost - move.discount_manual
+        #     # move.amount_total = move.amount_total + move.delivery_cost - move.discount_manual
+        #     # move.amount_residual -= (move.delivery_cost + move.discount_manual)
+        #     # move.· = move.amount_total
+        #     print('&&&&&&&&')
+        #     print(move.amount_residual)
 
     @api.depends("invoice_line_ids.product_id", "invoice_line_ids.price_unit")
     def _compute_delivery_discount(self):
@@ -65,3 +161,65 @@ class account_move(models.Model):
 
     delivery_cost = fields.Monetary("运费", compute="_compute_delivery_discount",store=True)
     discount_manual = fields.Monetary("优惠",compute="_compute_delivery_discount",store=True)
+
+class account_move_line(models.Model):
+    _inherit = "account.move.line"
+
+    def _is_deliver_or_discount(self):
+        delivery_product_id = self.env.ref(
+                "carmarge_sale_cn.service_delivery_cost")
+        discount_product_id = self.env.ref(
+            "carmarge_sale_cn.service_discount")
+        if self.product_id in [delivery_product_id.product_variant_id, discount_product_id.product_variant_id]:
+            return True
+        return False
+
+
+    # @api.depends('debit', 'credit')
+    # def _compute_balance(self):
+    #     for line in self:
+    #         print('************%%%%%%**************')
+    #         if line._is_deliver_or_discount():
+    #             print('=======0=========')
+    #             line.debit = 0
+    #             line.credit = 0
+    #             line.balance = 0
+    #         else:
+    #             line.balance = line.debit - line.credit
+
+    @api.depends('debit', 'credit', 'amount_currency', 'account_id', 'currency_id', 'move_id.state', 'company_id',
+                 'matched_debit_ids', 'matched_credit_ids')
+    def _compute_amount_residual(self):
+        """ Computes the residual amount of a move line from a reconcilable account in the company currency and the line's currency.
+            This amount will be 0 for fully reconciled lines or lines from a non-reconcilable account, the original line amount
+            for unreconciled lines, and something in-between for partially reconciled lines.
+        """
+        for line in self:
+            print('======carmarge account move line 1=====')
+            print(line.product_id.display_name)
+            if line._is_deliver_or_discount():
+                print('======carmarge account move line 2=====')
+                line.amount_residual_currency = 0.0
+                line.amount_residual = 0.0
+            elif line.id and (line.account_id.reconcile or line.account_id.internal_type == 'liquidity'):
+                reconciled_balance = sum(line.matched_credit_ids.mapped('amount')) \
+                                     - sum(line.matched_debit_ids.mapped('amount'))
+                reconciled_amount_currency = sum(line.matched_credit_ids.mapped('debit_amount_currency'))\
+                                             - sum(line.matched_debit_ids.mapped('credit_amount_currency'))
+
+                line.amount_residual = line.balance - reconciled_balance
+
+                if line.currency_id:
+                    line.amount_residual_currency = line.amount_currency - reconciled_amount_currency
+                else:
+                    line.amount_residual_currency = 0.0
+
+                line.reconciled = line.company_currency_id.is_zero(line.amount_residual) \
+                                  and (not line.currency_id or line.currency_id.is_zero(line.amount_residual_currency))
+            else:
+                # Must not have any reconciliation since the line is not eligible for that.
+                line.amount_residual = 0.0
+                line.amount_residual_currency = 0.0
+                line.reconciled = False
+            print('======carmarge account move line 3=====')
+            print(line.amount_residual_currency, line.amount_residual)
