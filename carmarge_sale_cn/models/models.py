@@ -15,7 +15,7 @@ class sale_order(models.Model):
         # 添加运费和优惠
         for order in self:
             order.update({
-                "amount_total": order.amount_payment + order.delivery_cost - order.discount_manual
+                "amount_total": order.amount_payment + order.delivery_cost + order.discount_manual
             })
 
     @api.depends("order_line.product_id", "order_line.price_unit")

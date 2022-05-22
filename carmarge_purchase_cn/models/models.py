@@ -27,7 +27,7 @@ class purchase_order(models.Model):
                     amount_tax += line.price_tax
             currency = order.currency_id or order.partner_id.property_purchase_currency_id or self.env.company.currency_id
             data ={
-                "amount_total": amount_untaxed + order.amount_tax + order.delivery_cost - order.discount_manual,
+                "amount_total": amount_untaxed + order.amount_tax + order.delivery_cost + order.discount_manual,
                 "amount_untaxed":currency.round(amount_untaxed),
                 "amount_tax":currency.round(amount_tax),
             }

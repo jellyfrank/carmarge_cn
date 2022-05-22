@@ -66,10 +66,13 @@ class account_move(models.Model):
                         total += line.balance
                         total_currency += line.amount_currency
                     elif line.account_id.user_type_id.type in ('receivable', 'payable'):
+                        print('******carmarge compute amount 4*********')
                         # Residual amount.
                         total_to_pay += line.balance
                         total_residual += line.amount_residual
                         total_residual_currency += line.amount_residual_currency
+                        print(line.id,line.balance, line.amount_residual, line.amount_residual_currency)
+                    print('******carmarge compute amount 5*********')
                     print(total_residual_currency)
                 else:
                     # === Miscellaneous journal entry ===
@@ -119,19 +122,19 @@ class account_move(models.Model):
 
             # 排除海运费和优惠
             move.amount_untaxed -= (move.delivery_cost + move.discount_manual)
-            move.amount_total = move.amount_untaxed +move.amount_tax + move.delivery_cost - move.discount_manual
+            move.amount_total = move.amount_untaxed +move.amount_tax + move.delivery_cost + move.discount_manual
             # move.amount_residual -= 2* move.discount_manual
 
 
-        # for move in self:
-        #     # if move.move_type == "in_invoice":
-        #     # 减掉明细行多算的 运费和优惠
-        #     # move.amount_total = move.amount_total - move.delivery_cost - move.discount_manual
-        #     # move.amount_total = move.amount_total + move.delivery_cost - move.discount_manual
-        #     # move.amount_residual -= (move.delivery_cost + move.discount_manual)
-        #     # move.· = move.amount_total
-        #     print('&&&&&&&&')
-        #     print(move.amount_residual)
+    #     # for move in self:
+    #     #     # if move.move_type == "in_invoice":
+    #     #     # 减掉明细行多算的 运费和优惠
+    #     #     # move.amount_total = move.amount_total - move.delivery_cost - move.discount_manual
+    #     #     # move.amount_total = move.amount_total + move.delivery_cost - move.discount_manual
+    #     #     # move.amount_residual -= (move.delivery_cost + move.discount_manual)
+    #     #     # move.· = move.amount_total
+    #     #     print('&&&&&&&&')
+    #     #     print(move.amount_residual)
 
     @api.depends("invoice_line_ids.product_id", "invoice_line_ids.price_unit")
     def _compute_delivery_discount(self):
@@ -234,6 +237,8 @@ class account_move(models.Model):
             # Recompute amls: update existing line or create new one for each payment term.
             new_terms_lines = self.env['account.move.line']
             for date_maturity, balance, amount_currency in to_compute:
+                print('======create payment terms======')
+                print(amount_currency)
                 currency = self.journal_id.company_id.currency_id
                 if currency and currency.is_zero(balance) and len(to_compute) > 1:
                     continue
@@ -264,10 +269,13 @@ class account_move(models.Model):
                         'partner_id': self.commercial_partner_id.id,
                         'exclude_from_invoice_tab': True,
                     })
+                print('============account move candidate==============')
+                print(candidate)
 
                 new_terms_lines += candidate
                 if in_draft_mode:
                     candidate.update(candidate._get_fields_onchange_balance(force_computation=True))
+                print(candidate.amount_currency)
             return new_terms_lines
 
         existing_terms_lines = self.line_ids.filtered(lambda line: line.account_id.user_type_id.type in ('receivable', 'payable'))
@@ -276,11 +284,18 @@ class account_move(models.Model):
         total_balance = sum(others_lines.mapped(lambda l: company_currency_id.round(l.balance)))
         total_amount_currency = sum(others_lines.mapped('amount_currency'))
     
-        for line in others_lines:
-            if line._is_discount():
-                total_amount_currency -= line.amount_currency * 2
-
         # 处理余额不对的问题
+        # for line in others_lines:
+        #     if line._is_discount():
+                # debit,credit = line.debit, line.credit
+                # line.debit, line.credit = line.credit, line.debit
+                # total_amount_currency -= line.amount_currency * 2
+                # total_balance -= line.amount_currency * 2
+
+        print('======================666==========================')
+        print(total_amount_currency)
+
+        
         if not others_lines:
             self.line_ids -= existing_terms_lines
             return
@@ -330,31 +345,31 @@ class account_move_line(models.Model):
     #         else:
     #             line.balance = line.debit - line.credit
 
-    @api.depends('debit', 'credit', 'amount_currency', 'account_id', 'currency_id', 'move_id.state', 'company_id',
-                 'matched_debit_ids', 'matched_credit_ids')
-    def _compute_amount_residual(self):
-        """ Computes the residual amount of a move line from a reconcilable account in the company currency and the line's currency.
-            This amount will be 0 for fully reconciled lines or lines from a non-reconcilable account, the original line amount
-            for unreconciled lines, and something in-between for partially reconciled lines.
-        """
-        for line in self:
-            if line.id and (line.account_id.reconcile or line.account_id.internal_type == 'liquidity'):
-                reconciled_balance = sum(line.matched_credit_ids.mapped('amount')) \
-                                     - sum(line.matched_debit_ids.mapped('amount'))
-                reconciled_amount_currency = sum(line.matched_credit_ids.mapped('debit_amount_currency'))\
-                                             - sum(line.matched_debit_ids.mapped('credit_amount_currency'))
+    # @api.depends('debit', 'credit', 'amount_currency', 'account_id', 'currency_id', 'move_id.state', 'company_id',
+    #              'matched_debit_ids', 'matched_credit_ids')
+    # def _compute_amount_residual(self):
+    #     """ Computes the residual amount of a move line from a reconcilable account in the company currency and the line's currency.
+    #         This amount will be 0 for fully reconciled lines or lines from a non-reconcilable account, the original line amount
+    #         for unreconciled lines, and something in-between for partially reconciled lines.
+    #     """
+    #     for line in self:
+    #         if line.id and (line.account_id.reconcile or line.account_id.internal_type == 'liquidity'):
+    #             reconciled_balance = sum(line.matched_credit_ids.mapped('amount')) \
+    #                                  - sum(line.matched_debit_ids.mapped('amount'))
+    #             reconciled_amount_currency = sum(line.matched_credit_ids.mapped('debit_amount_currency'))\
+    #                                          - sum(line.matched_debit_ids.mapped('credit_amount_currency'))
 
-                line.amount_residual = line.balance - reconciled_balance
+    #             line.amount_residual = line.balance - reconciled_balance
 
-                if line.currency_id:
-                    line.amount_residual_currency = line.amount_currency - reconciled_amount_currency
-                else:
-                    line.amount_residual_currency = 0.0
+    #             if line.currency_id:
+    #                 line.amount_residual_currency = line.amount_currency - reconciled_amount_currency
+    #             else:
+    #                 line.amount_residual_currency = 0.0
 
-                line.reconciled = line.company_currency_id.is_zero(line.amount_residual) \
-                                  and (not line.currency_id or line.currency_id.is_zero(line.amount_residual_currency))
-            else:
-                # Must not have any reconciliation since the line is not eligible for that.
-                line.amount_residual = 0.0
-                line.amount_residual_currency = 0.0
-                line.reconciled = False
+    #             line.reconciled = line.company_currency_id.is_zero(line.amount_residual) \
+    #                               and (not line.currency_id or line.currency_id.is_zero(line.amount_residual_currency))
+    #         else:
+    #             # Must not have any reconciliation since the line is not eligible for that.
+    #             line.amount_residual = 0.0
+    #             line.amount_residual_currency = 0.0
+    #             line.reconciled = False
