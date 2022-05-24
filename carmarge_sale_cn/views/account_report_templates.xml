@@ -264,7 +264,7 @@
                                             <strong>Subtotal</strong>
                                         </td>
                                         <td name="td_amount_payment" class="text-right">
-                                            <span t-esc="round(payment_vals['amount_total'] - payment_vals['delivery_cost'],2)"/>
+                                        $ <span t-esc="'%.2f'%(round(amount_payment,2))"/>
                                         </td>
                                     </tr>
                                     <tr class="border-black o_subtotal">
@@ -310,7 +310,7 @@
                                             <strong>TOTAL CIF VALUE</strong>
                                         </td>
                                         <td name="td_amount_total" class="text-right">
-                                            $                                            <span t-esc="payment_vals['amount_total']"/>
+                                            $ <span t-esc="'%.2f'%(payment_vals['amount_total'])"/>
                                         </td>
                                     </tr>
                                 </t>

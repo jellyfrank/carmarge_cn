@@ -55,6 +55,7 @@ class AccountMove(models.Model):
         sale_order = self.env['sale.order'].search([('name','=',self.invoice_origin)])
         if sale_order:
             report_arr.append({
+                'amount_payment': sale_order.amount_payment,
                 'amount_total':sale_order.amount_total,
                 'amount_untaxed':sale_order.amount_untaxed,
                 'amount_tax':sale_order.amount_tax,
