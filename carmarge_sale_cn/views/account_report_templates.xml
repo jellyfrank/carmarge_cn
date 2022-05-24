@@ -291,7 +291,7 @@
                                         </td>
                                         <td name="td_amount_untaxed" class="text-right" t-if="doc.invoice_incoterm_id.code  == 'FOB'">
 
-                                            $ <span t-esc="'%.2f'%(line_sum_subtotal + doc.discount_manual)"/>
+                                            $ <span t-esc="'%.2f'%(line_sum_subtotal - doc.discount_manual)"/>
 
                                         </td>
                                     </tr>
