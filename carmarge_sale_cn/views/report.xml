@@ -298,7 +298,7 @@
                                     $ <span t-esc="'%.2f'%(doc.amount_payment - abs(doc.discount_manual))"/>
                                 </td>
                                 <td name="td_amount_untaxed" class="text-right" t-if="doc.incoterm.code == 'FOB'">
-                                    $ <span t-esc="'%.2f'%(line_sum_subtotal + doc.discount_manual)"/>
+                                    $ <span t-esc="'%.2f'%(line_sum_subtotal - doc.discount_manual)"/>
                                 </td>
                             </tr>
                             <!-- <t t-foreach="doc.amount_by_group" t-as="amount_by_group">
