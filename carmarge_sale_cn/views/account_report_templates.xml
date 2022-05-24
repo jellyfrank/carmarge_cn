@@ -264,7 +264,7 @@
                                             <strong>Subtotal</strong>
                                         </td>
                                         <td name="td_amount_payment" class="text-right">
-                                        $ <span t-esc="'%.2f'%(round(amount_payment,2))"/>
+                                        $ <span t-esc="'%.2f'%(round(payment_vals['amount_payment'],2))"/>
                                         </td>
                                     </tr>
                                     <tr class="border-black o_subtotal">
