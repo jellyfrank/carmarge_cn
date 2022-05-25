@@ -275,7 +275,7 @@
                                     <strong>Subtotal</strong>
                                 </td>
                                 <td name="td_amount_payment" class="text-right">
-                                    $ <span t-field="'%.2f'%(doc.amount_payment)"/>
+                                    $ <span t-esc="'%.2f'%(doc.amount_payment)"/>
                                 </td>
                             </tr>
                             <tr class="border-black o_subtotal" t-if="is_pro_forma">
