@@ -23,9 +23,9 @@ class sale_order(models.Model):
         """计算海运费和优惠"""
         for order in self:
             delivery_product_id = order.env.ref(
-                "carmarge_sale_cn.service_delivery_cost")
+                "carmarge_purchased_cn.service_delivery_cost")
             discount_product_id = order.env.ref(
-                "carmarge_sale_cn.service_discount")
+                "carmarge_purchased_cn.service_discount")
             if not delivery_product_id:
                 order.delivery_cost = 0
             if not discount_product_id:
@@ -49,9 +49,9 @@ class sale_order(models.Model):
     def _compute_amount_payment(self):
         '''计算货款'''
         delivery_product_id = self.env.ref(
-            "carmarge_sale_cn.service_delivery_cost")
+            "carmarge_purchased_cn.service_delivery_cost")
         discount_product_id = self.env.ref(
-            "carmarge_sale_cn.service_discount")
+            "carmarge_purchased_cn.service_discount")
         amount = 0
         for line in self.order_line:
             if line.product_id not in [delivery_product_id.product_variant_id,discount_product_id.product_variant_id]:

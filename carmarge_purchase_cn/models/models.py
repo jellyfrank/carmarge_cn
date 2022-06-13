@@ -176,7 +176,6 @@ class purchase_order_line(models.Model):
 
     @api.onchange('product_qty', 'product_uom')
     def _onchange_quantity(self):
-        print('***********************')
         if not self.product_id:
             return
         params = {'order_id': self.order_id}
