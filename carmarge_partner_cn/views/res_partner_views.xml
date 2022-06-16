@@ -30,7 +30,7 @@
 
                 <xpath expr="//filter[@name='inactive']" position="before">
                     <filter string="经销商" name="partner_type" domain="[('partner_type','=', 'distributor')]"/>
-                    <filter string="车队" name="partner_type" domain="[('partner_type','=', 'fleet')]"/>
+                    <filter string="终端客户" name="partner_type" domain="[('partner_type','=', 'fleet')]"/>
                     <filter string="供应商" name="partner_type" domain="[('partner_type','=', 'supplier')]"/>
                     <separator/>
                 </xpath>
@@ -73,6 +73,69 @@
                 </xpath>
             </field>
         </record>
+
+        <!-- actions opening views on models -->
+        <record id="distructor_action_contacts" model="ir.actions.act_window">
+            <field name="name">经销商</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">kanban,tree,form,activity</field>
+            <field name="search_view_id" ref="base.view_res_partner_filter"/>
+            <field name="context">{'default_is_company': True, 'partner_type': 'distributor'}</field>
+            <field name="domain">[('partner_type','=', 'distributor')]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+            Create a contact in your address book
+                </p>
+                <p>
+            Odoo helps you to easily track all activities related to a customer.
+                </p>
+            </field>
+        </record>
+        <record id="fleet_action_contacts" model="ir.actions.act_window">
+            <field name="name">终端客户</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">kanban,tree,form,activity</field>
+            <field name="search_view_id" ref="base.view_res_partner_filter"/>
+            <field name="context">{'default_is_company': True, 'partner_type': 'fleet'}</field>
+            <field name="domain">[('partner_type','=', 'fleet')]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+            Create a contact in your address book
+                </p>
+                <p>
+            Odoo helps you to easily track all activities related to a customer.
+                </p>
+            </field>
+        </record>
+        <record id="supplier_action_contacts" model="ir.actions.act_window">
+            <field name="name">供应商</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">kanban,tree,form,activity</field>
+            <field name="context">{'default_is_company': True, 'partner_type': 'supplier'}</field>
+            <field name="domain">[('partner_type','=', 'supplier')]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+            Create a contact in your address book
+                </p>
+                <p>
+            Odoo helps you to easily track all activities related to a customer.
+                </p>
+            </field>
+        </record>
+
+        <record id="contacts.res_partner_menu_contacts" model="ir.ui.menu">
+            <field name="sequence">1</field>
+        </record>
+        <menuitem id="carmarge_partner_cn_menu_distructor" name="经销商" action="distructor_action_contacts" parent="contacts.menu_contacts" sequence="2" />
+        <menuitem id="carmarge_partner_cn_menu_fleet" name="终端客户" action="fleet_action_contacts" parent="contacts.menu_contacts" sequence="2" />
+        <menuitem id="carmarge_partner_cn_menu_supplier" name="供应商" action="supplier_action_contacts" parent="contacts.menu_contacts" sequence="2" />
+        <record id="contacts.res_partner_menu_config" model="ir.ui.menu">
+            <field name="sequence">3</field>
+        </record>
+
 
 
     </data>
