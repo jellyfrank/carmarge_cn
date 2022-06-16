@@ -6,6 +6,7 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
 
+
                 <xpath expr="//field[@name='company_type']" position="attributes">
                     <attribute name='invisible'>1</attribute>
                 </xpath>
@@ -28,7 +29,7 @@
             <field name="arch" type="xml">
 
                 <xpath expr="//filter[@name='inactive']" position="before">
-                    <filter string="汽配经销商" name="partner_type" domain="[('partner_type','=', 'distributor')]"/>
+                    <filter string="经销商" name="partner_type" domain="[('partner_type','=', 'distributor')]"/>
                     <filter string="车队" name="partner_type" domain="[('partner_type','=', 'fleet')]"/>
                     <filter string="供应商" name="partner_type" domain="[('partner_type','=', 'supplier')]"/>
                     <separator/>
@@ -57,6 +58,20 @@
         <record id="contacts.action_contacts" model="ir.actions.act_window">
             <field name="domain">['|',('customer_rank', '>', 0), ('supplier_rank', '>', 0)]</field>
 
+        </record>
+
+        <record id="inherited_view_partner_form" model="ir.ui.view">
+            <field name="name">inherited.res.partner.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='street2']" position="attributes">
+                    <attribute name='invisible'>1</attribute>
+                </xpath>
+                <xpath expr="//page[@name='contact_addresses']//form//field[@name='street2']" position="attributes">
+                    <attribute name='invisible'>1</attribute>
+                </xpath>
+            </field>
         </record>
 
 
