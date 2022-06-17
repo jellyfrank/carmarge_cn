@@ -74,6 +74,15 @@
             </field>
         </record>
 
+        <record id="inherited_view_partner_tree" model="ir.ui.view">
+            <field name="inherit_id" ref="base.view_partner_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='phone']" position="before">
+                    <field name="partner_type" />
+                </xpath>
+            </field>
+        </record>
+
         <!-- actions opening views on models -->
         <record id="distructor_action_contacts" model="ir.actions.act_window">
             <field name="name">经销商</field>
