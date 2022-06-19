@@ -57,28 +57,29 @@ class purchase_order(models.Model):
     @api.depends("order_line.product_id", "order_line.price_unit")
     def _compute_delivery_discount(self):
         """计算海运费和优惠"""
-        delivery_product_id = self.env.ref(
-            "carmarge_sale_cn.service_delivery_cost")
-        discount_product_id = self.env.ref(
-            "carmarge_sale_cn.service_discount")
-        if not delivery_product_id:
-            self.delivery_cost = 0
-        if not discount_product_id:
-            self.discount_manual = 0
+        for po in self:
+            delivery_product_id = po.env.ref(
+                "carmarge_sale_cn.service_delivery_cost")
+            discount_product_id = po.env.ref(
+                "carmarge_sale_cn.service_discount")
+            if not delivery_product_id:
+                po.delivery_cost = 0
+            if not discount_product_id:
+                po.discount_manual = 0
 
-        if delivery_product_id.product_variant_id in self.order_line.product_id:
-            delivery_line = self.order_line.filtered(
-                lambda l: l.product_id == delivery_product_id.product_variant_id)
-            self.delivery_cost = delivery_line.price_subtotal
-        else:
-            self.delivery_cost = 0
+            if delivery_product_id.product_variant_id in po.order_line.product_id:
+                delivery_line = po.order_line.filtered(
+                    lambda l: l.product_id == delivery_product_id.product_variant_id)
+                po.delivery_cost = delivery_line.price_subtotal
+            else:
+                po.delivery_cost = 0
 
-        if not discount_product_id.product_variant_id in self.order_line.product_id:
-            self.discount_manual = 0
+            if not discount_product_id.product_variant_id in po.order_line.product_id:
+                po.discount_manual = 0
 
-        discount_line = self.order_line.filtered(
-            lambda l: l.product_id == discount_product_id.product_variant_id)
-        self.discount_manual = discount_line.price_subtotal
+            discount_line = po.order_line.filtered(
+                lambda l: l.product_id == discount_product_id.product_variant_id)
+            po.discount_manual = discount_line.price_subtotal
 
     delivery_cost = fields.Monetary("运费",compute="_compute_delivery_discount", store=True)
     discount_manual = fields.Monetary("优惠",compute="_compute_delivery_discount", store=True)

@@ -7,8 +7,8 @@
             <field name="inherit_id" ref="account.view_invoice_tree"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='amount_untaxed_signed']" position="before">
-                    <field name="amount_total" string="合计美金" sum="Total"/>
-                    <field name="amount_residual" string="到期美金" sum="Total"/>
+                    <field name="amount_total" string="合计美金" sum="Total" attrs="{'column_invisible':[('move_type','=','in_invoice')]}"/>
+                    <field name="amount_residual" string="到期美金" sum="Total" attrs="{'column_invisible':[('move_type','=','in_invoice')]}"/>
                 </xpath>
             </field>
         </record>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.config_parameter" id="product_history_default_duration">
+            <field name="key">history.duration</field>
+            <field name="value">6</field>
+        </record>
+
+        <record model="ir.config_parameter" id="product_history_default_limit">
+            <field name="key">history.limit</field>
+            <field name="value">0</field>
+        </record>
+    </data>
+</odoo>

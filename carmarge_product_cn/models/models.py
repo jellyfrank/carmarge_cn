@@ -9,7 +9,8 @@ from odoo.tools.float_utils import float_round
 from odoo.exceptions import UserError
 import logging
 from dateutil.relativedelta import relativedelta
-from datetime import timedelta,time
+from datetime import timedelta, time
+from datetime import datetime
 from odoo.tools.safe_eval import safe_eval as eval
 
 _logger = logging.getLogger(__name__)
@@ -86,51 +87,74 @@ class product_template(models.Model):
             return f"{prefix}{number+1:04}"
 
     def _compute_standard_price_update_group(self):
-        self.group_use_product_standard_price_update = self.user_has_groups('carmarge_product_cn.group_use_product_standard_price_update')
+        self.group_use_product_standard_price_update = self.user_has_groups(
+            'carmarge_product_cn.group_use_product_standard_price_update')
 
     @api.model
     def _default_standard_price_update(self):
         return self.user_has_groups('carmarge_product_cn.group_use_product_standard_price_update')
 
     @api.model
-    def _search_purchase_qty(self,operator,operand):
+    def _search_purchase_qty(self, operator, operand):
         """搜索采购数量"""
         if operator not in ('>', '>=', '<', '<=', '='):
             return []
         if type(operand) not in (float, int):
             return []
         if operator == '=':
-            operator = '==' 
+            operator = '=='
         records = self.search([])
-        result = records.filtered(lambda record: eval(f"record.purchased_product_qty {operator} {operand}",locals_dict={'record':record}))
-        return [('id','in',result.ids)]
+        result = records.filtered(lambda record: eval(
+            f"record.purchased_product_qty {operator} {operand}", locals_dict={'record': record}))
+        return [('id', 'in', result.ids)]
 
     @api.model
-    def _searhc_virtual_available(self,operator,operand):
+    def _searhc_virtual_available(self, operator, operand):
         """搜索预测数量"""
         if operator not in ('>', '>=', '<', '<=', '='):
             return []
         if type(operand) not in (float, int):
             return []
         if operator == '=':
-            operator = '==' 
+            operator = '=='
         records = self.search([])
-        result = records.filtered(lambda record: eval(f"record.virtual_available {operator} {operand}",locals_dict={'record':record}))
-        return [('id','in',result.ids)]
+        result = records.filtered(lambda record: eval(
+            f"record.virtual_available {operator} {operand}", locals_dict={'record': record}))
+        return [('id', 'in', result.ids)]
 
-    
     @api.model
-    def _search_sales_count(self,operator,operand):
+    def _search_sales_count(self, operator, operand):
         """搜索预测数量"""
         if operator not in ('>', '>=', '<', '<=', '='):
             return []
         if type(operand) not in (float, int):
             return []
         if operator == '=':
-            operator = '==' 
+            operator = '=='
         records = self.search([])
-        result = records.filtered(lambda record: eval(f"record.sales_count {operator} {operand}",locals_dict={'record':record}))
-        return [('id','in',result.ids)]
+        result = records.filtered(lambda record: eval(
+            f"record.sales_count {operator} {operand}", locals_dict={'record': record}))
+        return [('id', 'in', result.ids)]
+
+    @api.depends("product_variant_id")
+    def _compute_price_history(self):
+        """"计算历史价格"""
+        for product in self:
+            lines = self.env['sale.order.line'].sudo().search([('product_id','=',product.product_variant_id.id)],limit=100)
+            data = [(0,0,{
+                "sale_date": datetime.strftime(line.order_id.date_order,'%Y-%m-%d %H:%M:%S'),
+                "sale_order": line.order_id.id,
+                "product_uom": line.product_uom.id,
+                "price": line.price_unit,
+                "partner_id": line.order_id.partner_id.id,
+                "product_id": line.product_id.id
+            }) for line in lines]
+            # data.insert(0,(5,))
+            print('=====================')
+            print(data)
+            product.sale_price_history = data
+            print(len(product.sale_price_history))
+
 
     brand = fields.Many2many("product.brand", string="适用")
     comm_check = fields.Boolean("是否商检", default=False)
@@ -164,10 +188,12 @@ class product_template(models.Model):
     merge_temp_ids = fields.Char(string="被合并产品IDS")
 
     group_use_product_standard_price_update = fields.Boolean(string="采购成本是否可编辑", default=_default_standard_price_update,
-                                                 compute="_compute_standard_price_update_group")
+                                                             compute="_compute_standard_price_update_group")
     purchased_product_qty = fields.Float(search=_search_purchase_qty)
     virtual_available = fields.Float(search=_searhc_virtual_available)
     sales_count = fields.Float(search=_search_sales_count)
+    sale_price_history = fields.Many2many(
+        "product.price.history", string="历史价格", compute="_compute_price_history")
 
     def action_view_sales(self):
         action = self.env["ir.actions.actions"]._for_xml_id(
@@ -268,7 +294,7 @@ class product_template(models.Model):
                 fields.remove(drop)
 
         return super(product_template, self).read_group(domain, fields, groupby, offset=offset, limit=limit,
-                                                     orderby=orderby, lazy=lazy)
+                                                        orderby=orderby, lazy=lazy)
 
 
 class product_brand(models.Model):
@@ -282,23 +308,27 @@ class ProductProduct(models.Model):
     _inherit = 'product.product'
 
     def _compute_purchased_product_qty(self):
-        date_from = fields.Datetime.to_string(fields.Date.context_today(self) - relativedelta(years=1))
+        date_from = fields.Datetime.to_string(
+            fields.Date.context_today(self) - relativedelta(years=1))
         domain = [
             ('order_id.state', 'in', ['purchase', 'done']),
             ('product_id', 'in', self.ids),
             ('order_id.date_approve', '>=', date_from)
         ]
-        order_lines = self.env['purchase.order.line'].read_group(domain, ['product_id', 'product_uom_qty'], ['product_id'])
-        purchased_data = dict([(data['product_id'][0], data['product_uom_qty']) for data in order_lines])
+        order_lines = self.env['purchase.order.line'].read_group(
+            domain, ['product_id', 'product_uom_qty'], ['product_id'])
+        purchased_data = dict(
+            [(data['product_id'][0], data['product_uom_qty']) for data in order_lines])
         for product in self:
             if not product.id:
                 product.purchased_product_qty = 0.0
                 continue
-            product.purchased_product_qty = float_round(purchased_data.get(product.id, 0), precision_rounding=product.uom_id.rounding)
+            product.purchased_product_qty = float_round(purchased_data.get(
+                product.id, 0), precision_rounding=product.uom_id.rounding)
 
             if product.product_tmpl_id.other_purchases_count:
-                product.purchased_product_qty = product.purchased_product_qty + product.product_tmpl_id.other_purchases_count
-
+                product.purchased_product_qty = product.purchased_product_qty + \
+                    product.product_tmpl_id.other_purchases_count
 
     def _compute_sales_count(self):
         r = {}
@@ -317,17 +347,16 @@ class ProductProduct(models.Model):
         ]
         for group in self.env['sale.report'].read_group(domain, ['product_id', 'product_uom_qty'], ['product_id']):
             r[group['product_id'][0]] = group['product_uom_qty']
-        sales_count =0
+        sales_count = 0
         for product in self:
             if not product.id:
                 product.sales_count = 0.0
                 continue
-            sales_count = float_round(r.get(product.id, 0), precision_rounding=product.uom_id.rounding)
+            sales_count = float_round(
+                r.get(product.id, 0), precision_rounding=product.uom_id.rounding)
             if product.product_tmpl_id.other_sales_count:
                 product.sales_count = sales_count + product.product_tmpl_id.other_sales_count
             else:
                 product.sales_count = sales_count
 
         return r
-
-    

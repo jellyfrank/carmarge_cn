@@ -45,6 +45,20 @@
                     <attribute name='attrs'>{'readonly':[('group_use_product_standard_price_update','=',False)]}</attribute>
                 </xpath>
 
+                <xpath expr="//page[@name='inventory']" position="after">
+                    <page string="历史价格">
+                        <field name="sale_price_history">
+                            <tree>
+                                <field name="sale_order"/>
+                                <field name="sale_date"/>
+                                <field name="product_uom"/>
+                                <field name="price"/>
+                                <field name="partner_id"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+
 
             </field>
         </record>
