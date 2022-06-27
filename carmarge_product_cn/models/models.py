@@ -145,15 +145,15 @@ class product_template(models.Model):
                 "sale_date": datetime.strftime(line.order_id.date_order,'%Y-%m-%d %H:%M:%S'),
                 "sale_order": line.order_id.id,
                 "product_uom": line.product_uom.id,
+                "quantity": line.product_uom_qty,
+                "currency_id": line.order_id.currency_id.id,
+                "price_list": line.order_id.pricelist_id.id,
                 "price": line.price_unit,
                 "partner_id": line.order_id.partner_id.id,
                 "product_id": line.product_id.id
             }) for line in lines]
             # data.insert(0,(5,))
-            print('=====================')
-            print(data)
             product.sale_price_history = data
-            print(len(product.sale_price_history))
 
 
     brand = fields.Many2many("product.brand", string="适用")

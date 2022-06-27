@@ -50,9 +50,12 @@
                         <field name="sale_price_history">
                             <tree>
                                 <field name="sale_order"/>
-                                <field name="sale_date"/>
+                                <field name="sale_date" widget="date"/>
                                 <field name="product_uom"/>
+                                <field name="currency_id"/>
+                                <field name="quantity"/>
                                 <field name="price"/>
+                                <field name="price_list"/>
                                 <field name="partner_id"/>
                             </tree>
                         </field>
