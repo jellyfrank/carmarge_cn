@@ -160,7 +160,7 @@ class account_move(models.Model):
 
         discount_line = self.invoice_line_ids.filtered(
             lambda l: l.product_id == discount_product_id.product_variant_id)
-        self.discount_manual = discount_line.price_subtotal
+        self.discount_manual = discount_line.mapped("price_subtotal")[0]
 
     def _recompute_payment_terms_lines(self):
         ''' Compute the dynamic payment term lines of the journal entry.'''

@@ -5,6 +5,7 @@
 from odoo import api, fields, models, _
 from odoo.tools.misc import formatLang, get_lang, format_amount
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
+from datetime import datetime
 
 
 class purchase_order(models.Model):
@@ -104,7 +105,9 @@ class purchase_order(models.Model):
                     'price': price,
                     'currency_id': currency.id,
                     'delay': 0,
-                    "min_qty": line.product_qty
+                    "min_qty": line.product_qty,
+                    "date_start": datetime.now(),
+                    "date_end": line.order_id.date_order
                 }
                 # In case the order partner is a contact address, a new supplierinfo is created on
                 # the parent company. In this case, we keep the product name and code.
