@@ -158,9 +158,9 @@ class account_move(models.Model):
         if not discount_product_id.product_variant_id in self.invoice_line_ids.product_id:
             self.discount_manual = 0
 
-        discount_line = self.invoice_line_ids.filtered(
-            lambda l: l.product_id == discount_product_id.product_variant_id)
-        self.discount_manual = discount_line.mapped("price_subtotal")[0]
+        price_subtotals  = self.invoice_line_ids.filtered(
+            lambda l: l.product_id == discount_product_id.product_variant_id).mapped("price_subtotal")
+        self.discount_manual = rice_subtotals[0] if price_subtotals else 0
 
     def _recompute_payment_terms_lines(self):
         ''' Compute the dynamic payment term lines of the journal entry.'''

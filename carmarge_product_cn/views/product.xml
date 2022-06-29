@@ -52,7 +52,7 @@
                                 <field name="sale_order"/>
                                 <field name="sale_date" widget="date"/>
                                 <field name="product_uom"/>
-                                <field name="currency_id"/>
+                                <field name="currency_id" string="币种"/>
                                 <field name="quantity"/>
                                 <field name="price"/>
                                 <field name="price_list"/>
