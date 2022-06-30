@@ -113,6 +113,8 @@
 <!--                  parent="purchase.menu_purchase_root"-->
 <!--                  action="account.res_partner_action_supplier" sequence="2"/>-->
 
+        
+
 
     </data>
 </odoo>
