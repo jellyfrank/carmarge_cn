@@ -27,8 +27,6 @@ class account_move(models.Model):
         "discount_manual")
     def _compute_amount(self):
         for move in self:
-            print('******carmarge compute amount*********')
-            print(move.amount_residual) # 115.0
             if move.payment_state == 'invoicing_legacy':
                 # invoicing_legacy state is set via SQL when setting setting field
                 # invoicing_switch_threshold (defined in account_accountant).
@@ -52,28 +50,23 @@ class account_move(models.Model):
                 if move.is_invoice(include_receipts=True):
                     # === Invoices ===
                     if not line.exclude_from_invoice_tab:
-                        print('******carmarge compute amount 2*********')
                         # Untaxed amount.
                         total_untaxed += line.balance
                         total_untaxed_currency += line.amount_currency
                         total += line.balance
                         total_currency += line.amount_currency
                     elif line.tax_line_id:
-                        print('******carmarge compute amount 3*********')
                         # Tax amount.
                         total_tax += line.balance
                         total_tax_currency += line.amount_currency
                         total += line.balance
                         total_currency += line.amount_currency
                     elif line.account_id.user_type_id.type in ('receivable', 'payable'):
-                        print('******carmarge compute amount 4*********')
                         # Residual amount.
                         total_to_pay += line.balance
                         total_residual += line.amount_residual
                         total_residual_currency += line.amount_residual_currency
                         print(line.id,line.balance, line.amount_residual, line.amount_residual_currency)
-                    print('******carmarge compute amount 5*********')
-                    print(total_residual_currency)
                 else:
                     # === Miscellaneous journal entry ===
                     if line.debit:
@@ -160,7 +153,7 @@ class account_move(models.Model):
 
         price_subtotals  = self.invoice_line_ids.filtered(
             lambda l: l.product_id == discount_product_id.product_variant_id).mapped("price_subtotal")
-        self.discount_manual = rice_subtotals[0] if price_subtotals else 0
+        self.discount_manual = price_subtotals[0] if price_subtotals else 0
 
     def _recompute_payment_terms_lines(self):
         ''' Compute the dynamic payment term lines of the journal entry.'''
