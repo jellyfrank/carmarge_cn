@@ -3,6 +3,7 @@
 # @Author  : Kevin Kong (kfx2007@163.com)
 
 from odoo import api, fields, models, _, exceptions
+from odoo.models import NewId
 from odoo.exceptions import UserError
 
 
@@ -82,6 +83,8 @@ class sale_order(models.Model):
             for order in self:
                 order.margin = mapped_data.get(order.id, 0.0)
                 order.margin_percent = order.amount_untaxed and order.margin / order.amount_untaxed
+
+    
 
     
 
@@ -213,6 +216,22 @@ class sale_order_line(models.Model):
         lines = self.order_id.order_line.filtered(lambda line: line.product_id == self.product_id)
         if len(lines)>1:
             raise UserError(f"产品:{self.product_id.name}已经在明细中")
+
+    @api.onchange("product_id")
+    def _onchange_product_id(self):
+        """产品发生变化时"""
+        product_ids = []
+        for line in self.order_id.order_line:
+            if not line.product_id:
+                continue
+            print(line.id.ref,line.id.origin)
+            if isinstance(line.id, NewId):
+                if line.id.ref or line.id.origin:
+                    product_ids.append(line.product_id.id)
+            else:
+                product_ids.append(line.product_id.id)
+        if len(product_ids)>=2:
+            raise UserError(f"产品:{self.product_id.display_name}已经存在于明细行中！")
 
     delivery_cost_line = fields.Monetary(
         "运费", compute="_compute_line", store=True)
