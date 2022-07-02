@@ -3,6 +3,7 @@
 # @Author  : Kevin Kong (kfx2007@163.com)
 
 from odoo import api, fields, models, _
+from odoo.models import NewId
 from odoo.tools.misc import formatLang, get_lang, format_amount
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from datetime import datetime
