@@ -193,7 +193,22 @@ class purchase_order_line(models.Model):
                 'packaging':[('id','in',product_ids)]
             }
         }
-
+        
+    @api.onchange("product_id")
+    def _onchange_product_id(self):
+        """产品发生变化时"""
+        product_ids = []
+        for line in self.order_id.order_line:
+            if not line.product_id:
+                continue
+            print(line.id.ref,line.id.origin)
+            if isinstance(line.id, NewId):
+                if line.id.ref or line.id.origin:
+                    product_ids.append(line.product_id.id)
+            else:
+                product_ids.append(line.product_id.id)
+        if len(product_ids)>=2:
+            raise UserError(f"产品:{self.product_id.display_name}已经存在于明细行中！")
 
     delivery_cost_line = fields.Monetary(
         "运费", compute="_compute_line", store=True)
