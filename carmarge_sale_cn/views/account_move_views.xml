@@ -41,16 +41,16 @@
                     <field name="invoice_date" optional="show" invisible="context.get('default_move_type') not in ('in_invoice', 'in_refund','in_receipt')" string="开票日期"/>
                     <field name="invoice_date" optional="show" invisible="context.get('default_move_type') not in ('out_invoice', 'out_refund','out_receipt')" string="开票日期"/>
                     <field name="invoice_date_due" widget="remaining_days" optional="show" attrs="{'invisible': [['payment_state', 'in', ('paid', 'in_payment', 'reversed')]]}"/>
-                    <field name="invoice_origin" optional="hide" string="Source Document"/>
+                    <field name="invoice_origin" optional="hide" string="源单据"/>
                     <field name="payment_reference" optional="hide" invisible="context.get('default_move_type') in ('out_invoice', 'out_refund','out_receipt')"/>
                     <field name="ref" optional="hide"/>
                     <field name="invoice_user_id" optional="hide" invisible="context.get('default_move_type') not in ('out_invoice', 'out_refund','out_receipt')" string="Sales Person" widget="many2one_avatar_user"/>
                     <field name="activity_ids" widget="list_activity" optional="show"/>
                     <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" optional="show"/>
                     <field name="amount_untaxed_signed" string="不含税金额" sum="Total" optional="show"/>
-                    <field name="amount_tax_signed" string="Tax" sum="Total" optional="hide"/>
+                    <field name="amount_tax_signed" string="税" sum="Total" optional="hide"/>
                     <field name="amount_total_signed" string="合计" sum="Total" decoration-bf="1" optional="show"/>
-                    <field name="amount_residual_signed" string="Amount Due" sum="Amount Due" optional="hide"/>
+                    <field name="amount_residual_signed" string="到期合计" sum="Amount Due" optional="hide"/>
                     <field name="currency_id" invisible="1"/>
                     <field name="company_currency_id" invisible="1"/>
                     <field name="state" widget="badge" decoration-success="state == 'posted'" decoration-info="state == 'draft'" optional="show"/>
