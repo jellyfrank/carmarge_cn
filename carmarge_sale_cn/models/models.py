@@ -97,6 +97,7 @@ class sale_order(models.Model):
         'account.incoterms', domain="[('code','in',['FOB','CIF'])]")
     incoterm_code = fields.Char("贸易术语code", related='incoterm.code')
     amount_payment = fields.Monetary("货款", compute="_compute_amount_payment", store=True)
+    payment_term = fields.Char("付款条款", required=True)
     
 
     @api.model

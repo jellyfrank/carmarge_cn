@@ -21,7 +21,9 @@
         <!-- <field name="amount_tax" position="attributes">
           <attribute name="invisible">1</attribute>
         </field> -->
-        <field name="payment_term_id" position="after">
+        <field name="payment_term_id" position="replace">
+          <field name="payment_term_id" invisible="1"/>
+          <field name="payment_term"/>
           <field name="port_city" required="1"/>
         </field>
         <!-- <xpath expr="//field[@name='order_line']//tree//field[@name='product_code']" position="attributes">
@@ -70,6 +72,8 @@
           <field name="group_use_sale_price_update" invisible="1"/>
           <field name="note"/>
         </xpath>
+
+        
       </field>
     </record>
   </data>

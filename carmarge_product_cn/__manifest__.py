@@ -33,7 +33,8 @@
         'views/packaging.xml',
         'views/report.xml',
         'views/company.xml',
-        'wizard/product_merge_view.xml'
+        'wizard/product_merge_view.xml',
+        'views/pricelist.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
