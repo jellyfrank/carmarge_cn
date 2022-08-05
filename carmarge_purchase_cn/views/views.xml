@@ -30,7 +30,7 @@
                 </xpath>
 
                 <xpath expr="//field[@name='order_line']//tree//field[@name='price_unit']" position="after">
-                    <field name="packaging" options="{'no_create': True, 'no_edit': True}"/>
+                    <field name="packaging" options="{'no_create': True, 'no_edit': True}" domain="[('product_id','=',product_id)]"/>
                     <field name="packaging_qty" sum="total"/>
                     <field name="weight" optional="hide"/>
                     <field name="net_weight" optional="hide"/>

@@ -217,7 +217,7 @@ class purchase_order_line(models.Model):
     discount_manual_line = fields.Monetary(
         "优惠", compute="_compute_line", store=True)
     packaging = fields.Many2one(
-        "product.packaging", string="包装规格", domain=lambda self: [('product_id','=', self.product_id.id)])
+        "product.packaging", string="包装规格")
     packaging_qty = fields.Float(
         "件数", compute="_compute_packaging_qty", store=True)
     packaging_weight = fields.Float(
