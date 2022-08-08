@@ -29,7 +29,7 @@
         'views/views.xml',
         'views/layout.xml',
         'views/templates.xml',
-        # 'views/report.xml',
+        'views/report.xml',
         'views/sale_order_views.xml',
         'views/account_report.xml',
         'views/account_report_templates.xml',
