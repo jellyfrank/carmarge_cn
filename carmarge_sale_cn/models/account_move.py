@@ -45,6 +45,7 @@ class AccountMove(models.Model):
     #                     move.amount_total  -= 2* line.price_subtotal
 
     sale_order = fields.Many2one("sale.order",string="关联的销售订单", compute="_compute_sale_order")
+    payment_term = fields.Char(related="sale_order.payment_term")
 
     def _get_sale_order_amount(self):
         '''
