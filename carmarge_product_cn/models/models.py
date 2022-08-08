@@ -169,7 +169,7 @@ class product_template(models.Model):
     packaging_length = fields.Float("包装长(CM)", related="packaging.length")
     packaging_width = fields.Float("包装宽(CM)", related="packaging.width")
     packaging_height = fields.Float("包装高(CM)", related="packaging.height")
-    packaging_volume = fields.Float("包装体积(CM", related="packaging.volume", digits=4)
+    packaging_volume = fields.Float("包装体积(CM", related="packaging.volume", digits=(16,4))
     packaging_net_weight = fields.Float("包装净重(KG)", related="packaging.net_weight")
     packaging_weight = fields.Float("包装毛重(KG)", related="packaging.weight")
     width = fields.Float("宽")
