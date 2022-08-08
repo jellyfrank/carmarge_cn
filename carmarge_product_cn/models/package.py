@@ -19,5 +19,5 @@ class product_packaging(models.Model):
     length = fields.Float("包装长(CM)")
     net_weight = fields.Float("包装净重(KG)")
     width = fields.Float("包装宽(CM)")
-    weight = fields.Float("包装毛重(CM)")
+    weight = fields.Float("包装毛重(KG)")
     volume   = fields.Float("包装体积(CM3)", compute="_get_volume", digits=(16,4))
