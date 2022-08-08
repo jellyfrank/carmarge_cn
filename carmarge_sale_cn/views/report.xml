@@ -113,7 +113,7 @@
                         </td>
                         <td>
                             <span>
-                                <t t-esc="doc.payment_term_id.name"/>
+                                <t t-esc="doc.payment_term"/>
                             </span>
                         </td>
                     </tr>

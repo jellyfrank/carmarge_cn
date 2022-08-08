@@ -20,13 +20,14 @@ class product_template(models.Model):
 
     _inherit = "product.template"
 
+    @api.depends("packaging_ids")
     def _get_packaging(self):
         """"""
         for product in self:
             if not product.packaging_ids:
                 product.packaging = None
             else:
-                product.packaging = product.packaging_ids[0] if product.packaging_ids else None
+                product.packaging = product.packaging_ids[0]
 
     def _product_category_code(self, categ_id):
         # 产品类别编码汇总
@@ -168,7 +169,7 @@ class product_template(models.Model):
     packaging_length = fields.Float("包装长(CM)", related="packaging.length")
     packaging_width = fields.Float("包装宽(CM)", related="packaging.width")
     packaging_height = fields.Float("包装高(CM)", related="packaging.height")
-    packaging_volume = fields.Float("包装体积(CM", related="packaging.volume")
+    packaging_volume = fields.Float("包装体积(CM", related="packaging.volume", digits=4)
     packaging_net_weight = fields.Float("包装净重(KG)", related="packaging.net_weight")
     packaging_weight = fields.Float("包装毛重(KG)", related="packaging.weight")
     width = fields.Float("宽")
