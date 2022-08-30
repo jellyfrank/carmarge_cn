@@ -25,7 +25,18 @@
           <field name="payment_term_id" invisible="1"/>
           <field name="payment_term"/>
           <field name="port_city" required="1"/>
+          <label for="commitment_date" string="交货日期"/>
+          <div name="commitment_date_div" class="o_row">
+            <field name="commitment_date"/>
+            <span name="expected_date_span" class="text-muted">
+              Expected:
+              <field name="expected_date" widget="date"/>
+            </span>
+          </div>
         </field>
+        <!-- <xpath expr="//group[@name='commitment_date']" position="after">
+          <attribute name='invisible'>1</attribute>
+        </xpath> -->
         <!-- <xpath expr="//field[@name='order_line']//tree//field[@name='product_code']" position="attributes">
           <attribute name='invisible'>1</attribute>
         </xpath> -->
@@ -72,9 +83,35 @@
           <field name="group_use_sale_price_update" invisible="1"/>
           <field name="note"/>
         </xpath>
-
-        
       </field>
     </record>
+
+    <record id="view_sale_order_quotation_tree" model="ir.ui.view">
+      <field name="name">sale order quotation tree</field>
+      <field name="model">sale.order</field>
+      <field name="inherit_id" ref="sale.view_quotation_tree"/>
+      <field name="arch" type="xml">
+        <field name="amount_total" position="after">
+          <field name="paid_amount" optional="hide"/>
+          <field name="due_amount" optional="hide"/>
+          <field name="delivery_state" optional="hide"/>
+        </field>
+      </field>
+    </record>
+
+    <record id="view_sale_order_tree" model="ir.ui.view">
+      <field name="name">sale order tree</field>
+      <field name="model">sale.order</field>
+      <field name="inherit_id" ref="sale.view_order_tree"/>
+      <field name="arch" type="xml">
+        <field name="amount_total" position="after">
+          <field name="paid_amount" optional="hide"/>
+          <field name="due_amount" optional="hide"/>
+          <field name="delivery_state" optional="hide"/>
+        </field>
+      </field>
+    </record>
+
+
   </data>
 </odoo>
