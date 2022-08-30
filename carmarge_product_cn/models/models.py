@@ -15,6 +15,11 @@ from odoo.tools.safe_eval import safe_eval as eval
 
 _logger = logging.getLogger(__name__)
 
+ORIGINS = [
+    ('self', '自营产品'),
+    ('purchase', '外采产品')
+]
+
 
 class product_template(models.Model):
 
@@ -141,9 +146,10 @@ class product_template(models.Model):
     def _compute_price_history(self):
         """"计算历史价格"""
         for product in self:
-            lines = self.env['sale.order.line'].sudo().search([('product_id','=',product.product_variant_id.id)],limit=100)
-            data = [(0,0,{
-                "sale_date": datetime.strftime(line.order_id.date_order,'%Y-%m-%d %H:%M:%S'),
+            lines = self.env['sale.order.line'].sudo().search(
+                [('product_id', '=', product.product_variant_id.id)], limit=100)
+            data = [(0, 0, {
+                "sale_date": datetime.strftime(line.order_id.date_order, '%Y-%m-%d %H:%M:%S'),
                 "sale_order": line.order_id.id,
                 "product_uom": line.product_uom.id,
                 "quantity": line.product_uom_qty,
@@ -155,7 +161,6 @@ class product_template(models.Model):
             }) for line in lines]
             # data.insert(0,(5,))
             product.sale_price_history = data
-
 
     brand = fields.Many2many("product.brand", string="适用")
     comm_check = fields.Boolean("是否商检", default=False)
@@ -169,8 +174,10 @@ class product_template(models.Model):
     packaging_length = fields.Float("包装长(CM)", related="packaging.length")
     packaging_width = fields.Float("包装宽(CM)", related="packaging.width")
     packaging_height = fields.Float("包装高(CM)", related="packaging.height")
-    packaging_volume = fields.Float("包装体积(CM", related="packaging.volume", digits=(16,4))
-    packaging_net_weight = fields.Float("包装净重(KG)", related="packaging.net_weight")
+    packaging_volume = fields.Float(
+        "包装体积(CM", related="packaging.volume", digits=(16, 4))
+    packaging_net_weight = fields.Float(
+        "包装净重(KG)", related="packaging.net_weight")
     packaging_weight = fields.Float("包装毛重(KG)", related="packaging.weight")
     width = fields.Float("宽")
     weight = fields.Float(string="毛重")
@@ -195,6 +202,7 @@ class product_template(models.Model):
     sales_count = fields.Float(search=_search_sales_count)
     sale_price_history = fields.Many2many(
         "product.price.history", string="历史价格", compute="_compute_price_history")
+    origin_type = fields.Selection(ORIGINS, string="产品来源", default='self')
 
     def action_view_sales(self):
         action = self.env["ir.actions.actions"]._for_xml_id(
