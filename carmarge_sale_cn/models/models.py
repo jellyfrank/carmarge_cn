@@ -271,7 +271,7 @@ class sale_order_line(models.Model):
             elif 0<line.qty_delivered < line.product_qty:
                 line.delivery_state = 'partial'
             else:
-                line.delivery_state = 'done'
+                line.delivery_state = 'all'
 
     delivery_cost_line = fields.Monetary(
         "运费", compute="_compute_line", store=True)
