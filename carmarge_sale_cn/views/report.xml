@@ -177,7 +177,7 @@
 
         <xpath expr="//table[@class='table table-sm o_main_table']//thead//tr" position="replace">
             <th name="th_no" class="text-center">No.</th>
-            <th name="th_description" class="text-center" style="width: 20%;">Description</th>
+            <th name="th_description" class="text-center" style="width: 40%;">Description</th>
             <th name="th_unit" class="text-center">Unit</th>
             <th name="th_quantity" class="text-center">Quantity</th>
             <th name="th_priceunit" class="text-center">Unit Price</th>
