@@ -92,6 +92,7 @@
                 </field>
                 <field name="name" position="after">
                     <field name="translate_name"/>
+                    <field name="order_type"/>
                 </field>
                 <field name="default_code" position="after">
                     <field name="barcode" position="move"/>
@@ -163,6 +164,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='name']" position="after">
                     <field name="translate_name" string="英文名称" filter_domain="[('translate_name', 'ilike', self)]"/>
+                    <field name="order_type"/>
                 </xpath>
 
 

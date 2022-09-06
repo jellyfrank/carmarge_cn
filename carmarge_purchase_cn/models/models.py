@@ -10,9 +10,9 @@ from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from datetime import datetime
 
 RECEIVE_STATES = [
-    ('none','未接收'),
-    ('partial','部分接收'),
-    ('done','全部接收')
+    ('none','未入库'),
+    ('partial','部分入库'),
+    ('done','全部入库')
 ]
 
 
