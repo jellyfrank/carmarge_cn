@@ -166,7 +166,9 @@
                     <field name="translate_name" string="英文名称" filter_domain="[('translate_name', 'ilike', self)]"/>
                     <field name="origin_type"/>
                 </xpath>
-
+                <filter name="categ_id" position="after">
+                    <filter name="attr" string="产品属性" context="{'group_by':'origin_type'}"/>
+                </filter>
 
             </field>
         </record>
