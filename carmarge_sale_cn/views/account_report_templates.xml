@@ -32,7 +32,7 @@
                     </div>
                 </h2>
 
-                <div class="text-right row justify-content-end">
+                <!-- <div class="text-right row justify-content-end">
                     <div class=" col-4 mb-2 mr-2">
                         <span>Issuing Date:</span>
                         <span t-field="doc.invoice_date" t-options='{"format": "MM/dd/yyyy"}'/>
@@ -41,7 +41,7 @@
                         <span>Expiry Date:</span>
                         <span t-field="doc.invoice_date_due" t-options='{"format": "MM/dd/yyyy"}'/>
                     </div>
-                </div>
+                </div> -->
 
                 <table class="table table-sm o_main_table">
                     <tbody>
@@ -162,7 +162,7 @@
                     <thead style="display: table-row-group">
                         <tr>
                             <th name="th_no" class="text-center">No.</th>
-                            <th name="th_description" class="text-center" style="width: 20%;">Description</th>
+                            <th name="th_description" class="text-center" style="width: 40%;">Description</th>
                             <th name="th_unit" class="text-center">Unit</th>
                             <th name="th_quantity" class="text-center">Quantity</th>
                             <th name="th_priceunit" class="text-center">Unit Price</th>
