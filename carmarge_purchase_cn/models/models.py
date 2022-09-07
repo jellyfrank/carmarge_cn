@@ -9,6 +9,12 @@ from odoo.tools.misc import formatLang, get_lang, format_amount
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from datetime import datetime
 
+RECEIVE_STATES = [
+    ('none','未入库'),
+    ('partial','部分入库'),
+    ('done','全部入库')
+]
+
 
 class purchase_order(models.Model):
 
@@ -129,10 +135,36 @@ class purchase_order(models.Model):
                 except AccessError:  # no write access rights -> just ignore
                     break
 
+    @api.depends("order_line.receive_state")
+    def _compute_receive_state(self):
+        """计算入库状态"""
+        for po in self:
+            if not po.order_line:
+                po.receive_state = 'none'
+            else:
+                states = list(set(po.order_line.mapped("receive_state")))
+                if len(states) == 1 and states[0] == 'none':
+                    po.receive_state = 'none'
+                elif len(states) == 1 and states[0] == 'done':
+                    po.receive_state = 'done'
+                else:
+                    po.receive_state = 'partial'
+
+    @api.depends("invoice_ids.state","invoice_ids.amount_residual")
+    def _compute_amount(self):
+        """计算到期金额和已付金额"""
+        for po in self:
+            total = sum([invoice_id.amount_total for invoice_id in po.invoice_ids if invoice_id.state == 'posted'])
+            po.due_amount = sum([invoice_id.amount_residual for invoice_id in po.invoice_ids if invoice_id.state == 'posted'])
+            po.paid_amount = total - po.due_amount
+
+
     delivery_cost = fields.Monetary("运费",compute="_compute_delivery_discount", store=True)
     discount_manual = fields.Monetary("优惠",compute="_compute_delivery_discount", store=True)
     sale_id = fields.Many2one("sale.order",string="销售单")
-
+    receive_state = fields.Selection(RECEIVE_STATES,string="入库状态",compute="_compute_receive_state", store=True)
+    paid_amount = fields.Monetary("已付金额", compute="_compute_amount",store=True)
+    due_amount = fields.Monetary("到期金额", compute="_compute_amount",store=True)
 
     @api.model
     def create(self,vals):
@@ -144,6 +176,9 @@ class purchase_order(models.Model):
         if vals.get("sale_id",None):
             vals['name'] = self._set_sale_name(vals['sale_id'])
         return super(purchase_order,self).write(vals)
+
+
+
 
 class purchase_order_line(models.Model):
 
@@ -212,30 +247,31 @@ class purchase_order_line(models.Model):
         if len(product_ids)>=2:
             raise UserError(f"产品:{self.product_id.display_name}已经存在于明细行中！")
 
-    delivery_cost_line = fields.Monetary(
-        "运费", compute="_compute_line", store=True)
-    discount_manual_line = fields.Monetary(
-        "优惠", compute="_compute_line", store=True)
-    packaging = fields.Many2one(
-        "product.packaging", string="包装规格")
-    packaging_qty = fields.Float(
-        "件数", compute="_compute_packaging_qty", store=True)
-    packaging_weight = fields.Float(
-        "包装毛重", related="packaging.weight", store=True)
-    packaging_net_weight = fields.Float(
-        "包装净重", related="packaging.net_weight", store=True)
-    packaging_volume = fields.Float(
-        "包装体积", related="packaging.volume", store=True)
-    total_packaging_weight = fields.Float(
-        "总包装毛重", compute="_compute_total", store=True)
-    total_packaging_net_weight = fields.Float(
-        "总包装净重", compute="_compute_total", store=True)
-    total_packaging_volume = fields.Float(
-        "总包装体积", compute="_compute_total", store=True)
+    @api.depends("product_qty","qty_received")
+    def _compute_receive_state(self):
+        """计算接收状态"""
+        for line in self:
+            if line.qty_received == 0:
+                line.receive_state = 'none'
+            elif line.product_qty > line.qty_received:
+                line.receive_state = 'partial'
+            else:
+                line.receive_state = 'done'
+
+    delivery_cost_line = fields.Monetary("运费", compute="_compute_line", store=True)
+    discount_manual_line = fields.Monetary("优惠", compute="_compute_line", store=True)
+    packaging = fields.Many2one("product.packaging", string="包装规格")
+    packaging_qty = fields.Float("件数", compute="_compute_packaging_qty", store=True)
+    packaging_weight = fields.Float("包装毛重", related="packaging.weight", store=True)
+    packaging_net_weight = fields.Float("包装净重", related="packaging.net_weight", store=True)
+    packaging_volume = fields.Float("包装体积", related="packaging.volume", store=True)
+    receive_state = fields.Selection(RECEIVE_STATES,string="接收状态",compute="_compute_receive_state",store=True)
+    total_packaging_weight = fields.Float("总包装毛重", compute="_compute_total", store=True)
+    total_packaging_net_weight = fields.Float("总包装净重", compute="_compute_total", store=True)
+    total_packaging_volume = fields.Float("总包装体积", compute="_compute_total", store=True)
     weight = fields.Float("毛重", related="product_id.weight")
     net_weight = fields.Float("净重", related="product_id.net_weight")
     volume = fields.Float("体积", related="product_id.volume")
-
     translate_name = fields.Char(string="英文名称", related="product_id.translate_name")
 
     @api.onchange('product_qty', 'product_uom')
@@ -252,26 +288,6 @@ class purchase_order_line(models.Model):
 
         if seller or not self.date_planned:
             self.date_planned = self._get_date_planned(seller).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
-
-        # If not seller, use the standard price. It needs a proper currency conversion.
-        # if not seller:
-        #     po_line_uom = self.product_uom or self.product_id.uom_po_id
-        #     price_unit = self.env['account.tax']._fix_tax_included_price_company(
-        #         self.product_id.uom_id._compute_price(self.product_id.standard_price, po_line_uom),
-        #         self.product_id.supplier_taxes_id,
-        #         self.taxes_id,
-        #         self.company_id,
-        #     )
-        #     if price_unit and self.order_id.currency_id and self.order_id.company_id.currency_id != self.order_id.currency_id:
-        #         price_unit = self.order_id.company_id.currency_id._convert(
-        #             price_unit,
-        #             self.order_id.currency_id,
-        #             self.order_id.company_id,
-        #             self.date_order or fields.Date.today(),
-        #         )
-
-        #     self.price_unit = price_unit
-        #     return
 
         price_unit = self.env['account.tax']._fix_tax_included_price_company(seller.price,
                                                                              self.product_id.supplier_taxes_id,

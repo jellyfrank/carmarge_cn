@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_carmarge_pricelist_wizard_form" model="ir.ui.view">
+            <field name="name">批量添加产品到价格表</field>
+            <field name="model">carmarge.pricelist.wizard</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <h1>批量添加产品到价格表</h1>
+                    <div>
+                        <group>
+                         <group>
+                            <field name="pricelist_id" required="1"/>
+                         </group>
+                          <group name="pricelist_rule_limits">
+                              <field name="min_quantity"/>
+                              <field name="date_start"/>
+                              <field name="date_end"/>
+                          </group>
+                          <!-- <group name="pricelist_rule_related" groups="base.group_no_one"> -->
+                              <!-- Infos from the pricelist for UI rendering (monetary fields, ...) -->
+                              <!-- <field name="pricelist_id" invisible="1"/>
+                              <field name="currency_id" groups="base.group_multi_currency"/>
+                              <field name="company_id" groups="base.group_multi_company"/>
+                          </group> -->
+                      </group>
+                      <group string="Price Computation" name="pricelist_rule_computation" groups="product.group_sale_pricelist">
+                          <group name="pricelist_rule_method">
+                              <field name="compute_price" string="Compute Price" widget="radio"/>
+                          </group>
+                          <group name="pricelist_rule_base">
+                              <field name="fixed_price" attrs="{'invisible':[('compute_price', '!=', 'fixed')]}"/>
+                              <label for="percent_price" attrs="{'invisible':[('compute_price', '!=', 'percentage')]}"/>
+                              <div attrs="{'invisible':[('compute_price', '!=', 'percentage')]}">
+                                  <field name="percent_price" class="oe_inline" attrs="{'invisible':[('compute_price', '!=', 'percentage')]}"/>
+                                  %
+                              </div>
+                              <field name="base" attrs="{'invisible':[('compute_price', '!=', 'formula')]}"/>
+                              <field name="base_pricelist_id" attrs="{                                 'invisible': ['|', ('compute_price', '!=', 'formula'), ('base', '!=', 'pricelist')],                                 'required': [('compute_price', '=', 'formula'), ('base', '=', 'pricelist')],                                 'readonly': [('base', '!=', 'pricelist')]}"/>
+                          </group>
+                      </group>
+                      <div class="oe_grey" groups="uom.group_uom">
+                          <p>The computed price is expressed in the default Unit of Measure of the product.</p>
+                      </div>
+                      <group name="pricelist_rule_advanced" col="6" attrs="{'invisible':[('compute_price', '!=', 'formula')]}" groups="product.group_sale_pricelist">
+                          <label for="base" string="New Price = "/>
+                          <div>
+                              <span attrs="{'invisible':[('base', '!=', 'list_price')]}">Sales Price  -  </span>
+                              <span attrs="{'invisible':[('base', '!=', 'standard_price')]}">Cost  -  </span>
+                              <span attrs="{'invisible':[('base', '!=', 'pricelist')]}">Other Pricelist  -  </span>
+                          </div>
+                          <label for="price_discount"/>
+                          <div class="o_row">
+                              <field name="price_discount"/>
+                              <span>%</span>
+                          </div>
+                          <label string=" + " for="price_surcharge"/>
+                          <field name="price_surcharge" nolabel="1"/>
+
+                          <field name="price_round" string="Rounding Method"/>
+                          <field name="price_min_margin" string="Min. Margin"/>
+                          <field name="price_max_margin" string="Max. Margin"/>
+                      </group>
+                    </div>
+                    <footer>
+                        <button name="button_confirm" string="添加" class="oe_highlight" type="object" />
+                        or
+                        <button special="cancel" string="Cancel" class="oe_link" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_carmarge_pricelist_wizard_form" model="ir.actions.act_window">
+            <field name="name">批量添加产品到价格表</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">carmarge.pricelist.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="model_product_template"/>
+        </record>
+    </data>
+</odoo>

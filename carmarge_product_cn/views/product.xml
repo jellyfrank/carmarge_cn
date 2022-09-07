@@ -11,6 +11,7 @@
                     <field name="other_purchases_count" invisible="1"/>
                     <field name="other_sales_count" invisible="1"/>
                     <field name="translate_name" placeholder="英文名称"/>
+                    <field name="origin_type" options="{'horizontal': true}" widget="radio" class="oe_inline"/>
                 </xpath>
                 <xpath expr="//div[@name='weight']" position="after">
                     <label for="net_weight" string="净重"/>
@@ -91,6 +92,7 @@
                 </field>
                 <field name="name" position="after">
                     <field name="translate_name"/>
+                    <field name="origin_type"/>
                 </field>
                 <field name="default_code" position="after">
                     <field name="barcode" position="move"/>
@@ -162,8 +164,11 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='name']" position="after">
                     <field name="translate_name" string="英文名称" filter_domain="[('translate_name', 'ilike', self)]"/>
+                    <field name="origin_type"/>
                 </xpath>
-
+                <filter name="categ_id" position="after">
+                    <filter name="attr" string="产品属性" context="{'group_by':'origin_type'}"/>
+                </filter>
 
             </field>
         </record>
