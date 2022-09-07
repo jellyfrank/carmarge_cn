@@ -28,10 +28,10 @@
           <label for="commitment_date" string="交货日期"/>
           <div name="commitment_date_div" class="o_row">
             <field name="commitment_date"/>
-            <span name="expected_date_span" class="text-muted">
+            <!-- <span name="expected_date_span" class="text-muted">
               Expected:
               <field name="expected_date" widget="date"/>
-            </span>
+            </span> -->
           </div>
         </field>
         <!-- <xpath expr="//group[@name='commitment_date']" position="after">

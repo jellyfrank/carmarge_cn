@@ -120,7 +120,7 @@
                     <field name="receive_state" optional="hide"/>
                     <field name="amount_total" optional="hide"/>
                     <field name="paid_amount" optional="hide"/>
-                    <field name="due_amount" optional="hide"/>
+                    <field name="due_amount" string="应付金额" optional="hide"/>
                 </field>
             </field>
         </record>
