@@ -133,9 +133,9 @@ class account_move(models.Model):
     def _compute_delivery_discount(self):
         """计算海运费和优惠"""
         delivery_product_id = self.env.ref(
-            "carmarge_sale_cn.service_delivery_cost")
+            "carmarge_purchase_cn.service_delivery_cost")
         discount_product_id = self.env.ref(
-            "carmarge_sale_cn.service_discount")
+            "carmarge_purchase_cn.service_discount")
         if not delivery_product_id:
             self.delivery_cost = 0
         if not discount_product_id:
