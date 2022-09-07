@@ -14,7 +14,10 @@ class BaseModel(models.AbstractModel):
         res = super(BaseModel,self).read_group(
             domain, fields, groupby, offset=offset, limit=limit, orderby=orderby, lazy=lazy)
         for field_name in fields:
-            field = self._fields[field_name.split(':')[0]]
+            _field = field_name.split(':')[0]
+            if _field not in self._fields:
+                continue
+            field = self._fields[_field]
             if field.compute and hasattr(field, 'group') and getattr(field, 'group') and field.type in ('integer','float','moneytary'):
                 # need it add sum
                 for group in res:
