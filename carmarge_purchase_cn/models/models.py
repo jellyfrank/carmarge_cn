@@ -250,7 +250,7 @@ class purchase_order_line(models.Model):
     @api.depends("product_qty","qty_received")
     def _compute_receive_state(self):
         """计算接收状态"""
-        for line in self:
+        for line in self.filtered(lambda order: order.product_id.type != 'service'):
             if line.qty_received == 0:
                 line.receive_state = 'none'
             elif line.product_qty > line.qty_received:

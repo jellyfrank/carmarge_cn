@@ -114,5 +114,31 @@
         <!--                  action="account.res_partner_action_customer"-->
         <!--                  sequence="4" groups="sales_team.group_sale_salesman"/>-->
 
+        <record id="view_sale_order_tree_quotation" model="ir.ui.view">
+            <field name="name">销售订单</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_quotation_tree"/>
+            <field name="arch" type="xml">
+                <field name="amount_untaxed" position="attributes">
+                    <attribute name='invisible'>True</attribute>
+                </field>
+                <field name="amount_tax" position="attributes">
+                    <attribute name='invisible'>True</attribute>
+                </field>
+                <!-- <field name="paid_amount" position="attributes">
+                    <attribute name='attrs'>{'column_invisible':[('state','=','draft')]}</attribute>
+                </field>
+                <field name="due_amount" position="attributes">
+                    <attribute name='attrs'>{'column_invisible':[('state','=','draft')]}</attribute>
+                </field>
+                <field name="delivery_state" position="attributes">
+                    <attribute name='attrs'>{'column_invisible':[('state','=','draft')]}</attribute>
+                </field> -->
+                <field name="invoice_status" position="attributes">
+                    <attribute name='attrs'>{'column_invisible':[('state','=','draft')]}</attribute>
+                </field>
+            </field>
+        </record>
+
     </data>
 </odoo>

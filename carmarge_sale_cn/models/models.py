@@ -265,7 +265,7 @@ class sale_order_line(models.Model):
     @api.depends("product_qty","qty_delivered")
     def _compute_delivery_state(self):
         """交付状态"""
-        for line in self:
+        for line in self.filtered(lambda order: order.product_id.type != 'service'):
             if line.qty_delivered == 0:
                 line.delivery_state = 'no'
             elif 0<line.qty_delivered < line.product_qty:

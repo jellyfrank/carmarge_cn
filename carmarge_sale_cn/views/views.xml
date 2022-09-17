@@ -6,10 +6,10 @@
       <field name="inherit_id" ref="sale.view_order_form"/>
       <field name="arch" type="xml">
         <xpath expr="//field[@name='amount_untaxed']" position="attributes">
-            <attribute name='invisible'>1</attribute>
+          <attribute name='invisible'>1</attribute>
         </xpath>
         <xpath expr="//field[@name='amount_tax']" position="attributes">
-            <attribute name='invisible'>1</attribute>
+          <attribute name='invisible'>1</attribute>
         </xpath>
 
         <field name="amount_tax" position="after">
@@ -86,7 +86,7 @@
       </field>
     </record>
 
-    <record id="view_sale_order_quotation_tree" model="ir.ui.view">
+    <!-- <record id="view_sale_order_quotation_tree" model="ir.ui.view">
       <field name="name">sale order quotation tree</field>
       <field name="model">sale.order</field>
       <field name="inherit_id" ref="sale.view_quotation_tree"/>
@@ -97,7 +97,7 @@
           <field name="delivery_state" optional="hide"/>
         </field>
       </field>
-    </record>
+    </record> -->
 
     <record id="view_sale_order_tree" model="ir.ui.view">
       <field name="name">sale order tree</field>
@@ -105,16 +105,35 @@
       <field name="inherit_id" ref="sale.view_order_tree"/>
       <field name="arch" type="xml">
         <field name="amount_total" position="after">
-          <field name="paid_amount" optional="hide"/>
-          <field name="due_amount" optional="hide"/>
-          <field name="delivery_state" optional="hide"/>
+          <field name="paid_amount" sum="total"/>
+          <field name="due_amount" sum="total"/>
+          <field name="delivery_state"/>
+          <!-- <field name="invoice_status" optional="hide"/> -->
         </field>
         <field name="expected_date" position="attributes">
           <attribute name="widget">date</attribute>
         </field>
+        <field name="amount_untaxed" position="attributes">
+          <attribute name='invisible'>True</attribute>
+        </field>
+        <field name="amount_tax" position="attributes">
+          <attribute name='invisible'>True</attribute>
+        </field>
+        <!-- <field name="paid_amount" position="attributes">
+          <attribute name='attrs'></attribute>
+        </field>
+        <field name="due_amount" position="attributes">
+          <attribute name='attrs'>{'column_invisible':[('state','=','draft')]}</attribute>
+        </field>
+        <field name="delivery_state" position="attributes">
+          <attribute name='attrs'>{'column_invisible':[('state','=','draft')]}</attribute>
+        </field>
+        <field name="invoice_status" position="attributes">
+          <attribute name='attrs'>{'column_invisible':[('state','=','draft')]}</attribute>
+        </field> -->
       </field>
     </record>
-    
+
 
     <record id="sale.action_quotations_with_onboarding" model="ir.actions.act_window">
       <field name="domain">[('state','=','draft')]</field>
