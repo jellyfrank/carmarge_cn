@@ -27,7 +27,7 @@
           <field name="port_city" required="1"/>
           <label for="commitment_date" string="交货日期"/>
           <div name="commitment_date_div" class="o_row">
-            <field name="commitment_date"/>
+            <field name="commitment_date" widget="date"/>
             <!-- <span name="expected_date_span" class="text-muted">
               Expected:
               <field name="expected_date" widget="date"/>
