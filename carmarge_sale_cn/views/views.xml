@@ -119,18 +119,9 @@
         <field name="amount_tax" position="attributes">
           <attribute name='invisible'>True</attribute>
         </field>
-        <!-- <field name="paid_amount" position="attributes">
-          <attribute name='attrs'></attribute>
+        <field name="commitment_date" position="attriubtes">\
+          <attribute name="widget">date</attribute>
         </field>
-        <field name="due_amount" position="attributes">
-          <attribute name='attrs'>{'column_invisible':[('state','=','draft')]}</attribute>
-        </field>
-        <field name="delivery_state" position="attributes">
-          <attribute name='attrs'>{'column_invisible':[('state','=','draft')]}</attribute>
-        </field>
-        <field name="invoice_status" position="attributes">
-          <attribute name='attrs'>{'column_invisible':[('state','=','draft')]}</attribute>
-        </field> -->
       </field>
     </record>
 

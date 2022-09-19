@@ -142,7 +142,7 @@ class purchase_order(models.Model):
             if not po.order_line:
                 po.receive_state = 'none'
             else:
-                states = list(set(po.order_line.mapped("receive_state")))
+                states = list(set(po.order_line.filtered(lambda l:l.state in ('none','done')).mapped("receive_state")))
                 if len(states) == 1 and states[0] == 'none':
                     po.receive_state = 'none'
                 elif len(states) == 1 and states[0] == 'done':
