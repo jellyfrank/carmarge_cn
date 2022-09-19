@@ -148,13 +148,13 @@
                 <field name="partner_ref" position="before">
                     <field name="create_date" optional="hide" widget="date"/>
                 </field>
-                <field name='date_order' position="before">
+                <field name='date_order' position="replace">
                     <field name="date_order" optional="hide" widget="date"/>
                 </field>
                 <field name='state' position="after">
-                    <field name="receive_state" optional="hide"/>
                     <field name="paid_amount" optional="hide"/>
                     <field name="due_amount" optional="hide"/>
+                    <field name="receive_state" optional="hide"/>
                 </field>
                 <field name="paid_amount" position="attributes">
                     <attribute name="sum">Total</attribute>
@@ -166,6 +166,10 @@
                     <attribute name="widget">date</attribute>
                 </field>
             </field>
+        </record>
+
+        <record id="purchase.purchase_rfq" model="ir.actions.act_window">
+            <field name="domain">[('state','=','draft')]</field>
         </record>
 
 
