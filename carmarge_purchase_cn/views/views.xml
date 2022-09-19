@@ -163,7 +163,7 @@
                     <attribute name="sum">Total</attribute>
                 </field>
                 <field name="date_planned" position="attributes">
-                    <attribute name="widget">date</field>
+                    <attribute name="widget">date</attribute>
                 </field>
             </field>
         </record>
