@@ -119,7 +119,7 @@
         <field name="amount_tax" position="attributes">
           <attribute name='invisible'>True</attribute>
         </field>
-        <field name="commitment_date" position="attriubtes">\
+        <field name="commitment_date" position="attributes">
           <attribute name="widget">date</attribute>
         </field>
       </field>
