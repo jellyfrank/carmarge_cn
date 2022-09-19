@@ -94,7 +94,7 @@ class sale_order(models.Model):
     def _compute_delivery_state2(self):
         """交付状态"""
         for order in self:
-            states = list(set(order.order_line.filtered(lambda l:l.state is not None).delivery_state))
+            states = list(set(order.order_line.filtered(lambda l:l.state is not None).mapped("delivery_state")))
             if len(states) == 1 and states[0] == 'no':
                 order.delivery_state = 'no'
             elif len(states) == 1 and states[0] == "all":
