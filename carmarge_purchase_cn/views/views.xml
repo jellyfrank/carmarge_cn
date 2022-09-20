@@ -118,17 +118,17 @@
                 </field>
                 <field name='state' position="before">
                     <field name="receive_state" optional="hide"/>
-                    <field name="amount_total" optional="hide"/>
+                    <!-- <field name="amount_total" optional="hide"/> -->
                     <field name="paid_amount" optional="hide"/>
                     <field name="due_amount" string="应付金额" optional="hide"/>
                 </field>
                 <field name="receive_state" position="attributes">
                     <attribute name='invisible'>1</attribute>
                 </field>
-                <field name="amount_total" position="attributes">
+                <!-- <field name="amount_total" position="attributes">
                     <attribute name='invisible'>1</attribute>
                     <attribute name="sum">Total</attribute>
-                </field>
+                </field> -->
                 <field name="paid_amount" position="attributes">
                     <attribute name='invisible'>1</attribute>
                 </field>
