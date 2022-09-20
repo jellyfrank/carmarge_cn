@@ -116,7 +116,7 @@
                 <field name='date_order' position="before">
                     <field name="date_planned" widget="date" optional="hide"/>
                 </field>
-                <field name='state' position="after">
+                <field name='state' position="before">
                     <field name="receive_state" optional="hide"/>
                     <field name="amount_total" optional="hide"/>
                     <field name="paid_amount" optional="hide"/>
