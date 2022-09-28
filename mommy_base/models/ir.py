@@ -17,5 +17,5 @@ class ir_actions_report(models.Model):
         doc_model_obj = self.env[values['doc_model']]
         if hasattr(doc_model_obj, self.FUNC_METHOD):
             records = values['docs']
-            getattr(records, self.FUNC_METHOD)()
+            getattr(records, self.FUNC_METHOD)(self)
         return super()._render_template(template, values)

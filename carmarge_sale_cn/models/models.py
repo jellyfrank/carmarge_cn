@@ -116,11 +116,13 @@ class sale_order(models.Model):
             order.paid_amount = amount_total - residual_amount
             order.due_amount = residual_amount
 
-    def _validate_report(self):
+    def _validate_report(self, report=None):
         """报表打印验证"""
         for order in self:
-            if order.state != 'invoiced':
-                raise UserError("此订单尚未完全开票,不能打印商业发票")
+            if report.name == '商业发票' and order.invoice_status != 'invoiced':
+                raise UserError("当前有产品未开具结算单，无法打印商业发票")
+            if report.name == '装箱单' and order.delivery_state != 'all':
+                raise UserError("尚未完全发货完成,不能打印装箱单")
 
     delivery_cost = fields.Monetary(
         "海运费", compute="_compute_delivery_discount", store=True)

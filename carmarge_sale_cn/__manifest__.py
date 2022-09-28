@@ -35,7 +35,8 @@
         'views/account_report_templates.xml',
         'views/res_company_views.xml',
         'views/account_move_views.xml',
-        'views/commercial.xml'
+        'views/commercial.xml',
+        'views/stock_report.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
