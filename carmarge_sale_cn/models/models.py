@@ -7,9 +7,9 @@ from odoo.models import NewId
 from odoo.exceptions import UserError
 
 DELIVERY_STATES = [
-    ('no','未交货'),
-    ('partial','部分交货'),
-    ('all','全部交货')
+    ('no', '未交货'),
+    ('partial', '部分交货'),
+    ('all', '全部交货')
 ]
 
 
@@ -62,13 +62,13 @@ class sale_order(models.Model):
             "carmarge_purchase_cn.service_discount")
         amount = 0
         for line in self.order_line:
-            if line.product_id not in [delivery_product_id.product_variant_id,discount_product_id.product_variant_id]:
+            if line.product_id not in [delivery_product_id.product_variant_id, discount_product_id.product_variant_id]:
                 amount = amount + line.price_total
         self.update({
-            "amount_payment":amount
+            "amount_payment": amount
         })
 
-    @api.depends('order_line.margin', 'amount_payment','discount_manual')
+    @api.depends('order_line.margin', 'amount_payment', 'discount_manual')
     def _compute_margin(self):
         if not all(self._ids):
             for order in self:
@@ -85,7 +85,8 @@ class sale_order(models.Model):
                 [
                     ('order_id', 'in', self.ids),
                 ], ['margin', 'order_id'], ['order_id'])
-            mapped_data = {m['order_id'][0]: m['margin'] for m in grouped_order_lines_data}
+            mapped_data = {m['order_id'][0]: m['margin']
+                           for m in grouped_order_lines_data}
             for order in self:
                 order.margin = mapped_data.get(order.id, 0.0)
                 order.margin_percent = order.amount_untaxed and order.margin / order.amount_untaxed
@@ -94,24 +95,32 @@ class sale_order(models.Model):
     def _compute_delivery_state2(self):
         """交付状态"""
         for order in self:
-            states = list(set(order.order_line.filtered(lambda l:l.delivery_state in ('no','all')).mapped("delivery_state")))
+            states = list(set(order.order_line.filtered(
+                lambda l: l.delivery_state in ('no', 'all')).mapped("delivery_state")))
             if len(states) == 1 and states[0] == 'no':
                 order.delivery_state = 'no'
             elif len(states) == 1 and states[0] == "all":
                 order.delivery_state = 'all'
             else:
-                order.delivery_state = 'partial' 
+                order.delivery_state = 'partial'
 
-    @api.depends("invoice_ids.state","invoice_ids.amount_total")
+    @api.depends("invoice_ids.state", "invoice_ids.amount_total")
     def _compute_amount(self):
         """计算应付金额"""
         # 计算销售订单的应付金额
         for order in self:
-            amount_total = sum([invoice_id.amount_total for invoice_id in order.invoice_ids if invoice_id.state == 'posted'])
-            residual_amount = sum([invoice_id.amount_residual for invoice_id in order.invoice_ids if invoice_id.state == 'posted'])
+            amount_total = sum(
+                [invoice_id.amount_total for invoice_id in order.invoice_ids if invoice_id.state == 'posted'])
+            residual_amount = sum(
+                [invoice_id.amount_residual for invoice_id in order.invoice_ids if invoice_id.state == 'posted'])
             order.paid_amount = amount_total - residual_amount
             order.due_amount = residual_amount
 
+    def _validate_report(self):
+        """报表打印验证"""
+        for order in self:
+            if order.state != 'invoiced':
+                raise UserError("此订单尚未完全开票,不能打印商业发票")
 
     delivery_cost = fields.Monetary(
         "海运费", compute="_compute_delivery_discount", store=True)
@@ -121,12 +130,14 @@ class sale_order(models.Model):
     incoterm = fields.Many2one(
         'account.incoterms', domain="[('code','in',['FOB','CIF'])]")
     incoterm_code = fields.Char("贸易术语code", related='incoterm.code')
-    amount_payment = fields.Monetary("货款", compute="_compute_amount_payment", store=True)
-    payment_term = fields.Char("付款条款", required=True)   
-    delivery_state = fields.Selection(DELIVERY_STATES,string='交付状态',compute="_compute_delivery_state2",store=True)
-    paid_amount = fields.Monetary("已付金额", compute="_compute_amount",store=True)
-    due_amount = fields.Monetary("应付金额", compute="_compute_amount",store=True)
-    
+    amount_payment = fields.Monetary(
+        "货款", compute="_compute_amount_payment", store=True)
+    payment_term = fields.Char("付款条款", required=True)
+    delivery_state = fields.Selection(
+        DELIVERY_STATES, string='交付状态', compute="_compute_delivery_state2", store=True)
+    paid_amount = fields.Monetary(
+        "已付金额", compute="_compute_amount", store=True)
+    due_amount = fields.Monetary("应付金额", compute="_compute_amount", store=True)
 
     @api.model
     def create(self, vals):
@@ -228,9 +239,10 @@ class sale_order_line(models.Model):
         self.group_use_sale_price_update = self.user_has_groups(
             'carmarge_sale_cn.group_use_sale_price_update')
 
-    def _prepare_invoice_line(self,**optional_values):
+    def _prepare_invoice_line(self, **optional_values):
         """添加备注"""
-        res = super(sale_order_line,self)._prepare_invoice_line(**optional_values)
+        res = super(sale_order_line, self)._prepare_invoice_line(
+            **optional_values)
         res['note'] = self.note
         return res
 
@@ -238,12 +250,12 @@ class sale_order_line(models.Model):
     def _default_sale_order_update(self):
         return self.user_has_groups('carmarge_sale_cn.group_use_sale_price_update')
 
-
     @api.constrains("product_id")
     def _check_product_id(self):
         """"校验产品唯一性"""
-        lines = self.order_id.order_line.filtered(lambda line: line.product_id == self.product_id)
-        if len(lines)>1:
+        lines = self.order_id.order_line.filtered(
+            lambda line: line.product_id == self.product_id)
+        if len(lines) > 1:
             raise UserError(f"产品:{self.product_id.name}已经在明细中")
 
     @api.onchange("product_id")
@@ -259,16 +271,16 @@ class sale_order_line(models.Model):
                         product_ids.append(line.product_id.id)
                 else:
                     product_ids.append(line.product_id.id)
-        if len(product_ids)>=2:
+        if len(product_ids) >= 2:
             raise UserError(f"产品:{self.product_id.display_name}已经存在于明细行中！")
 
-    @api.depends("product_qty","qty_delivered")
+    @api.depends("product_qty", "qty_delivered")
     def _compute_delivery_state(self):
         """交付状态"""
         for line in self.filtered(lambda order: order.product_id.type != 'service'):
             if line.qty_delivered == 0:
                 line.delivery_state = 'no'
-            elif 0<line.qty_delivered < line.product_qty:
+            elif 0 < line.qty_delivered < line.product_qty:
                 line.delivery_state = 'partial'
             else:
                 line.delivery_state = 'all'
@@ -300,9 +312,10 @@ class sale_order_line(models.Model):
     group_use_sale_price_update = fields.Boolean(
         string="单价是否可编辑", default=_default_sale_order_update, compute="_compute_sale_price_update_group")
     note = fields.Char("备注")
-    translate_name = fields.Char(string="英文名称",related="product_id.translate_name")
-    delivery_state = fields.Selection(DELIVERY_STATES,string="交付状态",compute="_compute_delivery_state",store=True)
-    
+    translate_name = fields.Char(
+        string="英文名称", related="product_id.translate_name")
+    delivery_state = fields.Selection(
+        DELIVERY_STATES, string="交付状态", compute="_compute_delivery_state", store=True)
 
     @api.onchange('product_uom', 'product_uom_qty')
     def product_uom_change(self):

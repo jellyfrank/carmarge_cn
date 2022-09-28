@@ -23,22 +23,6 @@
 
         </xpath>
         <xpath expr="//h2[@class='mt16']" position="replace">
-            <!-- <div class="row">
-              <div class="col-6">
-                <strong>Customer Name:<span><t t-esc="doc.partner_id.name"/></span></strong><br/>
-                <strong>Address:<span><t t-esc="doc.partner_id.state_id.name"/></span></strong><br/>
-                <strong>Inovice No.:<span><t t-esc="doc.name"/></span></strong><br/>
-                <strong>Payment Terms:<span><t t-esc="doc.payment_term_id.name"/></span></strong><br/>
-              </div>
-              <div>
-                <strong>Beneficiary Name:<span><t t-esc="doc.company_id.name"/></span></strong><br/>
-                <strong>Account Name:<span><t t-esc="doc.company_id.acc_number"/></span></strong><br/>
-                <strong>Bank Name:<span><t t-esc="doc.company_id.bank_id.name"/></span></strong><br/>
-                <strong>SWIFT Code:<span><t t-esc="doc.company_id.swift_code"/></span></strong><br/>
-                <strong>Bank Address:<span><t t-esc="doc.company_id.address"/></span></strong><br/>
-              </div>
-            </div> -->
-
             <h2 class="mt16">
                 <div class="text-center">
                     <t t-if="not (env.context.get('proforma', False) or is_pro_forma)">
@@ -323,7 +307,7 @@
                                 </tr>
                             </t> -->
                             <tr class="border-black o_subtotal" style="" t-if="doc.incoterm.code == 'CIF'">
-                                <td name="td_amount_untaxed_label">
+                                <td name="td_amount_unt77axed_label">
                                     <strong>Sea Freight and Insurance Fee</strong>
                                 </td>
                                 <td name="td_amount_untaxed" class="text-right">
