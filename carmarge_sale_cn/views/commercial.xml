@@ -76,16 +76,16 @@
                                     </span>
                                 </td>
                             </tr>
-                            <!-- <tr>
+                            <tr>
                                 <td>
                                     <strong>Trade Term</strong>
                                 </td>
                                 <td>
                                     <span>
-                                        <t t-esc="doc.invoice_incoterm_id.code"/>
+                                        <t t-esc="doc.incoterm.code"/>
                                     </span>
                                 </td>
-                            </tr> -->
+                            </tr>
                             <tr>
                                 <td>
                                     <strong>Payment Terms</strong>
