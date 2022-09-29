@@ -180,12 +180,12 @@
                                 </td>
                                 <td name="td_amount_total">
                                     <strong>
-                                        <t t-esc="round(sum(move.quantity_done for move in lines),0)"/>
+                                        <t t-esc="int(sum(move.quantity_done for move in lines))"/>
                                     </strong>
                                 </td>
                                 <td>
                                     <strong>
-                                        <t t-esc="round(sum(move.packaging_qty for move in lines),0)"/>
+                                        <t t-esc="int(sum(move.packaging_qty for move in lines))"/>
                                     </strong>
                                 </td>
                                 <td>
