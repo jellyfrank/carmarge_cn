@@ -1,0 +1,10 @@
+.emark-top {
+    position: relative;
+    z-index: 9999;
+
+}
+
+.emark-img {
+    width: 180px;
+    height: 180px;
+}

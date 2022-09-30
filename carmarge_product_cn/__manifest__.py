@@ -20,7 +20,7 @@
     'version': '14.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['delivery',"product"],
+    'depends': ['delivery',"product",'mommy_base'],
 
     # always loaded
     'data': [
@@ -33,7 +33,9 @@
         'views/packaging.xml',
         'views/report.xml',
         'views/company.xml',
-        'wizard/product_merge_view.xml'
+        'wizard/product_merge_view.xml',
+        'views/pricelist.xml',
+        'wizard/pricelist.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

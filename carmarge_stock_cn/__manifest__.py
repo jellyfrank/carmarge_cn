@@ -27,7 +27,8 @@
         'security/data.xml',
         'views/views.xml',
         'views/templates.xml',
-        'views/report.xml'
+        'views/report.xml',
+        # 'wizard/return_wizard_view.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

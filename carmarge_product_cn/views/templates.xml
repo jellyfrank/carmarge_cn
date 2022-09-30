@@ -7,20 +7,28 @@
       <br/>
       <strong><span t-field="packaging.product_id.translate_name"/></strong>
       <div class="o_row" name="part_no">
-        <strong>Part No.:</strong>
+        <strong>Replaces/OEM No.:</strong>
         <span t-field="packaging.product_id.default_code"/>
       </div>
       <div class="o_row" name="apply_to">
-        <strong>Apply to:</strong>
+        <strong>Suitable for:</strong>
         <span t-field="packaging.product_id.brand"/>
       </div>
       <div class="o_row" name="refer_no">
-        <strong>Ref No.:</strong>
+        <span>
+          <strong>CA No.:</strong>
+          <span t-field="packaging.product_id.barcode"/>
+        </span>
+        <span>
+           <strong>Qty/Pkg:</strong>
+          <span t-esc="int(packaging.qty)"/>
+        </span>
+
       </div>
-      <div class="o_row" name="qty">
-        <strong>Qty/Pkg:</strong>
-        <span t-esc="int(packaging.qty)"/>
-      </div>
+<!--      <div class="o_row" name="qty">-->
+<!--        <strong>Qty/Pkg:</strong>-->
+<!--        <span t-esc="int(packaging.qty)"/>-->
+<!--      </div>-->
     </template>
 
     <template id="carmarge_product_cn.packaging_footer">
@@ -45,15 +53,15 @@
               <div style="font-size: 12x;">
                 <strong><span t-field="product.translate_name"/></strong>
                 <div class="o_row" name="part_no">
-                  <strong>Part No.:</strong>
+                  <strong>Replaces/OEM No.:</strong>
                   <span t-field="product.default_code"/>
                 </div>
                 <div class="o_row" name="apply_to">
-                  <strong>Apply to:</strong>
+                  <strong>Suitable for:</strong>
                   <span t-field="product.brand"/>
                 </div>
                 <div class="o_row" name="refer_no">
-                  <strong>Ref No.:</strong>
+                  <strong>CA No.:</strong>
                   <span t-field="product.barcode"/>
                 </div>
                 <div class="o_row" name="qty">

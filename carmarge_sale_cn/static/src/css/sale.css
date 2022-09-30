@@ -4,3 +4,7 @@
 .o_list_view .o_list_table tbody > tr > td:not(.o_list_record_selector):not(.o_handle_cell):not(.o_list_button){
         text-align: center;
 }
+
+.o_list_view .o_list_table tfoot .o_list_number{
+        text-align: center !important;
+}

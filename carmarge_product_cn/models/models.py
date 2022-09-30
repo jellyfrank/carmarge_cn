@@ -9,22 +9,30 @@ from odoo.tools.float_utils import float_round
 from odoo.exceptions import UserError
 import logging
 from dateutil.relativedelta import relativedelta
-from datetime import timedelta,time
+from datetime import timedelta, time
+from datetime import datetime
+from odoo.tools.safe_eval import safe_eval as eval
 
 _logger = logging.getLogger(__name__)
+
+ORIGINS = [
+    ('self', '自营产品'),
+    ('purchase', '外采产品')
+]
 
 
 class product_template(models.Model):
 
     _inherit = "product.template"
 
+    @api.depends("packaging_ids")
     def _get_packaging(self):
         """"""
         for product in self:
             if not product.packaging_ids:
                 product.packaging = None
             else:
-                product.packaging = product.packaging_ids[0] if product.packaging_ids else None
+                product.packaging = product.packaging_ids[0]
 
     def _product_category_code(self, categ_id):
         # 产品类别编码汇总
@@ -85,11 +93,74 @@ class product_template(models.Model):
             return f"{prefix}{number+1:04}"
 
     def _compute_standard_price_update_group(self):
-        self.group_use_product_standard_price_update = self.user_has_groups('carmarge_product_cn.group_use_product_standard_price_update')
+        self.group_use_product_standard_price_update = self.user_has_groups(
+            'carmarge_product_cn.group_use_product_standard_price_update')
 
     @api.model
     def _default_standard_price_update(self):
         return self.user_has_groups('carmarge_product_cn.group_use_product_standard_price_update')
+
+    @api.model
+    def _search_purchase_qty(self, operator, operand):
+        """搜索采购数量"""
+        if operator not in ('>', '>=', '<', '<=', '='):
+            return []
+        if type(operand) not in (float, int):
+            return []
+        if operator == '=':
+            operator = '=='
+        records = self.search([])
+        result = records.filtered(lambda record: eval(
+            f"record.purchased_product_qty {operator} {operand}", locals_dict={'record': record}))
+        return [('id', 'in', result.ids)]
+
+    @api.model
+    def _searhc_virtual_available(self, operator, operand):
+        """搜索预测数量"""
+        if operator not in ('>', '>=', '<', '<=', '='):
+            return []
+        if type(operand) not in (float, int):
+            return []
+        if operator == '=':
+            operator = '=='
+        records = self.search([])
+        result = records.filtered(lambda record: eval(
+            f"record.virtual_available {operator} {operand}", locals_dict={'record': record}))
+        return [('id', 'in', result.ids)]
+
+    @api.model
+    def _search_sales_count(self, operator, operand):
+        """搜索预测数量"""
+        if operator not in ('>', '>=', '<', '<=', '='):
+            return []
+        if type(operand) not in (float, int):
+            return []
+        if operator == '=':
+            operator = '=='
+        records = self.search([])
+        result = records.filtered(lambda record: eval(
+            f"record.sales_count {operator} {operand}", locals_dict={'record': record}))
+        return [('id', 'in', result.ids)]
+
+    @api.depends("product_variant_id")
+    def _compute_price_history(self):
+        """"计算历史价格"""
+        for product in self:
+            lines = self.env['sale.order.line'].sudo().search(
+                [('product_id', '=', product.product_variant_id.id)], limit=100)
+            data = [(0, 0, {
+                "sale_date": datetime.strftime(line.order_id.date_order, '%Y-%m-%d %H:%M:%S'),
+                "sale_order": line.order_id.id,
+                "product_uom": line.product_uom.id,
+                "quantity": line.product_uom_qty,
+                "currency_id": line.order_id.currency_id.id,
+                "price_list": line.order_id.pricelist_id.id,
+                "price": line.price_unit,
+                "partner_id": line.order_id.partner_id.id,
+                "product_id": line.product_id.id
+            }) for line in lines]
+            # data.insert(0,(5,))
+            product.sale_price_history = data
 
     brand = fields.Many2many("product.brand", string="适用")
     comm_check = fields.Boolean("是否商检", default=False)
@@ -100,12 +171,14 @@ class product_template(models.Model):
     net_weight = fields.Float(string="净重")
     packaging = fields.Many2one(
         "product.packaging", string="包装", compute="_get_packaging")
-    packaging_length = fields.Float("包装长", related="packaging.length")
-    packaging_width = fields.Float("包装宽", related="packaging.width")
-    packaging_height = fields.Float("包装高", related="packaging.height")
-    packaging_volume = fields.Float("包装体积", related="packaging.volume")
-    packaging_net_weight = fields.Float("包装净重", related="packaging.net_weight")
-    packaging_weight = fields.Float("包装毛重", related="packaging.weight")
+    packaging_length = fields.Float("包装长(CM)", related="packaging.length")
+    packaging_width = fields.Float("包装宽(CM)", related="packaging.width")
+    packaging_height = fields.Float("包装高(CM)", related="packaging.height")
+    packaging_volume = fields.Float(
+        "包装体积(CM", related="packaging.volume", digits=(16, 4))
+    packaging_net_weight = fields.Float(
+        "包装净重(KG)", related="packaging.net_weight")
+    packaging_weight = fields.Float("包装毛重(KG)", related="packaging.weight")
     width = fields.Float("宽")
     weight = fields.Float(string="毛重")
     type = fields.Selection(default="product")
@@ -123,7 +196,13 @@ class product_template(models.Model):
     merge_temp_ids = fields.Char(string="被合并产品IDS")
 
     group_use_product_standard_price_update = fields.Boolean(string="采购成本是否可编辑", default=_default_standard_price_update,
-                                                 compute="_compute_standard_price_update_group")
+                                                             compute="_compute_standard_price_update_group")
+    purchased_product_qty = fields.Float(search=_search_purchase_qty)
+    virtual_available = fields.Float(search=_searhc_virtual_available)
+    sales_count = fields.Float(search=_search_sales_count)
+    sale_price_history = fields.Many2many(
+        "product.price.history", string="历史价格", compute="_compute_price_history")
+    origin_type = fields.Selection(ORIGINS, string="产品属性", default='self')
 
     def action_view_sales(self):
         action = self.env["ir.actions.actions"]._for_xml_id(
@@ -160,7 +239,10 @@ class product_template(models.Model):
     def create(self, vals):
         if not vals.get('barcode'):
             categ_id = vals.get('categ_id')
-            categ_id = self._validate_category_length(categ_id)
+            if vals['type'] != 'service':
+                categ_id = self._validate_category_length(categ_id)
+            else:
+                categ_id = self.env['product.category'].browse(categ_id)
             code_prefix = self._update_barcode(categ_id)
             # vals['barcode'] = f"{code_prefix}{self.env['ir.sequence'].next_by_code('product.template.barcode')}"
             vals['barcode'] = self._get_categ_next_sequence(code_prefix)
@@ -221,7 +303,7 @@ class product_template(models.Model):
                 fields.remove(drop)
 
         return super(product_template, self).read_group(domain, fields, groupby, offset=offset, limit=limit,
-                                                     orderby=orderby, lazy=lazy)
+                                                        orderby=orderby, lazy=lazy)
 
 
 class product_brand(models.Model):
@@ -235,23 +317,27 @@ class ProductProduct(models.Model):
     _inherit = 'product.product'
 
     def _compute_purchased_product_qty(self):
-        date_from = fields.Datetime.to_string(fields.Date.context_today(self) - relativedelta(years=1))
+        date_from = fields.Datetime.to_string(
+            fields.Date.context_today(self) - relativedelta(years=1))
         domain = [
             ('order_id.state', 'in', ['purchase', 'done']),
             ('product_id', 'in', self.ids),
             ('order_id.date_approve', '>=', date_from)
         ]
-        order_lines = self.env['purchase.order.line'].read_group(domain, ['product_id', 'product_uom_qty'], ['product_id'])
-        purchased_data = dict([(data['product_id'][0], data['product_uom_qty']) for data in order_lines])
+        order_lines = self.env['purchase.order.line'].read_group(
+            domain, ['product_id', 'product_uom_qty'], ['product_id'])
+        purchased_data = dict(
+            [(data['product_id'][0], data['product_uom_qty']) for data in order_lines])
         for product in self:
             if not product.id:
                 product.purchased_product_qty = 0.0
                 continue
-            product.purchased_product_qty = float_round(purchased_data.get(product.id, 0), precision_rounding=product.uom_id.rounding)
+            product.purchased_product_qty = float_round(purchased_data.get(
+                product.id, 0), precision_rounding=product.uom_id.rounding)
 
             if product.product_tmpl_id.other_purchases_count:
-                product.purchased_product_qty = product.purchased_product_qty + product.product_tmpl_id.other_purchases_count
-
+                product.purchased_product_qty = product.purchased_product_qty + \
+                    product.product_tmpl_id.other_purchases_count
 
     def _compute_sales_count(self):
         r = {}
@@ -270,12 +356,13 @@ class ProductProduct(models.Model):
         ]
         for group in self.env['sale.report'].read_group(domain, ['product_id', 'product_uom_qty'], ['product_id']):
             r[group['product_id'][0]] = group['product_uom_qty']
-        sales_count =0
+        sales_count = 0
         for product in self:
             if not product.id:
                 product.sales_count = 0.0
                 continue
-            sales_count = float_round(r.get(product.id, 0), precision_rounding=product.uom_id.rounding)
+            sales_count = float_round(
+                r.get(product.id, 0), precision_rounding=product.uom_id.rounding)
             if product.product_tmpl_id.other_sales_count:
                 product.sales_count = sales_count + product.product_tmpl_id.other_sales_count
             else:

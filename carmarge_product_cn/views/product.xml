@@ -11,6 +11,7 @@
                     <field name="other_purchases_count" invisible="1"/>
                     <field name="other_sales_count" invisible="1"/>
                     <field name="translate_name" placeholder="英文名称"/>
+                    <field name="origin_type" options="{'horizontal': true}" widget="radio" class="oe_inline"/>
                 </xpath>
                 <xpath expr="//div[@name='weight']" position="after">
                     <label for="net_weight" string="净重"/>
@@ -45,6 +46,23 @@
                     <attribute name='attrs'>{'readonly':[('group_use_product_standard_price_update','=',False)]}</attribute>
                 </xpath>
 
+                <xpath expr="//page[@name='inventory']" position="after">
+                    <page string="历史价格">
+                        <field name="sale_price_history">
+                            <tree>
+                                <field name="sale_order"/>
+                                <field name="sale_date" widget="date"/>
+                                <field name="product_uom"/>
+                                <field name="currency_id" string="币种"/>
+                                <field name="quantity"/>
+                                <field name="price"/>
+                                <field name="price_list"/>
+                                <field name="partner_id"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+
 
             </field>
         </record>
@@ -74,6 +92,7 @@
                 </field>
                 <field name="name" position="after">
                     <field name="translate_name"/>
+                    <field name="origin_type"/>
                 </field>
                 <field name="default_code" position="after">
                     <field name="barcode" position="move"/>
@@ -113,6 +132,14 @@
                 <field name="uom_id" position="after">
                     <field name="comm_check" optional="hide"/>
                     <field name="is_brand_package" optional="hide"/>
+                    <field name="create_date" widget='date' optional="hide"/>
+                </field>
+
+                <field name="qty_available" position="before">
+                    <field name="purchased_product_qty" string="已采购数量" optional="hide"/>
+                </field>
+                <field name="virtual_available" position="after">
+                    <field name="sales_count" string="已销售数量" optional="hide"/>
                 </field>
             </field>
         </record>
@@ -126,6 +153,22 @@
                     <attribute name="required">1</attribute>
                 </xpath>
 
+            </field>
+        </record>
+
+
+        <record id="view_product_template_search_view_inherit" model="ir.ui.view">
+            <field name="name">product.template.search</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_search_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="translate_name" string="英文名称" filter_domain="[('translate_name', 'ilike', self)]"/>
+                    <field name="origin_type"/>
+                </xpath>
+                <filter name="categ_id" position="after">
+                    <filter name="attr" string="产品属性" context="{'group_by':'origin_type'}"/>
+                </filter>
 
             </field>
         </record>

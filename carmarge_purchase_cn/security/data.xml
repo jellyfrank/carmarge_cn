@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="product.template" id="service_delivery_cost">
+            <field name="name">海运费</field>
+            <field name="type">service</field>
+            <field name="default_code">SERVICE-DELIVERY COST</field>
+        </record>
+
+        <record model="product.template" id="service_discount">
+            <field name="name">优惠</field>
+            <field name="type">service</field>
+            <field name="default_code">SERVICE-DISCOUNT</field>
+        </record>
+    </data>
+</odoo>

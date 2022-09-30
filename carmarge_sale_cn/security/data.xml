@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
+    <record model="product.template" id="service_delivery_cost">
+        <field name="name">海运费</field>
+        <field name="type">service</field>
+        <field name="default_code">SERVICE-DELIVERY COST</field>
+    </record>
+
+    <record model="product.template" id="service_discount">
+        <field name="name">优惠</field>
+        <field name="type">service</field>
+        <field name="default_code">SERVICE-DISCOUNT</field>
+    </record>
+
     <record model="ir.sequence" id="sale.seq_sale_order">
         <field name="prefix">%(y)s%(month)s%(day)s</field>
         <field name="padding">4</field>
@@ -8,6 +21,6 @@
     <record id="group_use_sale_price_update" model="res.groups">
         <field name="name">销售单产品价格修改</field>
         <field name="category_id" ref="base.module_category_hidden"/>
-
     </record>
+
 </odoo>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates id="template" xml:space="preserve">
+
+    <div t-name="list_preview_widget.Preview">
+        <a tabindex="0" t-attf-class="fa {{widget.record.data.activity_exception_icon}} text-primary"/>
+    </div>
+
+    <div t-name="list_preview_widget.PreviewPopup">
+        <table>
+            <tbody>
+                <t t-if="data">
+                    <t t-foreach="data.split(';')" t-as="line">
+                        <tr>
+                            <td>
+                                <t t-esc="line"/>
+                            </td>
+                        </tr>
+                    </t>
+                </t>
+            </tbody>
+        </table>
+    </div>
+</templates>

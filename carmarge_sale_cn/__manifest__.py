@@ -20,7 +20,7 @@
     'version': '14.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['carmarge_product_cn','sale'],
+    'depends': ['carmarge_purchase_cn','sale','delivery'],
 
     # always loaded
     'data': [
@@ -30,7 +30,13 @@
         'views/layout.xml',
         'views/templates.xml',
         'views/report.xml',
-        'views/sale_order_views.xml'
+        'views/sale_order_views.xml',
+        'views/account_report.xml',
+        'views/account_report_templates.xml',
+        'views/res_company_views.xml',
+        'views/account_move_views.xml',
+        'views/commercial.xml',
+        'views/stock_report.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

@@ -15,10 +15,9 @@ class product_packaging(models.Model):
         for packaging in self:
             packaging.volume = packaging.height * packaging.length * packaging.width / 10**6
 
-    height = fields.Float("包装高")
-    length = fields.Float("包装长")
-    net_weight = fields.Float("包装净重")
-    width = fields.Float("包装宽")
-    weight = fields.Float("包装毛重")
-    volume   = fields.Float("包装体积", compute="_get_volume")
-
+    height = fields.Float("包装高(CM)")
+    length = fields.Float("包装长(CM)")
+    net_weight = fields.Float("包装净重(KG)")
+    width = fields.Float("包装宽(CM)")
+    weight = fields.Float("包装毛重(KG)")
+    volume   = fields.Float("包装体积(CM3)", compute="_get_volume", digits=(16,4))

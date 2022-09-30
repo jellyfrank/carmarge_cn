@@ -1,0 +1,68 @@
+<odoo>
+  <data>
+    <record id="view_sale_order_form" model="ir.ui.view">
+      <field name="name">Product Sale History Price</field>
+      <field name="model">sale.order</field>
+      <field name="inherit_id" ref="sale.view_order_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//page[@name='order_lines']/field[@name='order_line']//tree//field[@name='price_unit']" position="after">
+          <field name="history_prices" widget="list_preview"/>
+        </xpath>
+      </field>
+    </record>
+
+    <record id="view_purchase_order_form" model="ir.ui.view">
+      <field name="name">Product Purchase History Price</field>
+      <field name="model">purchase.order</field>
+      <field name="inherit_id" ref="purchase.purchase_order_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//page[@name='products']/field[@name='order_line']//tree//field[@name='price_unit']" position="after">
+          <field name="history_prices" widget="list_preview"/>
+        </xpath>
+      </field>
+    </record>
+
+    <record id="view_product_settings" model="ir.ui.view">
+      <field name="name">product history settings</field>
+      <field name="model">res.config.settings</field>
+      <field name="inherit_id" ref="product.res_config_settings_view_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//div[@id='product_general_settings']" position="after">
+          <h2>Price History</h2>
+          <div class="row mt16 o_settings_container" id="product_price_settings">
+            <div class="col-12 col-lg-6 o_setting_box" id="sale_history_setting">
+              <div class="o_setting_left_pane">
+              </div>
+              <div class="o_setting_right_pane">
+                <label for="history_duration" string="Duration"/>
+                <div class="text-muted">
+                                    Define history price duration.
+                </div>
+                <div class="content-group">
+                  <div class="mt16">
+                    <field name="history_duration"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-lg-6 o_setting_box" id="price_limit_setting">
+              <div class="o_setting_left_pane">
+              </div>
+              <div class="o_setting_right_pane">
+                <label for="history_limit" string="Limit Count"/>
+                <div class="text-muted">
+                                    Define history price limit counts.
+                </div>
+                <div class="content-group">
+                  <div class="mt16">
+                    <field name="history_limit"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </xpath>
+      </field>
+    </record>
+  </data>
+</odoo>

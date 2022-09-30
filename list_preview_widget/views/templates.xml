@@ -1,0 +1,9 @@
+<odoo>
+    <data>
+      <template id="assets_backend_list_preview" inherit_id="web.assets_backend" name="list_preview">
+        <xpath expr="script[last()]" position="after">
+          <script type="text/javascript" src="/list_preview_widget/static/src/js/list_preview.js"></script>
+        </xpath>
+      </template>
+    </data>
+</odoo>

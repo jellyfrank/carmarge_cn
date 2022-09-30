@@ -1,0 +1,37 @@
+<odoo>
+  <data>
+
+    <template id="assets_backend_report_backend" inherit_id="web.report_assets_common" name="backend">
+      <xpath expr="//link[last()]" position="after">
+        <link type="text/css" rel="stylesheet" href="/report_emark/static/src/css/report.css"/>
+      </xpath>
+    </template>
+
+    <template id="styles_company_report" inherit_id="web.styles_company_report">
+      <xpath expr="//t[@t-foreach='company_ids']" position="inside">
+          <t t-set="mleft" t-value="company.emark_margin_left"/>
+          <t t-set="mtop" t-value="company.emark_margin_top"/>
+          <t t-set="msize" t-value="company.emark_img_size"/>
+                    .emark-position {
+                          margin-left: <t t-esc="mleft"/>em;
+                          margin-top: <t t-esc="mtop"/>em;
+                      }
+                      
+                      .emark-img {
+                          width:<t t-esc="msize"/>px;
+                          height:<t t-esc="msize"/>px;
+          }
+      </xpath> 
+      </template>
+
+    <template id="layout_standard" inherit_id="web.external_layout_standard">
+      <xpath expr="//t[@t-raw='0']" position="after">
+        <div class="emark-position">
+          <t t-set="company" t-value="company.with_context(model_name=doc._name)" t-if="doc"/>
+          <t t-set="company" t-value="company.with_context(model_name=o._name)" t-if="o"/>
+          <img t-if="company.emark"  t-att-src="'data:image/png;base64,%s' % company.emark.decode('utf-8')" class="emark-img"/>
+        </div>
+      </xpath>
+    </template>
+  </data>
+</odoo>

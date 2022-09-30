@@ -47,9 +47,9 @@
             <field name="inherit_id" ref="product.product_packaging_tree_view2"/>
             <field name="arch" type="xml">
                 <field name="product_uom_id" position="after">
-                    <field name="length" string="包装长"/>
-                    <field name="width" string="包装宽"/>
-                    <field name="height" string="包装高"/>
+                    <field name="length" string="包装长(CM)"/>
+                    <field name="width" string="包装宽(CM)"/>
+                    <field name="height" string="包装高(CM)"/>
                     <field name="volume"/>
                     <field name="net_weight"/>
                     <field name="weight"/>

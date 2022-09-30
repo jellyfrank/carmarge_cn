@@ -9,12 +9,12 @@
         </record>
 
         <!-- 产品计量单位默认值设置 -->
-        <record id="product_uom_number" model="uom.uom">
+        <!-- <record id="product_uom_number" model="uom.uom">
             <field name="category_id" ref="uom.product_uom_categ_unit"/>
             <field name="name">个</field>
             <field name="factor_inv" eval="1000"/>
             <field name="uom_type">bigger</field>
-        </record>
+        </record> -->
 
         <!-- 产品增添一键条码更新的服务器动作 -->
         <record id="model_history_barcode_update" model="ir.actions.server">
