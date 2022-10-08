@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="customize_window_form_view">
+            <field name="name">提示窗口</field>
+            <field name="model">mommy.message.popsup</field>
+            <field name="arch"  type="xml">
+                <form string="提示窗口">
+                    <field name = "content"/>
+                    <footer>
+                        <button name="btn_OK" string="OK" type="object" class="oe_highlight"/>                        
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

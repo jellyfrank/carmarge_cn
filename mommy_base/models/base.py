@@ -41,3 +41,20 @@ class BaseModel(models.AbstractModel):
             return self.env[active_model].browse(active_ids)
         if active_id:
             return self.env[active_model].browse(active_id)
+
+    def show_message(self,title, content):
+        popsup = self.env['mommy.message.popsup'].create({
+            "title": title,
+            "content":content
+        })
+        return popsup.get_action()
+
+    def _compute_action_show_nickname(self):
+        self.action_show_nickname = False
+
+    @api.model
+    def _add_magic_fields(self):
+        """Add field action show nickname or not."""
+        field = fields.Boolean("Action show nickname?",compute="_compute_action_show_nickname")
+        self._add_field('action_show_nickname', field)
+        return super()._add_magic_fields()

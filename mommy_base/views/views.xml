@@ -4,6 +4,7 @@
       <xpath expr="script[last()]" position="after">
         <script type="text/javascript" src="/mommy_base/static/src/js/web.js"></script>
         <script type="text/javascript" src="/mommy_base/static/src/js/form.js"></script>
+        <script type="text/javascript" src="/mommy_base/static/src/js/form_controller.js"></script>
       </xpath>
     </template>
   </data>
