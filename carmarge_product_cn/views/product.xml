@@ -63,6 +63,16 @@
                     </page>
                 </xpath>
 
+                <field name="company_id" position="before">
+                    <field name="exw"/>
+                    <label for="exw_rate" string="加价率"/>
+                    <div class="o_row">
+                        
+                        <field name="exw_rate"/>%
+                    </div>
+                    
+                </field>
+
 
             </field>
         </record>
@@ -98,6 +108,8 @@
                     <field name="barcode" position="move"/>
                     <field name="brand" widget="many2many_tags"/>
                     <field name="packaging_ids" widget="many2many_tags"/>
+                    <field name="exw"/>
+                    <field name="exw_rate"/>
                     <field name="length" optional="hide"/>
                     <field name="width" optional="hide"/>
                     <field name="height" optional="hide"/>

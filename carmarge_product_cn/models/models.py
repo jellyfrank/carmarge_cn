@@ -162,8 +162,21 @@ class product_template(models.Model):
             # data.insert(0,(5,))
             product.sale_price_history = data
 
-    brand = fields.Many2many("product.brand", string="适用")
+    def _compute_exw_rate(self):
+        """计算加价率"""
+        for product in self:
+            # 只考虑公开价格表
+            public_pricelist = self.env.ref("product.list0") 
+            product.exw_rate = sum( abs(price) for price in public_pricelist.item_ids.filtered(lambda i: i.product_tmpl_id == product).mapped("price_discount"))
+            # 计算出厂价
+            # product.exw = public_pricelist.get_product_price(product.product_variant_id,1,self.env.company.partner_id)
+            product.exw = product.standard_price * (100 + product.exw_rate) / 100
+
+
     comm_check = fields.Boolean("是否商检", default=False)
+    brand = fields.Many2many("product.brand", string="适用")
+    exw = fields.Monetary("EXW", compute="_compute_exw_rate")
+    exw_rate = fields.Float("加价率",compute="_compute_exw_rate")
     default_code = fields.Char(string="配件编号")
     height = fields.Float("高")
     is_brand_package = fields.Boolean("是否品牌包装")
