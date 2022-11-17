@@ -140,7 +140,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <t t-set="lines" t-value="o.order_line.move_ids.filtered(lambda x: x.product_uom_qty)"/>
+                            <t t-set="lines" t-value="o.order_line.filtered(lambda x: x.product_uom_qty)"/>
                             <tr t-foreach="lines" t-as="move">
                                 <td>
                                     <t t-esc="move_index+1"/>
@@ -156,7 +156,7 @@
                                     <t t-esc="move.product_uom.name"/>
                                 </td>
                                 <td>
-                                    <t t-esc="int(move.quantity_done)"/>
+                                    <t t-esc="int(move.quantity_delivered)"/>
                                 </td>
                                 <td>
                                     <t t-esc="int(move.packaging_qty)"/>
