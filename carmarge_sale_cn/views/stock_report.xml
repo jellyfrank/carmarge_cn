@@ -180,7 +180,7 @@
                                 </td>
                                 <td name="td_amount_total">
                                     <strong>
-                                        <t t-esc="int(sum(move.quantity_done for move in lines))"/>
+                                        <t t-esc="int(sum(move.qty_delivered for move in lines))"/>
                                     </strong>
                                 </td>
                                 <td>
