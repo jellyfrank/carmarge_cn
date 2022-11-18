@@ -140,7 +140,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <t t-set="lines" t-value="o.order_line.filtered(lambda x: x.product_uom_qty and x.product_id.type =='product')"/>
+                            <t t-set="lines" t-value="o.order_line.filtered(lambda x: x.product_uom_qty and x.product_id.type =='')"/>
                             <tr t-foreach="lines" t-as="move">
                                 <td>
                                     <t t-esc="move_index+1"/>
