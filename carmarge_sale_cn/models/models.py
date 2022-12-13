@@ -124,13 +124,18 @@ class sale_order(models.Model):
             if report.name == '装箱单' and order.delivery_state != 'all':
                 raise UserError("尚未完全发货完成,不能打印装箱单")
 
+    def _compute_currency_str(self):
+        """获取价格表中的货币比率"""
+        for order in self:
+            order.currency_str = f"{order.env.company.currency_id.rate}({order.create_date})"
+
     delivery_cost = fields.Monetary(
         "海运费", compute="_compute_delivery_discount", store=True)
     discount_manual = fields.Monetary(
         "优惠", compute="_compute_delivery_discount", store=True)
     port_city = fields.Many2one("carmarge.ship.city", "发货地")
     incoterm = fields.Many2one(
-        'account.incoterms', domain="[('code','in',['FOB','CIF'])]")
+        'account.incoterms', domain="[('code','in',['FOB','CIF','EXW'])]")
     incoterm_code = fields.Char("贸易术语code", related='incoterm.code')
     amount_payment = fields.Monetary(
         "货款", compute="_compute_amount_payment", store=True)
@@ -140,6 +145,17 @@ class sale_order(models.Model):
     paid_amount = fields.Monetary(
         "已付金额", compute="_compute_amount", store=True)
     due_amount = fields.Monetary("应付金额", compute="_compute_amount", store=True)
+    currency_str = fields.Char(
+        "汇率", compute="_compute_currency_str", store=True)
+
+    land_fee = fields.Float("陆运费", help="按重量均摊")
+    land_fee_shared = fields.Boolean("陆运均摊状态", default=False)
+    customs_fee = fields.Float("报关费", help="按货值均摊")
+    customs_shared = fields.Boolean("报关均摊状态", default=False)
+    shipping_fee = fields.Float("海运费", help="按体积均摊")
+    shipping_shared = fields.Boolean("海运均摊状态", default=False)
+
+    sale_cost_lines = fields.One2many("sale.cost", "order_id", string="销售费用")
 
     @api.model
     def create(self, vals):
@@ -300,16 +316,18 @@ class sale_order_line(models.Model):
             for invoice_line in line.invoice_lines:
                 if invoice_line.move_id.state == 'posted':
                     if invoice_line.move_id.move_type == 'out_invoice':
-                        qty_invoiced += invoice_line.product_uom_id._compute_quantity(invoice_line.quantity, line.product_uom)
+                        qty_invoiced += invoice_line.product_uom_id._compute_quantity(
+                            invoice_line.quantity, line.product_uom)
                     elif invoice_line.move_id.move_type == 'out_refund':
-                        qty_invoiced -= invoice_line.product_uom_id._compute_quantity(invoice_line.quantity, line.product_uom)
+                        qty_invoiced -= invoice_line.product_uom_id._compute_quantity(
+                            invoice_line.quantity, line.product_uom)
             line.qty_invoiced = qty_invoiced
 
     delivery_cost_line = fields.Monetary(
         "运费", compute="_compute_line", store=True)
     discount_manual_line = fields.Monetary(
         "优惠", compute="_compute_line", store=True)
-    exw = fields.Monetary("出厂价", related="product_id.exw")
+    exw = fields.Monetary("标准售价", related="product_id.exw")
     packaging = fields.Many2one(
         "product.packaging", string="包装规格", compute="_get_product_packaging")
     packaging_qty = fields.Float(
@@ -337,6 +355,9 @@ class sale_order_line(models.Model):
         string="英文名称", related="product_id.translate_name")
     delivery_state = fields.Selection(
         DELIVERY_STATES, string="交付状态", compute="_compute_delivery_state", store=True)
+    # product_packaging = fields.Many2one( 'product.packaging', string='包装数量', default=False, check_company=True)
+    product_packaging = fields.Many2one(string='包装数量')
+
 
     @api.onchange('product_uom', 'product_uom_qty')
     def product_uom_change(self):

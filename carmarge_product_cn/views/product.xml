@@ -92,65 +92,52 @@
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_tree_view"/>
             <field name="arch" type="xml">
-                <field name="name" position="before">
-                    <field name="categ_id" position="move"/>
-                </field>
-                <field name="categ_id" position="attributes">
-                    <attribute name="optional">show</attribute>
-                </field>
-                <field name="name" position="after">
-                    <field name="translate_name"/>
-                    <field name="origin_type"/>
-                </field>
-                <field name="default_code" position="after">
-                    <field name="barcode" position="move"/>
-                    <field name="brand" widget="many2many_tags"/>
-                    <field name="packaging_ids" widget="many2many_tags"/>
-                    <field name="exw" optional="hide"/>
-                    <field name="exw_rate" optional="hide"/>
-                    <field name="length" optional="hide"/>
-                    <field name="width" optional="hide"/>
-                    <field name="height" optional="hide"/>
-                    <field name="volume" optional="hide"/>
-                    <field name="net_weight" optional="hide"/>
-                    <field name="weight" string="毛重" optional="hide"/>
-                    <field name="packaging_length" optional="hide"/>
-                    <field name="packaging_width" optional="hide"/>
-                    <field name="packaging_height" optional="hide"/>
-                    <field name="packaging_volume" optional="hide"/>
-                    <field name="packaging_net_weight" optional="hide"/>
-                    <field name="packaging_weight" optional="hide"/>
-                </field>
-                <field name="barcode" position="attributes">
-                    <attribute name="optional">show</attribute>
-                </field>
-                <field name="responsible_id" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </field>
-                <field name="standard_price" position="attributes">
-                    <attribute name="optional">hide</attribute>
-                </field>
-                <field name="qty_available" position="attributes">
-                    <attribute name="optional">hide</attribute>
-                </field>
-                <field name="virtual_available" position="attributes">
-                    <attribute name="optional">hide</attribute>
-                </field>
-                <field name="uom_id" position="attributes">
-                    <attribute name="optional">hide</attribute>
-                </field>
-                <field name="uom_id" position="after">
-                    <field name="comm_check" optional="hide"/>
-                    <field name="is_brand_package" optional="hide"/>
-                    <field name="create_date" widget='date' optional="hide"/>
-                </field>
+                <xpath expr="//tree" position="replace">
+                    <tree string="Product" multi_edit="1" sample="1">
+                        <field name="type" optional="hide" readonly="1"/>
+                        <field name="categ_id" optional="show"/>
+                        <field name="origin_type"/>
+                        <field name="name" string="产品"/>
+                        <field name="translate_name"/>
+                        <field name="default_code" optional="show"/>
+                        <field name="barcode" optional="show" attrs="{'readonly': [('product_variant_count', '&gt;', 1)]}"/>
+                        <field name="brand" widget="many2many_tags"/>
+                        <field name="uom_id" readonly="1" optional="hide" groups="uom.group_uom"/>
+                        <field name="comm_check" optional="hide"/>
+                        <field name="is_brand_package" optional="hide"/>
+                        <field name="packaging_ids" widget="many2many_tags" string="包装数量"/>
+                        <field name="standard_price" widget="monetary" options="{'currency_field': 'cost_currency_id'}" optional="hide" readonly="1"/>
+                        <field name="exw" optional="hide" string="标准价格"/>
+                        <field name="exw_rate"/>
+                        <field name="list_price" string="销售价格" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show" decoration-muted="not sale_ok"/>
+                        <field name="purchased_product_qty" string="已采购数量" optional="hide"/>
+                        <field name="qty_available" optional="hide"/>
+                        <field name="virtual_available" optional="hide"/>
+                        <field name="sales_count" string="已销售数量" optional="hide"/>
+                        <!-- <field name="length" optional="hide"/>
+                        <field name="width" optional="hide"/>
+                        <field name="height" optional="hide"/>
+                        <field name="volume" optional="hide"/> 
+                        <field name="net_weight" optional="hide"/>
+                        <field name="weight" string="毛重" optional="hide"/>-->
+                        <field name="packaging_length" optional="hide"/>
+                        <field name="packaging_width" optional="hide"/>
+                        <field name="packaging_height" optional="hide"/>
+                        <field name="packaging_volume" optional="hide"/>
+                        <field name="packaging_net_weight" optional="hide"/>
+                        <field name="packaging_weight" optional="hide"/>
 
-                <field name="qty_available" position="before">
-                    <field name="purchased_product_qty" string="已采购数量" optional="hide"/>
-                </field>
-                <field name="virtual_available" position="after">
-                    <field name="sales_count" string="已销售数量" optional="hide"/>
-                </field>
+                        <field name="create_date" widget='date' optional="hide"/>
+                        <field name="product_variant_count" invisible="1"/>
+                        <field name="sale_ok" invisible="1"/>
+                        <field name="currency_id" invisible="1"/>
+                        <field name="cost_currency_id" invisible="1"/>
+                        <field name="sequence" widget="handle" readonly="1"/> 
+                        <field name="company_id" options="{'no_create_edit': True}" groups="base.group_multi_company" optional="hide"/>
+                        <field name="active" invisible="1"/>
+                        <field name="activity_exception_decoration" widget="activity_exception"/>
+                    </tree>
+                </xpath>
             </field>
         </record>
 

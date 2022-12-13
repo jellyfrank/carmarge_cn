@@ -36,7 +36,8 @@
         'views/res_company_views.xml',
         'views/account_move_views.xml',
         'views/commercial.xml',
-        'views/stock_report.xml'
+        'views/stock_report.xml',
+        'views/product.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

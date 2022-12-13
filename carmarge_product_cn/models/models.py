@@ -175,7 +175,7 @@ class product_template(models.Model):
 
     comm_check = fields.Boolean("是否商检", default=False)
     brand = fields.Many2many("product.brand", string="适用")
-    exw = fields.Monetary("EXW", compute="_compute_exw_rate")
+    exw = fields.Monetary("标准售价", compute="_compute_exw_rate")
     exw_rate = fields.Float("加价率%",compute="_compute_exw_rate")
     default_code = fields.Char(string="配件编号")
     height = fields.Float("高")
@@ -318,6 +318,11 @@ class product_template(models.Model):
         return super(product_template, self).read_group(domain, fields, groupby, offset=offset, limit=limit,
                                                         orderby=orderby, lazy=lazy)
 
+    @api.model
+    def default_get(self, fields_list):
+        res = super().default_get(fields_list)
+        res['invoice_police'] = 'delivery'
+        return res
 
 class product_brand(models.Model):
     _name = "product.brand"

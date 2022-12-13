@@ -10,9 +10,9 @@
                     <attribute name='required'>1</attribute>
                 </xpath>
 
-                <xpath expr="//field[@name='order_line']//tree//field[@name='product_id']" position="attributes">
+                <!-- <xpath expr="//field[@name='order_line']//tree//field[@name='product_id']" position="attributes">
                     <attribute name='options'>{'no_create': True, 'no_edit': True}</attribute>
-                </xpath>
+                </xpath> -->
 
                 <xpath expr="//button[@name='action_quotation_send'][1]" position="after">
                     <button name="action_qita_send" string="通过其他形式发送" type="object" states="draft" class="btn-primary"/>
@@ -34,13 +34,103 @@
                     <attribute name='required'>1</attribute>
                 </xpath>
 
-                <xpath expr="//field[@name='order_line']//tree//field[@name='product_id']" position="after">
-                    <field name="translate_name" optional="hide"/>
+                <!-- <xpath expr="//field[@name='order_line']//tree//field[@name='product_id']" position="after">
+                    
+                </xpath> -->
+
+                <!-- <xpath expr="//field[@name='order_line']//tree//field[@name='product_uom_qty']" position="after">
+                    
+                </xpath> -->
+
+                <field name="payment_term" position="before">
+                    <field name="currency_str"/>
+                </field>
+
+                <xpath expr="//field[@name='order_line']//tree" position="replace">
+                    <tree string="Sales Order Lines" editable="bottom">
+                        <control>
+                            <create name="add_product_control" string="Add a product"/>
+                            <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                            <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                        </control>
+
+                        <field name="sequence" widget="handle"/>
+                        <field name="product_id" options="{'no_create': True, 'no_edit': True}" attrs="{'readonly': [('product_updatable', '=', False)],'required': [('display_type', '=', False)]}" force_save="1" context="{'partner_id': parent.partner_id,'quantity': product_uom_qty,'pricelist': parent.pricelist_id,'uom':product_uom,'company_id': parent.company_id,'default_lst_price': price_unit,'default_description_sale': name}" domain="[('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]" widget="product_configurator"/>
+                        <field name="name" widget="section_and_note_text" optional="show"/>
+                        <field name="translate_name" optional="hide"/>
+                        <field name="product_uom" force_save="1" string="UoM" attrs="{'readonly': [('product_uom_readonly', '=', True)],'required': [('display_type', '=', False)]}" context="{'company_id': parent.company_id}" groups="uom.group_uom" options="{&quot;no_open&quot;: True}" optional="show"/>
+                        <field name="analytic_tag_ids" optional="hide" groups="analytic.group_analytic_tags" widget="many2many_tags" options="{'color_field': 'color'}" domain="['|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"/>
+                        <field name="customer_lead" optional="hide" attrs="{'readonly': [('parent.state', 'not in', ['draft', 'sent', 'sale'])]}"/>
+                        <field name="product_uom_qty" decoration-info="(not display_type and invoice_status == 'to invoice')" decoration-bf="(not display_type and invoice_status == 'to invoice')" context="{'partner_id': parent.partner_id,'quantity': product_uom_qty,'pricelist': parent.pricelist_id,'uom': product_uom,'company_id': parent.company_id}"/>
+                        <field name="product_packaging" attrs="{'invisible': [('product_id', '=', False)]}" context="{'default_product_id': product_id, 'tree_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" domain="[('product_id','=',product_id)]" groups="product.group_stock_packaging"/>
+                        <field name="exw" optional="hide" string="标准售价¥" widget="float" />
+                        <field name="price_unit" attrs="{'readonly': [('qty_invoiced', '&gt;', 0)]}" widget="monetary"/>
+                        <field name="tax_id" widget="many2many_tags" options="{'no_create': True}" domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id)]" attrs="{'readonly': [('qty_invoiced', '&gt;', 0)]}" optional="show"/>
+                        <field name="packaging_qty" sum="total"/>
+                        <field name="note"/>
+                        <field name="purchase_price" optional="hide"/>
+                        <field name="margin" optional="hide"/>
+                        <field name="margin_percent" attrs="{'invisible': [('price_subtotal', '=', 0)]}" optional="hide" widget="percentage"/>
+                        <field name="discount" string="Disc.%" groups="product.group_discount_per_so_line" optional="show" widget="product_discount"/>
+                        <field name="packaging" invisible="1"/>
+                        <field name="weight" invisible="1" optional="hide" />
+                        <field name="net_weight" invisible="1" optional="hide"/>
+                        <field name="volume" invisible="1" optional="hide"/>
+                        <field name="packaging_weight" optional="hide"/>
+                        <field name="packaging_net_weight" optional="hide"/>
+                        <field name="packaging_volume" optional="hide"/>
+                        <field name="total_packaging_weight" sum="total" optional="hide"/>
+                        <field name="total_packaging_net_weight" sum="total" optional="hide"/>
+                        <field name="total_packaging_volume" sum="total" optional="hide"/>
+                        <field name="group_use_sale_price_update" invisible="1"/>
+                        <field name="price_subtotal" widget="monetary" groups="account.group_show_line_subtotals_tax_excluded"/>
+                        <field name="price_total" widget="monetary" groups="account.group_show_line_subtotals_tax_included"/>
+
+                        <!-- We do not display the type because we don't want the user to be bothered with that information if he has no section or note. -->
+                        <field name="display_type" invisible="1"/>
+                        <field name="product_uom_category_id" invisible="1"/>
+
+                        <field name="product_updatable" invisible="1"/>
+                        <field name="product_template_id" string="Product" invisible="1" attrs="{'readonly': [('product_updatable', '=', False)],'required': [('display_type', '=', False)],                                       }" options="{'no_open': True}" context="{'partner_id': parent.partner_id,'quantity': product_uom_qty,'pricelist': parent.pricelist_id,'uom':product_uom,'company_id': parent.company_id,'default_list_price': price_unit,'default_description_sale': name}" domain="[('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]" widget="product_configurator"/>
+                        <field name="qty_delivered" invisible="1" decoration-info="(not display_type and invoice_status == 'to invoice')" decoration-bf="(not display_type and invoice_status == 'to invoice')" string="Delivered" attrs="{'column_invisible': [('parent.state', 'not in', ['sale', 'done'])],'readonly': [('qty_delivered_method', '!=', 'manual')]}" optional="show"/>
+                        <field name="qty_delivered_manual" invisible="1"/>
+                        <field name="qty_delivered_method" invisible="1"/>
+                        <field name="qty_invoiced" decoration-info="(not display_type and invoice_status == 'to invoice')" decoration-bf="(not display_type and invoice_status == 'to invoice')" string="Invoiced" attrs="{'column_invisible': [('parent.state', 'not in', ['sale', 'done'])]}" optional="show"/>
+                        <field name="qty_to_invoice" invisible="1"/>
+                        <field name="product_uom_readonly" invisible="1"/>
+                        <field name="state" invisible="1"/>
+                        <field name="invoice_status" invisible="0"/>
+                        <field name="currency_id" invisible="1"/>
+                        <field name="price_tax" invisible="1"/>
+                        <field name="company_id" invisible="1"/>
+                    </tree>
                 </xpath>
 
-                <xpath expr="//field[@name='order_line']//tree//field[@name='product_uom_qty']" position="after">
-                    <field name="exw" optional="hide"/>
+                <!-- <xpath expr="//field[@name='order_line']//tree//field[@name='price_unit']" position="after">
+                    
+                    </xpath> -->
+
+                <xpath expr="//page[@name='order_lines']" position="after">
+                    <page string="销售费用" name="sale_cost">
+                        <field name="sale_cost_lines">
+                            <tree editable="bottom">
+                                <field name="product_id"/>
+                                <field name="split_method" string="均摊方法"/>
+                                <field name="cost"/>
+                                <field name="is_splited" invisible="1"/>
+                                <button name="button_split" type="object" string="均摊" attrs="{'invisible':[('is_splited','=',True)]}" />
+                            </tree>
+                        </field>
+                    </page>
                 </xpath>
+
+                <field name="partner_invoice_id" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+
+                <field name="partner_shipping_id" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
 
             </field>
         </record>
@@ -53,6 +143,21 @@
 
                 <xpath expr="//field[@name='sale_order_template_id']" position="after">
                     <field name="incoterm" string="交易方式" required="1"/>
+                    <!-- <label for="land_fee"/>
+                    <div class="o_row">
+                        <field name="land_fee"/>
+                        <field name="land_fee_shared" readonly="1"/>
+                    </div>
+                    <label for="customs_fee"/>
+                    <div class="o_row">
+                        <field name="customs_fee"/>
+                        <field name="customs_shared" readonly="1"/>
+                    </div>
+                    <label for="customs_fee"/>
+                    <div class="o_row">
+                        <field name="shipping_fee"/>
+                        <field name="shipping_shared" readonly="1"/>
+                    </div> -->
                 </xpath>
 
             </field>
@@ -80,6 +185,7 @@
 
                 <xpath expr="//field[@name='order_line']//tree//field[@name='product_packaging']" position="attributes">
                     <attribute name='options'>{'no_create': True, 'no_edit': True}</attribute>
+                    <attribute name="string">包装数量</attribute>
                 </xpath>
 
             </field>
@@ -94,29 +200,16 @@
             <field name="active" eval="False"/>
         </record>
 
-        <menuitem id="menu_sale_quotations"
-                  name="报价单"
-                  action="sale.action_quotations_with_onboarding"
-                  parent="sale.sale_menu_root"
-                  sequence="1" groups="sales_team.group_sale_salesman"/>
+        <menuitem id="menu_sale_quotations" name="报价单" action="sale.action_quotations_with_onboarding" parent="sale.sale_menu_root" sequence="1" groups="sales_team.group_sale_salesman"/>
 
-        <menuitem id="menu_sale_order"
-                  name="订单"
-                  action="sale.action_orders"
-                  parent="sale.sale_menu_root"
-                  sequence="2" groups="sales_team.group_sale_salesman"/>
+        <menuitem id="menu_sale_order" name="订单" action="sale.action_orders" parent="sale.sale_menu_root" sequence="2" groups="sales_team.group_sale_salesman"/>
 
-        <menuitem id="report_sales_team"
-                  name="销售团队"
-                  parent="sale.sale_menu_root"
-                  groups="sales_team.group_sale_manager"
-                  action="sales_team.crm_team_salesteams_act"
-                  sequence="3"/>
+        <menuitem id="report_sales_team" name="销售团队" parent="sale.sale_menu_root" groups="sales_team.group_sale_manager" action="sales_team.crm_team_salesteams_act" sequence="3"/>
         <!--        <menuitem id="res_partner_menu"-->
-        <!--                  name="客户"-->
-        <!--                  parent="sale.sale_menu_root"-->
-        <!--                  action="account.res_partner_action_customer"-->
-        <!--                  sequence="4" groups="sales_team.group_sale_salesman"/>-->
+        <!-- name="客户"-->
+        <!-- parent="sale.sale_menu_root"-->
+        <!-- action="account.res_partner_action_customer"-->
+        <!-- sequence="4" groups="sales_team.group_sale_salesman"/>-->
 
         <record id="view_sale_order_tree_quotation" model="ir.ui.view">
             <field name="name">销售订单</field>

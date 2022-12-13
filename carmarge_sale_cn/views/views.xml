@@ -40,7 +40,7 @@
         <!-- <xpath expr="//field[@name='order_line']//tree//field[@name='product_code']" position="attributes">
           <attribute name='invisible'>1</attribute>
         </xpath> -->
-        <xpath expr="//field[@name='order_line']//tree//field[@name='price_tax']" position="attributes">
+        <!-- <xpath expr="//field[@name='order_line']//tree//field[@name='price_tax']" position="attributes">
           <attribute name='invisible'>0</attribute>
         </xpath>
         <xpath expr="//field[@name='order_line']//tree//field[@name='product_uom_qty']" position="attributes">
@@ -66,23 +66,9 @@
         <xpath expr="//field[@name='order_line']//tree//field[@name='name']" position="attributes">
           <attribute name='invisible'>0</attribute>
           <attribute name='readonly'>0</attribute>
-        </xpath>
+        </xpath> -->
 
-        <xpath expr="//field[@name='order_line']//tree//field[@name='price_unit']" position="after">
-          <field name="packaging" invisible="1"/>
-          <field name="packaging_qty" sum="total"/>
-          <field name="weight" optional="hide" />
-          <field name="net_weight" optional="hide"/>
-          <field name="volume" optional="hide"/>
-          <field name="packaging_weight" optional="hide"/>
-          <field name="packaging_net_weight" optional="hide"/>
-          <field name="packaging_volume" optional="hide"/>
-          <field name="total_packaging_weight" sum="total" optional="hide"/>
-          <field name="total_packaging_net_weight" sum="total" optional="hide"/>
-          <field name="total_packaging_volume" sum="total" optional="hide"/>
-          <field name="group_use_sale_price_update" invisible="1"/>
-          <field name="note"/>
-        </xpath>
+        
       </field>
     </record>
 
