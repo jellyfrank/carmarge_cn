@@ -181,7 +181,7 @@ class product_template(models.Model):
     
     height = fields.Float("高")
     is_brand_package = fields.Boolean("是否品牌包装")
-    invoice_police = fields.Selection(default='delivery')
+    invoice_policy = fields.Selection(default='delivery')
     length = fields.Float("长")
     net_weight = fields.Float(string="净重")
     packaging = fields.Many2one(
@@ -323,7 +323,7 @@ class product_template(models.Model):
     @api.model
     def default_get(self, fields_list):
         res = super().default_get(fields_list)
-        res['invoice_police'] = 'delivery'
+        res['invoice_policy'] = 'delivery'
         return res
 
 class product_brand(models.Model):
