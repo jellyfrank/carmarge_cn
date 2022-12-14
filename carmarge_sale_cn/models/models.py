@@ -5,6 +5,7 @@
 from odoo import api, fields, models, _, exceptions
 from odoo.models import NewId
 from odoo.exceptions import UserError
+from datetime import datetime
 
 DELIVERY_STATES = [
     ('no', '未交货'),
@@ -124,10 +125,10 @@ class sale_order(models.Model):
             if report.name == '装箱单' and order.delivery_state != 'all':
                 raise UserError("尚未完全发货完成,不能打印装箱单")
 
+    
     def _compute_currency_str(self):
         """获取价格表中的货币比率"""
-        for order in self:
-            order.currency_str = f"{order.env.company.currency_id.rate}({order.create_date})"
+        return f"{self.env.company.currency_id.rate}({datetime.strftime(datetime.now(),'%Y-%m-%d %H:%M:%S')})"
 
     delivery_cost = fields.Monetary(
         "海运费", compute="_compute_delivery_discount", store=True)
@@ -146,7 +147,7 @@ class sale_order(models.Model):
         "已付金额", compute="_compute_amount", store=True)
     due_amount = fields.Monetary("应付金额", compute="_compute_amount", store=True)
     currency_str = fields.Char(
-        "汇率", compute="_compute_currency_str", store=True)
+        "汇率", default=_compute_currency_str)
 
     land_fee = fields.Float("陆运费", help="按重量均摊")
     land_fee_shared = fields.Boolean("陆运均摊状态", default=False)
