@@ -81,8 +81,8 @@
             <field name="inherit_id" ref="delivery.product_template_hs_code"/>
             <field name="arch" type="xml">
                 <field name="hs_code" position="after">
-                    <field name="comm_check"/>
-                    <field name="is_brand_package"/>
+                    <field name="comm_check" string="商检"/>
+                    <field name="is_brand_package" string="品牌包装"/>
                 </field>
             </field>
         </record>
@@ -102,9 +102,9 @@
                         <field name="default_code" optional="show"/>
                         <field name="barcode" optional="show" attrs="{'readonly': [('product_variant_count', '&gt;', 1)]}"/>
                         <field name="brand" widget="many2many_tags"/>
-                        <field name="uom_id" readonly="1" optional="hide" groups="uom.group_uom"/>
-                        <field name="comm_check" optional="hide"/>
-                        <field name="is_brand_package" optional="hide"/>
+                        <field name="uom_id" string="单位" readonly="1" optional="hide" groups="uom.group_uom"/>
+                        <field name="comm_check" string="商检" optional="hide"/>
+                        <field name="is_brand_package" string="品牌包装" optional="hide"/>
                         <field name="packaging_ids" widget="many2many_tags" string="包装数量"/>
                         <field name="standard_price" widget="monetary" options="{'currency_field': 'cost_currency_id'}" optional="hide" readonly="1"/>
                         <field name="exw" optional="hide" string="标准价格"/>
