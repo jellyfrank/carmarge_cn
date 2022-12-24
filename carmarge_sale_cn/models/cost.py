@@ -38,19 +38,23 @@ class sale_cost(models.Model):
             for line in self.order_id.order_line:
                 line.price_unit += additional_cost
         elif self.split_method == "by_quantity":
-            additional_cost = self.cost / sum(self.order_id.order_line.mapped("product_uom_qty"))
+            qty = sum(self.order_id.order_line.mapped("product_uom_qty"))
+            additional_cost = self.cost / qty if qty else 0
             for line in self.order_id.order_line:
                 line.price_unit  += additional_cost * line.product_uom_qty
         elif self.split_method == 'by_current_cost_price':
-            additional_cost = self.cost / sum(self.order_id.order_line.mapped("product_id").mapped("standard_price"))
+            price = sum(self.order_id.order_line.mapped("product_id").mapped("standard_price"))
+            additional_cost = self.cost / price if price else 0
             for line in self.order_id.order_line:
                 line.price_unit  += additional_cost * line.product_id.standard_price
         elif self.split_method == "by_weight":
-            additional_cost = self.cost / sum(self.order_id.order_line.mapped("product_id").mapped("weight"))
+            weight = sum(self.order_id.order_line.mapped("product_id").mapped("weight"))
+            additional_cost = self.cost / weight if weight else 0 
             for line in self.order_id.order_line:
                 line.price_unit += additional_cost * line.product_id.weight
         else:
-            additional_cost = self.cost / sum(self.order_id.order_line.mapped("product_id").mapped("volume"))
+            vol = sum(self.order_id.order_line.mapped("product_id").mapped("volume"))
+            additional_cost = self.cost / vol if vol else 0
             for line in self.order_id.order_line:
                 line.price_unit += additional_cost * line.product_id.volume
         self.is_splited = True

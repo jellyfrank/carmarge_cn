@@ -43,7 +43,7 @@
                 </xpath> -->
 
                 <field name="payment_term" position="before">
-                    <field name="currency_str"/>
+                    <field name="currency_str" readonly="1"/>
                 </field>
 
                 <xpath expr="//field[@name='order_line']//tree" position="replace">
