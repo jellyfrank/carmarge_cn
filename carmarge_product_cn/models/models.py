@@ -173,14 +173,14 @@ class product_template(models.Model):
             product.exw = product.standard_price * (100 + product.exw_rate) / 100
 
 
-    comm_check = fields.Boolean("是否商检", default=False)
+    comm_check = fields.Boolean("商检", default=False)
     brand = fields.Many2many("product.brand", string="适用")
     exw = fields.Monetary("标准售价", compute="_compute_exw_rate")
     exw_rate = fields.Float("加价率%",compute="_compute_exw_rate")
     default_code = fields.Char(string="配件编号")
     
     height = fields.Float("高")
-    is_brand_package = fields.Boolean("是否品牌包装")
+    is_brand_package = fields.Boolean("品牌包装")
     invoice_policy = fields.Selection(default='delivery')
     length = fields.Float("长")
     net_weight = fields.Float(string="净重")
