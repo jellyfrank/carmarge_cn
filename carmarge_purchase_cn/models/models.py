@@ -154,8 +154,8 @@ class purchase_order(models.Model):
     def _compute_amount(self):
         """计算到期金额和已付金额"""
         for po in self:
-            total = sum([invoice_id.amount_total for invoice_id in po.invoice_ids if invoice_id.state == 'posted'])
-            po.due_amount = sum([invoice_id.amount_residual for invoice_id in po.invoice_ids if invoice_id.state == 'posted'])
+            total = abs(sum([invoice_id.amount_total_signed for invoice_id in po.invoice_ids if invoice_id.state == 'posted']))
+            po.due_amount = abs(sum([invoice_id.amount_residual_signed for invoice_id in po.invoice_ids if invoice_id.state == 'posted']))
             po.paid_amount = total - po.due_amount
 
 
