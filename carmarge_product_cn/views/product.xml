@@ -13,6 +13,12 @@
                     <field name="translate_name" placeholder="英文名称"/>
                     <field name="origin_type" options="{'horizontal': true}" widget="radio" class="oe_inline"/>
                 </xpath>
+                <xpath expr="//div[@name='options']" position="after">
+                    <div>
+                        <field name="is_cost_service"/>
+                        <label for="is_cost_service" string="成本均摊"/>
+                    </div>
+                </xpath>
                 <xpath expr="//div[@name='weight']" position="after">
                     <label for="net_weight" string="净重"/>
                     <div class="o_row" name="net_weight">

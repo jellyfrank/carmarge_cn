@@ -1,3 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_carmarge_ship_city,access_caramarge_ship_city,model_carmarge_ship_city,,1,1,1,1
-access_sale_cost, access_sale_cost,model_sale_cost,,1,1,1,1
+access_sale_cost,access_sale_cost,model_sale_cost,,1,1,1,1

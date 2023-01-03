@@ -218,6 +218,7 @@ class product_template(models.Model):
     sale_price_history = fields.Many2many(
         "product.price.history", string="历史价格", compute="_compute_price_history")
     origin_type = fields.Selection(ORIGINS, string="产品属性", default='self')
+    is_cost_service = fields.Boolean("Cost Service", default=False)
 
     def action_view_sales(self):
         action = self.env["ir.actions.actions"]._for_xml_id(
