@@ -7,7 +7,8 @@ from odoo import api, fields, models, _
 SPLIT_METHOD = [
     # ('equal', 'Equal'),
     # ('by_quantity', 'By Quantity'),
-    ('by_current_cost_price', 'By Current Cost'),
+    # ('by_current_cost_price', 'By Current Cost'),
+    ('by_price', 'By Price'),
     ('by_weight', 'By Weight'),
     ('by_volume', 'By Volume'),
 ]
@@ -42,6 +43,11 @@ class sale_cost(models.Model):
             additional_cost = self.cost / qty if qty else 0
             for line in self.order_id.order_line:
                 line.price_unit  += additional_cost * line.product_uom_qty
+        elif self.split_method == "by_price":
+            price = sum(self.order_id.order_line.mapped("price_unit"))
+            additional_cost = self.cost / price if price else 0
+            for line in self.order_id.order_line:
+                line.price_unit  += additional_cost * line.price_unit
         elif self.split_method == 'by_current_cost_price':
             price = sum(self.order_id.order_line.mapped("product_id").mapped("standard_price"))
             additional_cost = self.cost / price if price else 0
