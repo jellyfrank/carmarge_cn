@@ -315,13 +315,11 @@ class sale_order_line(models.Model):
         for line in self:
             qty_invoiced = 0.0
             for invoice_line in line.invoice_lines:
-                if invoice_line.move_id.state == 'posted':
+                if invoice_line.move_id.state != 'cancel':
                     if invoice_line.move_id.move_type == 'out_invoice':
-                        qty_invoiced += invoice_line.product_uom_id._compute_quantity(
-                            invoice_line.quantity, line.product_uom)
-                    elif invoice_line.move_id.move_type == 'out_refund':
-                        qty_invoiced -= invoice_line.product_uom_id._compute_quantity(
-                            invoice_line.quantity, line.product_uom)
+                        qty_invoiced += invoice_line.product_uom_id._compute_quantity(invoice_line.quantity, line.product_uom)
+                    # elif invoice_line.move_id.move_type == 'out_refund':
+                    #     qty_invoiced -= invoice_line.product_uom_id._compute_quantity(invoice_line.quantity, line.product_uom)
             line.qty_invoiced = qty_invoiced
 
     delivery_cost_line = fields.Monetary(
