@@ -178,8 +178,6 @@ class purchase_order(models.Model):
         return super(purchase_order,self).write(vals)
 
 
-
-
 class purchase_order_line(models.Model):
 
     _inherit = "purchase.order.line"
@@ -192,13 +190,12 @@ class purchase_order_line(models.Model):
             line.discount_manual_line = line.order_id.discount_manual / \
                 len(line.order_id.order_line)
 
-    @api.depends("product_id","books/")
+    @api.depends("product_id")
     def _get_product_packaging(self):
         """获取包裹数量"""
         # 取产品库存包装信息中的第一条
         for line in self:
-            # line.packaging = line.product_id.packaging_ids[0] if line.product_id.packaging_ids else None
-            line.packaging = line.product_packaging
+            line.packaging = line.product_id.packaging_ids[-1] if line.product_id.packaging_ids else None
 
     @api.depends("packaging", "product_qty")
     def _compute_packaging_qty(self):

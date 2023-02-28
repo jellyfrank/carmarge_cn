@@ -6,7 +6,16 @@
             <field name="model">product.packaging</field>
             <field name="inherit_id" ref="product.product_packaging_form_view"/>
             <field name="arch" type="xml">
+
+                <xpath expr="//label[@for='name']" position="replace">
+                    <label for="name" string="包装数量"/>
+                </xpath>
                 <xpath expr="//group[@name='qty']" position="inside">
+                    <label for="name_en" string="英文"/>
+                    <div class="o_row" name="name_en">
+                        <field name="name_en"/>
+                    </div>
+
                     <label for="length" string="包装长"/>
                     <div class="o_row" name="length">
                         <field name="length"/>

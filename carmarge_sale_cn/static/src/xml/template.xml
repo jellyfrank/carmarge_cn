@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template id="form_view_button_template" xml:space="preserve">
+    <t t-extend="FormView.buttons">
+      <t t-jquery="button.o_form_button_cancel" t-operation="replace">
+        <button type="button" class="btn btn-secondary o_form_button_cancel" accesskey="j">
+          取消
+        </button>
+        <!-- <attribute name="string">取消</attribute> -->
+      </t>
+    </t>
+    <!-- TODO footer cancel -->
+    <form>
+      <footer>
+        <t t-jquery="button.o_form_button_cancel" t-operation="replace">
+          <button type="button" class="btn btn-secondary o_form_button_cancel">
+            取消
+          </button>
+        </t>
+      </footer>
+    </form>
+</template>

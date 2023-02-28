@@ -125,6 +125,9 @@
                                 <th name="th_unit">
                                     <strong>QTY</strong>
                                 </th>
+                                <th name="th_pack_qty">
+                                    <strong>QTY/PKG</strong>
+                                </th>
                                 <th name="th_package">
                                     <strong>PKG</strong>
                                 </th>
@@ -135,7 +138,7 @@
                                     <strong>G.W.(KGS)</strong>
                                 </th>
                                 <th name="th_volumn">
-                                    <strong>Volumn(CBM)</strong>
+                                    <strong>VOL.(CBM)</strong>
                                 </th>
                             </tr>
                         </thead>
@@ -157,6 +160,10 @@
                                 </td>
                                 <td>
                                     <t t-esc="int(move.qty_delivered)"/>
+                                </td>
+                                <!-- qty/pkg -->
+                                <td>
+                                    <t t-esc="round(move.product_packaging.qty, 1)"/>
                                 </td>
                                 <td>
                                     <t t-esc="int(move.packaging_qty)"/>
@@ -181,6 +188,11 @@
                                 <td name="td_amount_total">
                                     <strong>
                                         <t t-esc="int(sum(move.qty_delivered for move in lines))"/>
+                                    </strong>
+                                </td>
+                                <td>
+                                    <strong>
+                                        <t t-esc="round(sum(move.product_packaging.qty for move in lines), 2)"/>
                                     </strong>
                                 </td>
                                 <td>

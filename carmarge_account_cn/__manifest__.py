@@ -28,6 +28,9 @@
         'views/views.xml',
         'views/templates.xml',
     ],
+    "qweb": [
+        'static/src/xml/template.xml',
+    ],
     # only loaded in demonstration mode
     'demo': [
         'demo/demo.xml',

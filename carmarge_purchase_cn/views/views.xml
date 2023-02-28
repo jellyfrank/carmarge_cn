@@ -162,6 +162,7 @@
                 </field>
                 <field name="due_amount" position="attributes">
                     <attribute name="sum">Total</attribute>
+                    <attribute name="string">应付金额</attribute>
                 </field>
                 <field name="date_planned" position="attributes">
                     <attribute name="widget">date</attribute>

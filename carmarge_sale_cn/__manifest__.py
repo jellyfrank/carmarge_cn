@@ -20,7 +20,7 @@
     'version': '14.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['carmarge_product_cn','carmarge_purchase_cn','sale','delivery'],
+    'depends': ['carmarge_product_cn','carmarge_purchase_cn','sale','delivery', 'sale_margin'],
 
     # always loaded
     'data': [
@@ -42,5 +42,8 @@
     # only loaded in demonstration mode
     'demo': [
         'demo/demo.xml',
+    ],
+    "qweb": [
+        'static/src/xml/template.xml',
     ],
 }

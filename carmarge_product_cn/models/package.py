@@ -6,7 +6,7 @@ from odoo import api, fields, models, _
 
 
 class product_packaging(models.Model):
-
+    _description = "产品包装规格"
     _inherit="product.packaging"
 
     @api.depends("height","length","width")
@@ -21,3 +21,4 @@ class product_packaging(models.Model):
     width = fields.Float("包装宽(CM)")
     weight = fields.Float("包装毛重(KG)")
     volume   = fields.Float("包装体积(CM3)", compute="_get_volume", digits=(16,4))
+    name_en = fields.Char("英文")

@@ -27,10 +27,11 @@
         "security/data.xml",
         # 'security/ir.model.access.csv',
         'views/views.xml',
-        'views/templates.xml',
         'views/report.xml',
         "views/account.xml",
-        
+    ],
+    "qweb": [
+        'static/src/xml/template.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

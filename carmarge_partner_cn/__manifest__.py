@@ -27,4 +27,7 @@
         # 'security/ir.model.access.csv',
         'views/res_partner_views.xml',
     ],
+    "qweb": [
+        'static/src/xml/template.xml',
+    ],
 }
