@@ -194,6 +194,7 @@ class product_template(models.Model):
     packaging_net_weight = fields.Float(
         "包装净重(KG)", related="packaging.net_weight")
     packaging_weight = fields.Float("包装毛重(KG)", related="packaging.weight")
+    packaging_ids = fields.One2many(string="产品包装")
     width = fields.Float("宽")
     weight = fields.Float(string="毛重")
     type = fields.Selection(default="product")
