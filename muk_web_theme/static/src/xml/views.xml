@@ -83,7 +83,7 @@
         <t t-jquery=".o_list_button_discard" t-operation="inner">
             <t t-call="muk_web_theme.IconButton">
                 <t t-set="icon" t-value="'times'"/>
-                <t t-set="label">Discard</t>
+                <t t-set="label">取消</t>
             </t>
         </t>
     </t>
