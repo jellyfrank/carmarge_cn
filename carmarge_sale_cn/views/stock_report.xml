@@ -163,7 +163,7 @@
                                 </td>
                                 <!-- qty/pkg -->
                                 <td>
-                                    <t t-esc="round(move.product_packaging.qty, 1)"/>
+                                    <t t-esc="int(move.product_packaging.qty)"/>
                                 </td>
                                 <td>
                                     <t t-esc="int(move.packaging_qty)"/>
@@ -192,7 +192,7 @@
                                 </td>
                                 <td>
                                     <strong>
-                                        <t t-esc="round(sum(move.product_packaging.qty for move in lines), 2)"/>
+                                        <t t-esc="int(sum(move.product_packaging.qty for move in lines))"/>
                                     </strong>
                                 </td>
                                 <td>

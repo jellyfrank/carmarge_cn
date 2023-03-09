@@ -292,6 +292,9 @@ class sale_order_line(models.Model):
                     product_ids.append(line.product_id.id)
         if len(product_ids) >= 2:
             raise UserError(f"产品:{self.product_id.display_name}已经存在于明细行中！")
+        # 自动设置包裹
+        if self.product_id.packaging_ids:
+            self.product_packaging = self.product_id.packaging_ids[-1]
 
     @api.depends("product_qty", "qty_delivered")
     def _compute_delivery_state(self):

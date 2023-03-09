@@ -60,7 +60,7 @@
         <t t-jquery=".o_form_button_cancel" t-operation="inner">
             <t t-call="muk_web_theme.IconButton">
                 <t t-set="icon" t-value="'times'"/>
-                <t t-set="label">Discard</t>
+                <t t-set="label">取消</t>
             </t>
         </t>
     </t>

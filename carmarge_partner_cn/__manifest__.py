@@ -28,6 +28,6 @@
         'views/res_partner_views.xml',
     ],
     "qweb": [
-        'static/src/xml/template.xml',
+        # 'static/src/xml/template.xml',
     ],
 }

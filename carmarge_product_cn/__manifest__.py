@@ -20,7 +20,7 @@
     'version': '14.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['delivery',"product",'mommy_base','account'],
+    'depends': ['delivery',"product",'mommy_base','account','muk_web_theme'],
 
     # always loaded
     'data': [

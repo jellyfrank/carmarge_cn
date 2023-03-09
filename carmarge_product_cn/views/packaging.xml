@@ -10,12 +10,16 @@
                 <xpath expr="//label[@for='name']" position="replace">
                     <label for="name" string="包装数量"/>
                 </xpath>
-                <xpath expr="//group[@name='qty']" position="inside">
+                <!-- <field name="name" position="after">
+                    <field name="name_en"/>
+                </field> -->
+                <xpath expr="//field[@name='name']/.." position="after">
                     <label for="name_en" string="英文"/>
-                    <div class="o_row" name="name_en">
+                    <h1>
                         <field name="name_en"/>
-                    </div>
-
+                    </h1>
+                </xpath>
+                <xpath expr="//group[@name='qty']" position="inside">
                     <label for="length" string="包装长"/>
                     <div class="o_row" name="length">
                         <field name="length"/>

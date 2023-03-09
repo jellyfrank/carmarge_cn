@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<template id="form_view_button_template" xml:space="preserve">
-    <t t-extend="FormView.buttons">
-        <t t-jquery="button.o_form_button_cancel" t-operation="replace">
-          <button type="button" class="btn btn-secondary o_form_button_cancel" accesskey="j">
+<templates id="template" xml:space="preserve">
+  <t t-extend="FormView.buttons">
+    <t t-jquery=".o_form_button_cancel" t-operation="after">
+      <!-- <button type="button" class="btn btn-secondary o_form_button_cancel" accesskey="j">
             取消
-          </button>
-          <!-- <attribute name="string">取消</attribute> -->
-        </t>
+      </button> -->
+      <t t-call="muk_web_theme.IconButton">
+          <t t-set="icon" t-value="'times'"/>
+          <t t-set="label">取消</t>
+      </t>
     </t>
-</template>
+  </t>
+</templates>
