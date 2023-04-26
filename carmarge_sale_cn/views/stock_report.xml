@@ -7,13 +7,14 @@
                 <t t-call="web.external_layout">
                     <t t-set="o" t-value="o.with_context(lang=o.partner_id.lang)"/>
                     <t t-set="partner" t-value="o.partner_id"/>
-
-                    <div class="page">
+                    <div class="page" style="position:relative;width:100%">
                         <h2>
                             <!-- <span t-field="o.name"/> -->
                             <div class="text-center">PICKING LIST</div>
                         </h2>
-                        <div class="text-right"><span t-field="o.date_order" t-options="{&quot;format&quot;: &quot;MM/dd/yyyy&quot;}"/></div>
+                        <div class="text-right">
+                            <span t-field="o.date_order" t-options="{&quot;format&quot;: &quot;MM/dd/yyyy&quot;}"/>
+                        </div>
                         <table class="table table-sm o_main_table ">
                             <tbody>
                                 <tr>
@@ -74,7 +75,9 @@
                         <table class="table table-sm o_main_table">
                             <tbody>
                                 <tr>
-                                    <td style="width: 20%;"><strong>Supplier Name</strong></td>
+                                    <td style="width: 20%;">
+                                        <strong>Supplier Name</strong>
+                                    </td>
                                     <td>
                                         <span>
                                             <t t-esc="o.company_id.name"/>
@@ -106,122 +109,120 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <table class="table table-sm text-center" name="stock_move_table">
+                            <thead>
+                                <tr>
+                                    <th name="th_index">
+                                        <strong>No.</strong>
+                                    </th>
+                                    <th name="th_description" style="width:30%">
+                                        <strong>Description</strong>
+                                    </th>
+                                    <th name="th_unit">
+                                        <strong>Unit</strong>
+                                    </th>
+                                    <th name="th_unit">
+                                        <strong>QTY</strong>
+                                    </th>
+                                    <th name="th_pack_qty">
+                                        <strong>QTY/PKG</strong>
+                                    </th>
+                                    <th name="th_package">
+                                        <strong>PKG</strong>
+                                    </th>
+                                    <th name="th_netweight">
+                                        <strong>N.W.(KGS)</strong>
+                                    </th>
+                                    <th name="th_weight">
+                                        <strong>G.W.(KGS)</strong>
+                                    </th>
+                                    <th name="th_volumn">
+                                        <strong>VOL.(CBM)</strong>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="lines" t-value="o.order_line.filtered(lambda x: x.product_uom_qty and x.product_id.type =='product')"/>
+                                <tr t-foreach="lines" t-as="move">
+                                    <td>
+                                        <t t-esc="move_index+1"/>
+                                    </td>
+                                    <td>
+                                        <!-- <t t-esc="move.product_id.display_name"/> -->
+                                        <span t-field="move.product_id.translate_name"/>
+                                        <br/>
+                                        <t t-foreach="move.product_id.default_code.split('/')" t-as="row">
+                                            <span t-esc="row"/>
+                                            <br/>
+                                        </t>
+                                    </td>
+                                    <td>
+                                        <t t-esc="move.product_uom.name"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="int(move.qty_delivered)"/>
+                                    </td>
+                                    <!-- qty/pkg -->
+                                    <td>
+                                        <t t-esc="int(move.product_packaging.qty)"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="int(move.packaging_qty)"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="round(move.packaging_net_weight,1)"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="round(move.total_packaging_weight,1)"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="round(move.total_packaging_volume,1)"/>
+                                    </td>
+                                </tr>
+                                <tr class="border-black o_total">
+                                    <td/>
+                                    <td name="td_amount_total_label">
+                                        <strong>Total</strong>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td name="td_amount_total">
+                                        <strong>
+                                            <t t-esc="int(sum(move.qty_delivered for move in lines))"/>
+                                        </strong>
+                                    </td>
+                                    <td>
+                                        <strong>
+                                            <t t-esc="int(sum(move.product_packaging.qty for move in lines))"/>
+                                        </strong>
+                                    </td>
+                                    <td>
+                                        <strong>
+                                            <t t-esc="int(sum(move.packaging_qty for move in lines))"/>
+                                        </strong>
+                                    </td>
+                                    <td>
+                                        <strong>
+                                            <t t-esc="round(sum(move.packaging_net_weight for move in lines),2)"/>
+                                        </strong>
+                                    </td>
+                                    <td>
+                                        <strong>
+                                            <t t-esc="round(sum(move.total_packaging_weight for move in lines),2)"/>
+                                        </strong>
+                                    </td>
+                                    <td>
+                                        <strong>
+                                            <t t-esc="round(sum(move.total_packaging_volume for move in lines),2)"/>
+                                        </strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
 
                     </div>
-                    <div class="clearfix" name="so_total_summary">
-                        <div id="total" class="row" name="total">
-                    <table class="table table-sm text-center" name="stock_move_table">
-                        <thead>
-                            <tr>
-                                <th name="th_index">
-                                    <strong>No.</strong>
-                                </th>
-                                <th name="th_description" style="width:30%">
-                                    <strong>Description</strong>
-                                </th>
-                                <th name="th_unit">
-                                    <strong>Unit</strong>
-                                </th>
-                                <th name="th_unit">
-                                    <strong>QTY</strong>
-                                </th>
-                                <th name="th_pack_qty">
-                                    <strong>QTY/PKG</strong>
-                                </th>
-                                <th name="th_package">
-                                    <strong>PKG</strong>
-                                </th>
-                                <th name="th_netweight">
-                                    <strong>N.W.(KGS)</strong>
-                                </th>
-                                <th name="th_weight">
-                                    <strong>G.W.(KGS)</strong>
-                                </th>
-                                <th name="th_volumn">
-                                    <strong>VOL.(CBM)</strong>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <t t-set="lines" t-value="o.order_line.filtered(lambda x: x.product_uom_qty and x.product_id.type =='product')"/>
-                            <tr t-foreach="lines" t-as="move">
-                                <td>
-                                    <t t-esc="move_index+1"/>
-                                </td>
-                                <td>
-                                    <!-- <t t-esc="move.product_id.display_name"/> -->
-                                    <span t-field="move.product_id.translate_name"/><br/>
-                                    <t t-foreach="move.product_id.default_code.split('/')" t-as="row">
-                                        <span t-esc="row"/><br/>
-                                    </t>
-                                </td>
-                                <td>
-                                    <t t-esc="move.product_uom.name"/>
-                                </td>
-                                <td>
-                                    <t t-esc="int(move.qty_delivered)"/>
-                                </td>
-                                <!-- qty/pkg -->
-                                <td>
-                                    <t t-esc="int(move.product_packaging.qty)"/>
-                                </td>
-                                <td>
-                                    <t t-esc="int(move.packaging_qty)"/>
-                                </td>
-                                <td>
-                                    <t t-esc="round(move.packaging_net_weight,1)"/>
-                                </td>
-                                <td>
-                                    <t t-esc="round(move.total_packaging_weight,1)"/>
-                                </td>
-                                <td>
-                                    <t t-esc="round(move.total_packaging_volume,1)"/>
-                                </td>
-                            </tr>
-                            <tr class="border-black o_total">
-                                <td/>
-                                <td name="td_amount_total_label">
-                                    <strong>Total</strong>
-                                </td>
-                                <td>
-                                </td>
-                                <td name="td_amount_total">
-                                    <strong>
-                                        <t t-esc="int(sum(move.qty_delivered for move in lines))"/>
-                                    </strong>
-                                </td>
-                                <td>
-                                    <strong>
-                                        <t t-esc="int(sum(move.product_packaging.qty for move in lines))"/>
-                                    </strong>
-                                </td>
-                                <td>
-                                    <strong>
-                                        <t t-esc="int(sum(move.packaging_qty for move in lines))"/>
-                                    </strong>
-                                </td>
-                                <td>
-                                    <strong>
-                                        <t t-esc="round(sum(move.packaging_net_weight for move in lines),2)"/>
-                                    </strong>
-                                </td>
-                                <td>
-                                    <strong>
-                                        <t t-esc="round(sum(move.total_packaging_weight for move in lines),2)"/>
-                                    </strong>
-                                </td>
-                                <td>
-                                    <strong>
-                                        <t t-esc="round(sum(move.total_packaging_volume for move in lines),2)"/>
-                                    </strong>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
 
-                            </div>
-                    </div>
-                    
+
                     <!-- <t t-set="backorders" t-value="o.backorder_ids.filtered(lambda x: x.state not in ('done', 'cancel'))"/>
                     <t t-if="o.backorder_ids and backorders">
                         <p>
@@ -283,12 +284,6 @@
         </t>
     </template> -->
 
-    <report id="report_stock_picking"
-    string="装箱单"
-    model="sale.order"
-    report_type="qweb-pdf"
-    name="carmarge_sale_cn.report_stock_picking_list_document"
-    file="carmarge_sale_cn.report_stock_picking_list_document"
-    print_report_name="'装箱单 - %s' % (object.name)"/>
+    <report id="report_stock_picking" string="装箱单" model="sale.order" report_type="qweb-pdf" name="carmarge_sale_cn.report_stock_picking_list_document" file="carmarge_sale_cn.report_stock_picking_list_document" print_report_name="'装箱单 - %s' % (object.name)"/>
 
 </odoo>
