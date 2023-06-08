@@ -77,9 +77,7 @@ class BaseModel(models.AbstractModel):
         
         
         for field_name in fields:
-            print(self._fields)
             _field = field_name.split(':')[0]
-            print(_field)
             if _field not in self._fields:
                 continue
             field = self._fields[_field]
