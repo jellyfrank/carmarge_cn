@@ -19,6 +19,7 @@ class res_config_settings(models.TransientModel):
         "Show Shortcuts", config_parameter="mommy.shortcuts")
     mommy_show_odoo_account = fields.Boolean(
         "Show Odoo Account", config_parameter="mommy.account")
+    mommy_x2many_page_size = fields.Integer("X2Many2 Page Size", config_parameter="mommy.x2many.pagesize", default=40)
 
     @api.model
     def get_personal_center(self):

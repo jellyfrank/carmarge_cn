@@ -21,6 +21,19 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-12 col-lg-6 o_setting_box" title="">
+                                <div class="o_setting_left_pane">
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <b>Form Page Size</b>
+                                    <div class="text-muted">
+                                        Setting the page size (x2many) in form.
+                                    </div>
+                                    <div class="mt16">
+                                        <field name="mommy_x2many_page_size"/>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <h2>Personal Center Setting</h2>

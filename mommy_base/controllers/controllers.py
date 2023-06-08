@@ -1,21 +1,20 @@
-# -*- coding: utf-8 -*-
-# from odoo import http
+#!/usr/bin/python3
+# @Time    : 2022-11-01
+# @Author  : Kevin Kong (kfx2007@163.com)
+
+from odoo import api, fields, models, _
+from odoo import http
+from odoo.http import request
+from odoo.addons.web.controllers.main import Action
 
 
-# class MommyCore(http.Controller):
-#     @http.route('/mommy_core/mommy_core/', auth='public')
-#     def index(self, **kw):
-#         return "Hello, world"
+class ActionController(Action):
 
-#     @http.route('/mommy_core/mommy_core/objects/', auth='public')
-#     def list(self, **kw):
-#         return http.request.render('mommy_core.listing', {
-#             'root': '/mommy_core/mommy_core',
-#             'objects': http.request.env['mommy_core.mommy_core'].search([]),
-#         })
-
-#     @http.route('/mommy_core/mommy_core/objects/<model("mommy_core.mommy_core"):obj>/', auth='public')
-#     def object(self, obj, **kw):
-#         return http.request.render('mommy_core.object', {
-#             'object': obj
-#         })
+    @http.route('/web/action/load', type='json', auth="user")
+    def load(self, action_id, additional_context=None):
+        if additional_context and additional_context.get('active_model') and additional_context.get("active_ids"):
+            active_model, active_id, active_ids = additional_context[
+                'active_model'], additional_context['active_id'], additional_context['active_ids']
+            active_records = request.env[active_model].browse(active_id) if active_id else request.env[active_model].browse(active_ids)
+            active_records._pre_action_validate()
+        return super().load(action_id, additional_context)
