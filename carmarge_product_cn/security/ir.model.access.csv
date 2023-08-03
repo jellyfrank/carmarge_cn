@@ -3,4 +3,5 @@ access_product_brand,access_product_brand,model_product_brand,,1,1,1,1
 access_product_merge_automatic_wizard,access.product.merge.automatic.wizard,model_product_merge_automatic_wizard,,1,1,1,1
 access_product_merge_automatic_wizard_line,access_product_merge_automatic_line,model_product_merge_automatic_wizard_line,,1,1,1,1
 access_product_price_history,access_product_price_history,model_product_price_history,,1,1,1,1
+access_purchase_price_history,access_purchase_price_history,model_purchase_price_history,,1,1,1,1
 access_priclist_wizard,access_pricelist_wizard,model_carmarge_pricelist_wizard,,1,1,1,1

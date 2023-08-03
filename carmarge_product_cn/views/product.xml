@@ -51,9 +51,11 @@
                 <xpath expr="//field[@name='standard_price']" position="attributes">
                     <attribute name='attrs'>{'readonly':[('group_use_product_standard_price_update','=',False)]}</attribute>
                 </xpath>
-
+                <xpath expr="//page[@name='purchase']" position="attributes">
+                <attribute name="string">询价记录</attribute>
+                </xpath>
                 <xpath expr="//page[@name='inventory']" position="after">
-                    <page string="历史价格">
+                    <page string="历史销售价格">
                         <field name="sale_price_history">
                             <tree>
                                 <field name="sale_order"/>
@@ -67,11 +69,25 @@
                             </tree>
                         </field>
                     </page>
+                    <page string="历史采购价格">
+                        <field name="purchase_price_history">
+                            <tree>
+                                <field name="purchase_order"/>
+                                <field name="purchase_date" widget="date"/>
+                                <field name="product_uom"/>
+                                <field name="currency_id" string="币种"/>
+                                <field name="quantity"/>
+                                <field name="price"/>
+                                <field name="partner_id"/>
+                            </tree>
+                        </field>
+                    </page>
                 </xpath>
 
                 <field name="company_id" position="before">
-                    <field name="exw"/>
-                    <label for="exw_rate" string="加价率"/>
+                    <!-- <field name="exw"/>-->
+                    <field name="purchase_price_tax"/>
+                    <label for="exw_rate" string="销售毛利率"/>
                     <div class="o_row">
                         <field name="exw_rate"/>%
                     </div>
@@ -103,19 +119,19 @@
                         <field name="type" optional="hide" readonly="1"/>
                         <field name="categ_id" optional="show"/>
                         <field name="origin_type"/>
-                        <field name="name" string="产品"/>
+                        <field name="name" string="中文名称"/>
                         <field name="translate_name"/>
                         <field name="default_code" optional="show"/>
                         <field name="barcode" optional="show" attrs="{'readonly': [('product_variant_count', '&gt;', 1)]}"/>
                         <field name="brand" widget="many2many_tags"/>
                         <field name="uom_id" string="单位" readonly="1" optional="hide" groups="uom.group_uom"/>
+                        <field name="packaging_ids" widget="many2many_tags" string="包装数量"/>
                         <field name="comm_check" string="商检" optional="hide"/>
                         <field name="is_brand_package" string="品牌包装" optional="hide"/>
-                        <field name="packaging_ids" widget="many2many_tags" string="包装数量"/>
                         <field name="standard_price" widget="monetary" options="{'currency_field': 'cost_currency_id'}" optional="hide" readonly="1"/>
-                        <field name="exw" optional="hide" string="标准价格"/>
-                        <field name="exw_rate"/>
                         <field name="list_price" string="销售价格" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show" decoration-muted="not sale_ok"/>
+                        <!-- <field name="exw" optional="hide" string="标准价格"/>-->
+                        <field name="exw_rate"/>
                         <field name="purchased_product_qty" string="已采购数量" optional="hide"/>
                         <field name="qty_available" optional="hide"/>
                         <field name="virtual_available" optional="hide"/>
@@ -125,13 +141,13 @@
                         <field name="height" optional="hide"/>
                         <field name="volume" optional="hide"/> 
                         <field name="net_weight" optional="hide"/>
-                        <field name="weight" string="毛重" optional="hide"/>-->
+                        <field name="weight" string="毛重" optional="hide"/>
                         <field name="packaging_length" optional="hide"/>
                         <field name="packaging_width" optional="hide"/>
                         <field name="packaging_height" optional="hide"/>
                         <field name="packaging_volume" optional="hide"/>
                         <field name="packaging_net_weight" optional="hide"/>
-                        <field name="packaging_weight" optional="hide"/>
+                        <field name="packaging_weight" optional="hide"/>-->
 
                         <field name="create_date" widget='date' optional="hide"/>
                         <field name="product_variant_count" invisible="1"/>

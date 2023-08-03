@@ -2,15 +2,16 @@
 # @Time    : 2022-01-24
 # @Author  : Kevin Kong (kfx2007@163.com)
 
+import logging
 import re
+from datetime import datetime
+from datetime import timedelta, time
+
+from dateutil.relativedelta import relativedelta
 
 from odoo import fields, models, tools, api
-from odoo.tools.float_utils import float_round
 from odoo.exceptions import UserError
-import logging
-from dateutil.relativedelta import relativedelta
-from datetime import timedelta, time
-from datetime import datetime
+from odoo.tools.float_utils import float_round
 from odoo.tools.safe_eval import safe_eval as eval
 
 _logger = logging.getLogger(__name__)
@@ -142,32 +143,52 @@ class product_template(models.Model):
             f"record.sales_count {operator} {operand}", locals_dict={'record': record}))
         return [('id', 'in', result.ids)]
 
+    @staticmethod
+    def _get_product_price_history(line):
+        return {
+            "product_uom": line.product_uom.id,
+            "currency_id": line.order_id.currency_id.id,
+            "price": line.price_unit,
+            "partner_id": line.order_id.partner_id.id,
+            "product_id": line.product_id.id
+        }
+
     @api.depends("product_variant_id")
     def _compute_price_history(self):
         """"计算历史价格"""
         for product in self:
             lines = self.env['sale.order.line'].sudo().search(
                 [('product_id', '=', product.product_variant_id.id)], limit=100)
-            data = [(0, 0, {
+            sale_data = [(0, 0, {
                 "sale_date": datetime.strftime(line.order_id.date_order, '%Y-%m-%d %H:%M:%S'),
                 "sale_order": line.order_id.id,
-                "product_uom": line.product_uom.id,
                 "quantity": line.product_uom_qty,
-                "currency_id": line.order_id.currency_id.id,
                 "price_list": line.order_id.pricelist_id.id,
-                "price": line.price_unit,
-                "partner_id": line.order_id.partner_id.id,
-                "product_id": line.product_id.id
+                **self._get_product_price_history(line)
             }) for line in lines]
             # data.insert(0,(5,))
-            product.sale_price_history = data
+            product.sale_price_history = sale_data
+
+            lines = self.env['purchase.order.line'].sudo().search(
+                [('product_id', '=', product.product_variant_id.id)], limit=100)
+            purchase_data = [(0, 0, {
+                "purchase_date": datetime.strftime(line.order_id.date_order, '%Y-%m-%d %H:%M:%S'),
+                "purchase_order": line.order_id.id,
+                "quantity": line.product_qty,
+                **self._get_product_price_history(line)
+            }) for line in lines]
+            # data.insert(0,(5,))
+            product.purchase_price_history = purchase_data
+
 
     def _compute_exw_rate(self):
-        """计算加价率"""
+        """计算加价率->销售毛利率"""
         for product in self:
             # 只考虑公开价格表
-            public_pricelist = self.env.ref("product.list0") 
-            product.exw_rate = sum( abs(price) for price in public_pricelist.item_ids.filtered(lambda i: i.product_tmpl_id == product).mapped("price_discount"))
+            # public_pricelist = self.env.ref("product.list0")
+            # product.exw_rate = sum( abs(price) for price in public_pricelist.item_ids.filtered(lambda i: i.product_tmpl_id == product).mapped("price_discount"))
+            # 26期-修改销售毛利率计算逻辑  该产品被打包成
+            product.exw_rate = ((product.list_price - product.purchase_price_tax) * 100 / product.list_price) if product.list_price != 0 else 0
             # 计算出厂价
             # product.exw = public_pricelist.get_product_price(product.product_variant_id,1,self.env.company.partner_id)
             product.exw = product.standard_price * (100 + product.exw_rate) / 100
@@ -176,9 +197,10 @@ class product_template(models.Model):
     comm_check = fields.Boolean("商检", default=False)
     brand = fields.Many2many("product.brand", string="适用")
     exw = fields.Monetary("标准售价", compute="_compute_exw_rate")
-    exw_rate = fields.Float("加价率%",compute="_compute_exw_rate")
+    purchase_price_tax = fields.Monetary("含税采购价")
+    exw_rate = fields.Float("销售毛利率%",compute="_compute_exw_rate")
     default_code = fields.Char(string="配件编号")
-    
+
     height = fields.Float("高")
     is_brand_package = fields.Boolean("品牌包装")
     invoice_policy = fields.Selection(default='delivery')
@@ -217,7 +239,9 @@ class product_template(models.Model):
     virtual_available = fields.Float(search=_searhc_virtual_available)
     sales_count = fields.Float(search=_search_sales_count)
     sale_price_history = fields.Many2many(
-        "product.price.history", string="历史价格", compute="_compute_price_history")
+        "product.price.history", string="历史销售价格", compute="_compute_price_history")
+    purchase_price_history = fields.Many2many(
+        "purchase.price.history", string="历史采购价格", compute="_compute_price_history")
     origin_type = fields.Selection(ORIGINS, string="产品属性", default='self')
     is_cost_service = fields.Boolean("Cost Service", default=False)
 
