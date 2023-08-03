@@ -1,5 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_product_brand,access_product_brand,model_product_brand,,1,1,1,1
+access_product_replaces,access_product_replaces,model_product_replaces,,1,1,1,1
 access_product_merge_automatic_wizard,access.product.merge.automatic.wizard,model_product_merge_automatic_wizard,,1,1,1,1
 access_product_merge_automatic_wizard_line,access_product_merge_automatic_line,model_product_merge_automatic_wizard_line,,1,1,1,1
 access_product_price_history,access_product_price_history,model_product_price_history,,1,1,1,1

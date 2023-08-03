@@ -121,7 +121,8 @@
                         <field name="origin_type"/>
                         <field name="name" string="中文名称"/>
                         <field name="translate_name"/>
-                        <field name="default_code" optional="show"/>
+                        <field name="product_replaces_ids" widget="many2many_tags" string="替换号/OE号"
+                               optional="show"/>
                         <field name="barcode" optional="show" attrs="{'readonly': [('product_variant_count', '&gt;', 1)]}"/>
                         <field name="brand" widget="many2many_tags"/>
                         <field name="uom_id" string="单位" readonly="1" optional="hide" groups="uom.group_uom"/>
@@ -169,9 +170,13 @@
             <field name="inherit_id" ref="product.product_template_only_form_view"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='default_code']" position="attributes">
-                    <attribute name="required">1</attribute>
+                    <attribute name="invisible">1</attribute>
                 </xpath>
-
+                <xpath expr="//group[@name='group_standard_price']" position="after">
+                    <group colspan="2" col="2">
+                        <field name="product_replaces_ids"/>
+                    </group>
+                </xpath>
             </field>
         </record>
 
@@ -193,6 +198,88 @@
         </record>
 
 
+        <record id="view_product_brand_tree" model="ir.ui.view">
+            <field name="name">Suitable For Tree</field>
+            <field name="model">product.brand</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_product_brand_form" model="ir.ui.view">
+            <field name="name">Suitable For Form</field>
+            <field name="model">product.brand</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="action_product_brand" model="ir.actions.act_window">
+            <field name="name">适用</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.brand</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref=""/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    暂无记录！
+                </p>
+                <p>
+                </p>
+            </field>
+        </record>
+        <menuitem id="menu_product_brand" name="产品适用" action="action_product_brand" parent="sale.product_menu_catalog" sequence="30"/>
+
+        <record id="view_product_replaces_tree" model="ir.ui.view">
+            <field name="name">Replaces/OEM No. Tree</field>
+            <field name="model">product.replaces</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_product_replaces_form" model="ir.ui.view">
+            <field name="name">Replaces/OEM No. Form</field>
+            <field name="model">product.replaces</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="action_product_replaces" model="ir.actions.act_window">
+            <field name="name">替换号/OE号</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.replaces</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref=""/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    暂无记录！
+                </p>
+                <p>
+                </p>
+            </field>
+        </record>
+        <menuitem id="menu_product_replaces" name="替换号/OE号" action="action_product_replaces"
+                  parent="sale.product_menu_catalog" sequence="40"/>
 
     </data>
 </odoo>

@@ -193,13 +193,18 @@ class product_template(models.Model):
             # product.exw = public_pricelist.get_product_price(product.product_variant_id,1,self.env.company.partner_id)
             product.exw = product.standard_price * (100 + product.exw_rate) / 100
 
+    @api.depends("product_replaces_ids")
+    def _compute_default_code(self):
+        for product in self:
+            product.default_code = f"{'/'.join([p.name for p in product.product_replaces_ids])}"
 
     comm_check = fields.Boolean("商检", default=False)
     brand = fields.Many2many("product.brand", string="适用")
     exw = fields.Monetary("标准售价", compute="_compute_exw_rate")
     purchase_price_tax = fields.Monetary("含税采购价")
-    exw_rate = fields.Float("销售毛利率%",compute="_compute_exw_rate")
-    default_code = fields.Char(string="配件编号")
+    exw_rate = fields.Float("销售毛利率%", compute="_compute_exw_rate")
+
+    default_code = fields.Char(string="配件编号", compute="_compute_default_code", store=True)
 
     height = fields.Float("高")
     is_brand_package = fields.Boolean("品牌包装")
@@ -244,6 +249,7 @@ class product_template(models.Model):
         "purchase.price.history", string="历史采购价格", compute="_compute_price_history")
     origin_type = fields.Selection(ORIGINS, string="产品属性", default='self')
     is_cost_service = fields.Boolean("Cost Service", default=False)
+    product_replaces_ids = fields.Many2many('product.replaces', string="替换号/OE号")
 
     def action_view_sales(self):
         action = self.env["ir.actions.actions"]._for_xml_id(
@@ -355,7 +361,14 @@ class product_template(models.Model):
 class product_brand(models.Model):
     _name = "product.brand"
 
-    name = fields.Char("Product Brand")
+    name = fields.Char("名称")
+
+
+class ProductReplaces(models.Model):
+    _name = "product.replaces"
+    _description = "Product Replaces"
+
+    name = fields.Char(string="名称")
 
 
 class ProductProduct(models.Model):
