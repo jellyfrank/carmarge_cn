@@ -7,6 +7,8 @@ from odoo.models import NewId
 from odoo.exceptions import UserError
 from datetime import datetime
 
+from odoo.tools import float_compare, float_round
+
 DELIVERY_STATES = [
     ('no', '未交货'),
     ('partial', '部分交货'),
@@ -376,3 +378,16 @@ class sale_order_line(models.Model):
                 uom=self.product_uom.id,
                 fiscal_position=self.env.context.get('fiscal_position')
             )
+
+    def _check_package(self):
+        default_uom = self.product_id.uom_id
+        pack = self.product_packaging
+        qty = self.product_uom_qty
+        q = default_uom._compute_quantity(pack.qty, self.product_uom)
+        if (qty and q and float_compare(qty / q, float_round(qty / q, precision_rounding=1.0),
+                                        precision_rounding=0.001) != 0):
+            # 26期-继承修改：当前修改明细数量总是出现[该产品被打包xx个,你应该卖xx个],跳过该校验
+            self.write({
+                "product_uom_qty": 0,
+            })
+        return super(sale_order_line, self)._check_package()
