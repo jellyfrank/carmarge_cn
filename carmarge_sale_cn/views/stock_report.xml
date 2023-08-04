@@ -7,8 +7,7 @@
                 <t t-call="web.external_layout">
                     <t t-set="o" t-value="o.with_context(lang=o.partner_id.lang)"/>
                     <t t-set="partner" t-value="o.partner_id"/>
-
-                    <div class="page">
+                    <div class="page" style="position:relative;width:100%">
                         <h2>
                             <!-- <span t-field="o.name"/> -->
                             <div class="text-center">PICKING LIST</div>
@@ -106,11 +105,7 @@
                                 </tr>
                             </tbody>
                         </table>
-
-                    </div>
-                    <div class="clearfix" name="so_total_summary">
-                        <div id="total" class="row" name="total">
-                    <table class="table table-sm text-center" name="stock_move_table">
+                        <table class="table table-sm text-center" name="stock_move_table">
                         <thead>
                             <tr>
                                 <th name="th_index">
@@ -178,7 +173,10 @@
                                     <t t-esc="round(move.total_packaging_volume,1)"/>
                                 </td>
                             </tr>
-                            <tr class="border-black o_total">
+                            <tr class="border-black o_total" style="
+    background: black;
+    color: white;
+">
                                 <td/>
                                 <td name="td_amount_total_label">
                                     <strong>Total</strong>
@@ -210,7 +208,10 @@
                                         <t t-esc="round(sum(move.total_packaging_weight for move in lines),2)"/>
                                     </strong>
                                 </td>
-                                <td>
+                                <td style="
+    background: black;
+    color: white;
+">
                                     <strong>
                                         <t t-esc="round(sum(move.total_packaging_volume for move in lines),2)"/>
                                     </strong>
@@ -219,8 +220,8 @@
                         </tbody>
                     </table>
 
-                            </div>
                     </div>
+                    
                     
                     <!-- <t t-set="backorders" t-value="o.backorder_ids.filtered(lambda x: x.state not in ('done', 'cancel'))"/>
                     <t t-if="o.backorder_ids and backorders">
@@ -283,12 +284,6 @@
         </t>
     </template> -->
 
-    <report id="report_stock_picking"
-    string="装箱单"
-    model="sale.order"
-    report_type="qweb-pdf"
-    name="carmarge_sale_cn.report_stock_picking_list_document"
-    file="carmarge_sale_cn.report_stock_picking_list_document"
-    print_report_name="'装箱单 - %s' % (object.name)"/>
+    <report id="report_stock_picking" string="装箱单" model="sale.order" report_type="qweb-pdf" name="carmarge_sale_cn.report_stock_picking_list_document" file="carmarge_sale_cn.report_stock_picking_list_document" print_report_name="'装箱单 - %s' % (object.name)"/>
 
 </odoo>

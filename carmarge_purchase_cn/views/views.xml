@@ -9,6 +9,11 @@
                     <field name="delivery_cost"/>
                     <field name="discount_manual"/>
                 </field>
+
+                <xpath expr="//field[@name='order_line']//tree//field[@name='name']" position="replace">
+                    <field name="name" optional="hide"/>
+                </xpath>
+
                 <xpath expr="//field[@name='order_line']//tree//field[@name='product_qty']" position="attributes">
                     <attribute name='sum'>total</attribute>
                 </xpath>
