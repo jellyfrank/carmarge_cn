@@ -401,7 +401,7 @@ class sale_order_line(models.Model):
         if not self.product_uom or (self.product_id.uom_id.id != self.product_uom.id):
             vals['product_uom'] = self.product_id.uom_id
             # 26期-继承修改：选择产品后默认数量置为0
-            vals['product_uom_qty'] = self.product_uom_qty or 0
+            vals['product_uom_qty'] = self.product_uom_qty or 0 if self.product_id.packaging_ids else 1.0
 
         product = self.product_id.with_context(
             lang=get_lang(self.env, self.order_id.partner_id.lang).code,
