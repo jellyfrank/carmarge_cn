@@ -180,7 +180,7 @@ class product_template(models.Model):
             # data.insert(0,(5,))
             product.purchase_price_history = purchase_data
 
-
+    @api.onchange('list_price', 'purchase_price_tax')
     def _compute_exw_rate(self):
         """计算加价率->销售毛利率"""
         for product in self:
