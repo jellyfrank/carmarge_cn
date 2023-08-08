@@ -237,7 +237,9 @@
                 </p>
             </field>
         </record>
-        <menuitem id="menu_product_brand" name="产品适用" action="action_product_brand" parent="sale.product_menu_catalog" sequence="30"/>
+        <menuitem id="menu_product_sale_brand" name="产品适用" action="action_product_brand" parent="sale.product_menu_catalog" sequence="30"/>
+        <menuitem id="menu_product_purchase_brand" name="产品适用" action="action_product_brand" parent="purchase.menu_purchase_products" sequence="30"/>
+        <menuitem id="menu_product_stock_brand" name="产品适用" action="action_product_brand" parent="stock.menu_stock_inventory_control" sequence="30"/>
 
         <record id="view_product_replaces_tree" model="ir.ui.view">
             <field name="name">Replaces/OEM No. Tree</field>
@@ -278,8 +280,11 @@
                 </p>
             </field>
         </record>
-        <menuitem id="menu_product_replaces" name="替换号/OE号" action="action_product_replaces"
+        <menuitem id="menu_product_sale_replaces" name="替换号/OE号" action="action_product_replaces"
                   parent="sale.product_menu_catalog" sequence="40"/>
-
+        <menuitem id="menu_product_purchase_replaces" name="替换号/OE号" action="action_product_replaces"
+                  parent="purchase.menu_purchase_products" sequence="40"/>
+        <menuitem id="menu_product_stock_replaces" name="替换号/OE号" action="action_product_replaces"
+                  parent="stock.menu_stock_inventory_control" sequence="40"/>
     </data>
 </odoo>
