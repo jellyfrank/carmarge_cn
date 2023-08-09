@@ -157,26 +157,27 @@ class product_template(models.Model):
     def _compute_price_history(self):
         """"计算历史价格"""
         for product in self:
-            lines = self.env['sale.order.line'].sudo().search(
+            sale_lines = self.env['sale.order.line'].sudo().search(
                 [('product_id', '=', product.product_variant_id.id)], limit=100)
             sale_data = [(0, 0, {
-                "sale_date": datetime.strftime(line.order_id.date_order, '%Y-%m-%d %H:%M:%S'),
+                "sale_date": datetime.strftime(line.order_id.date_order, '%Y-%m-%d %H:%M:%S') if line.order_id.date_order else None,
                 "sale_order": line.order_id.id,
                 "quantity": line.product_uom_qty,
                 "price_list": line.order_id.pricelist_id.id,
                 **self._get_product_price_history(line)
-            }) for line in lines]
+            }) for line in sale_lines]
             # data.insert(0,(5,))
             product.sale_price_history = sale_data
 
-            lines = self.env['purchase.order.line'].sudo().search(
+            purchase_lines = self.env['purchase.order.line'].sudo().search(
                 [('product_id', '=', product.product_variant_id.id)], limit=100)
+            purchase_lines_filter = purchase_lines.filtered(lambda line: line.order_id.state == 'purchase')
             purchase_data = [(0, 0, {
-                "purchase_date": datetime.strftime(line.order_id.date_order, '%Y-%m-%d %H:%M:%S'),
+                "purchase_date": datetime.strftime(line.order_id.date_order, '%Y-%m-%d %H:%M:%S') if line.order_id.date_order else None,
                 "purchase_order": line.order_id.id,
                 "quantity": line.product_qty,
                 **self._get_product_price_history(line)
-            }) for line in lines]
+            }) for line in purchase_lines_filter]
             # data.insert(0,(5,))
             product.purchase_price_history = purchase_data
 
