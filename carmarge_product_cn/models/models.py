@@ -181,7 +181,7 @@ class product_template(models.Model):
             # data.insert(0,(5,))
             product.purchase_price_history = purchase_data
 
-    @api.depends('list_price', 'purchase_price_tax')
+    @api.onchange('list_price', 'purchase_price_tax')
     def _compute_exw_rate(self):
         """计算加价率->销售毛利率"""
         for product in self:
@@ -429,3 +429,15 @@ class ProductProduct(models.Model):
                 product.sales_count = sales_count
 
         return r
+
+    lst_price = fields.Float(
+        '公开价格', compute='_compute_product_lst_price',
+        digits='Product Price', inverse='_set_product_lst_price', store=True,
+        help="销售价格由产品模板管理。点击“可变配置”按钮来设置额外的产品变体价格。")
+
+    @api.onchange('lst_price', 'purchase_price_tax')
+    def _onchange_exw_rate_1(self):
+        """product.product销售毛利率"""
+        for product in self:
+            # 26期-修改销售毛利率计算逻辑
+            product.exw_rate = ((product.lst_price - product.purchase_price_tax) * 100 / product.lst_price) if product.lst_price != 0 else 0
