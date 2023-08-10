@@ -12,6 +12,13 @@
         3. 基础模型支持当前活动记录
         4. 封装统一提示框
         5. 打印报表支持第二名称
+        6. 支持表单视图标签颜色自定义
+        7. 支持列表视图自定义样式
+        8. 打印报表添加条件校验
+        9. 字段添加UNIQUE属性,支持自定义提示文本
+        10. 表单X2many字段树形控制分页设置
+        11. 添加模型跟踪Track All功能
+        12. qweb报表添加货币符号去除功能
     """,
 
     'author': "Kevin Kong",
@@ -21,10 +28,10 @@
     # Check https://github.com/odoo/odoo/blob/13.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'basic',
-    'version': '14.3',
+    'version': '14.7.5',
 
     # any module necessary for this one to work correctly
-    'depends': ['base'],
+    'depends': ['mail'],
 
     # always loaded
     'data': [
