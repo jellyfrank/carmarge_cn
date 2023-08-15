@@ -194,7 +194,7 @@ class product_template(models.Model):
             # product.exw = public_pricelist.get_product_price(product.product_variant_id,1,self.env.company.partner_id)
             product.exw = product.standard_price * (100 + product.exw_rate) / 100
 
-    @api.depends("product_replaces_ids")
+    @api.depends("product_replaces_ids", "product_replaces_ids.name")
     def _compute_default_code(self):
         for product in self:
             product.default_code = f"{'/'.join([p.name for p in product.product_replaces_ids])}"
@@ -441,3 +441,10 @@ class ProductProduct(models.Model):
         for product in self:
             # 26期-修改销售毛利率计算逻辑
             product.exw_rate = ((product.lst_price - product.purchase_price_tax) * 100 / product.lst_price) if product.lst_price != 0 else 0
+
+    default_code = fields.Char('配件编号',compute="_compute_default_code",store=True, index=True)
+
+    @api.depends("product_replaces_ids", "product_replaces_ids.name")
+    def _compute_default_code(self):
+        for product in self:
+            product.default_code = f"{'/'.join([p.name for p in product.product_replaces_ids])}"
