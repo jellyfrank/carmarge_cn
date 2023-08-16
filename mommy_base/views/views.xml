@@ -6,6 +6,7 @@
         <script type="text/javascript" src="/mommy_base/static/src/js/form/form.js"></script>
         <script type="text/javascript" src="/mommy_base/static/src/js/form/form_controller.js"></script>
         <script type="text/javascript" src="/mommy_base/static/src/js/list/list_renderer.js"></script>
+        <script type="text/javascript" src="/mommy_base/static/src/js/fields/relation_fields.js"></script>
       </xpath>
     </template>
   </data>
