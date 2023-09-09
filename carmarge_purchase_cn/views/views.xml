@@ -176,7 +176,7 @@
         </record>
 
         <record id="purchase.purchase_rfq" model="ir.actions.act_window">
-            <field name="domain">[('state','=','draft')]</field>
+            <field name="domain">[('state','in',['draft', 'cancel'])]</field>
         </record>
 
         <record id="purchase.product_normal_action_puchased" model="ir.actions.act_window">

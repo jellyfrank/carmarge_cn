@@ -189,7 +189,7 @@ class product_template(models.Model):
             # public_pricelist = self.env.ref("product.list0")
             # product.exw_rate = sum( abs(price) for price in public_pricelist.item_ids.filtered(lambda i: i.product_tmpl_id == product).mapped("price_discount"))
             # 26期-修改销售毛利率计算逻辑  该产品被打包成
-            product.exw_rate = ((product.list_price - product.purchase_price_tax) * 100 / product.list_price) if product.list_price != 0 else 0
+            product.exw_rate = ((product.list_price - product.purchase_price_tax / (product.price_tax_value if product.price_tax_value else 1)) * 100 / product.list_price) if product.list_price != 0 else 0
             # 计算出厂价
             # product.exw = public_pricelist.get_product_price(product.product_variant_id,1,self.env.company.partner_id)
             product.exw = product.standard_price * (100 + product.exw_rate) / 100
@@ -203,6 +203,7 @@ class product_template(models.Model):
     brand = fields.Many2many("product.brand", string="适用")
     exw = fields.Monetary("标准售价", compute="_compute_exw_rate")
     purchase_price_tax = fields.Monetary("含税采购价")
+    price_tax_value = fields.Float("含税采购价固定除数", default=1.13)
     exw_rate = fields.Float("销售毛利率%", compute="_compute_exw_rate")
 
     default_code = fields.Char(string="配件编号", compute="_compute_default_code", store=True)

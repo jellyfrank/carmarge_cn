@@ -103,6 +103,7 @@
 
                 <field name="company_id" position="before">
                     <!-- <field name="exw"/>-->
+                    <field name="price_tax_value" invisible="1"/>
                     <field name="purchase_price_tax"/>
                     <label for="exw_rate" string="销售毛利率"/>
                     <div class="o_row">

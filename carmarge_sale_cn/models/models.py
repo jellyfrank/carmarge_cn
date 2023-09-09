@@ -242,7 +242,7 @@ class sale_order_line(models.Model):
             # line.packaging = line.product_id.packaging_ids[0] if line.product_id.packaging_ids else None
             line.packaging = line.product_packaging
 
-    @api.depends("packaging", "product_qty", "product_packaging", "product_uom_qty")
+    @api.depends("packaging.qty", "product_qty", "product_packaging", "product_uom_qty")
     def _compute_packaging_qty(self):
         """计算包裹数量"""
         for line in self:
