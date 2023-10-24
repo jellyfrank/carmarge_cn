@@ -398,8 +398,8 @@ class sale_order_line(models.Model):
                 self.product_no_variant_attribute_value_ids -= ptav
 
         vals = {}
-        # if not self.product_uom or (self.product_id.uom_id.id != self.product_uom.id):
-        #     vals['product_uom'] = self.product_id.uom_id
+        if not self.product_uom:
+            vals['product_uom'] = self.product_id.uom_id
             # 26期-继承修改：选择产品后默认数量置为0
         vals['product_uom_qty'] = self.product_uom_qty or 0 if self.product_id.packaging_ids else 1.0
 
