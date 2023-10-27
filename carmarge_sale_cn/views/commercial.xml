@@ -170,7 +170,7 @@
                                 </th>
                                 <th name="th_taxes" class="text-right">Taxes</th> -->
                                 <th name="th_subtotal" class="text-center">
-                                    <span groups="account.group_show_line_subtotals_tax_excluded">Amount</span>
+                                    <span>Amount</span>
                                     <!-- <span groups="account.group_show_line_subtotals_tax_included">Total Price</span> -->
                                 </th>
                                 <th name="th_remark" class="text-center">Remark</th>
@@ -221,7 +221,7 @@
                                             <span t-esc="', '.join(map(lambda x: (x.description or x.name), line.tax_id))"/>
                                         </td> -->
                                         <td name="td_subtotal" class="o_price_total text-center">
-                                            <span t-field="line.price_total" groups="account.group_show_line_subtotals_tax_excluded"/>
+                                            <span t-field="line.price_total" />
                                             <!-- <span t-field="line.price_total" groups="account.group_show_line_subtotals_tax_included"/> -->
                                         </td>
                                     </t>
