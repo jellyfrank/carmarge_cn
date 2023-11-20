@@ -25,7 +25,6 @@ class res_company(models.Model):
 
         if model_name == "account.move":
             self.emark = self.emark_invoice
-        print(self.emark)
 
     emark_sale = fields.Image("Sale Order Emark")
     emark_purchase = fields.Image("Purchase Order Emark")

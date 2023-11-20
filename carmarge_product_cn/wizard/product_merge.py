@@ -48,7 +48,6 @@ class MergeProductAutomatic(models.TransientModel):
         _logger.debug(f"[产品合并]开始合并产品")
         purchases_count, sales_count, qty_available = 0, 0, 0  # 采购数量值 销售数量值 在手数量
         product_ids_list, barcode_list = [], []
-        print( self.lines)
         purchase_info_ids, seller_ids = [], []
         purchase_infos = self.dst_product_temp_id.seller_ids
         if purchase_infos:
@@ -124,7 +123,6 @@ class MergeProductAutomatic(models.TransientModel):
                         "location_id": location_id.id,
                         "company_id": inventory.company_id.id
                     }
-                    print(line_values)
                 self.env['stock.inventory.line'].create(line_values)
             inventory.write(vals)
         # inventory_obj._action_start()

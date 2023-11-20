@@ -66,7 +66,6 @@ class account_move(models.Model):
                         total_to_pay += line.balance
                         total_residual += line.amount_residual
                         total_residual_currency += line.amount_residual_currency
-                        print(line.id,line.balance, line.amount_residual, line.amount_residual_currency)
                 else:
                     # === Miscellaneous journal entry ===
                     if line.debit:
@@ -230,8 +229,6 @@ class account_move(models.Model):
             # Recompute amls: update existing line or create new one for each payment term.
             new_terms_lines = self.env['account.move.line']
             for date_maturity, balance, amount_currency in to_compute:
-                print('======create payment terms======')
-                print(amount_currency)
                 currency = self.journal_id.company_id.currency_id
                 if currency and currency.is_zero(balance) and len(to_compute) > 1:
                     continue
@@ -262,13 +259,10 @@ class account_move(models.Model):
                         'partner_id': self.commercial_partner_id.id,
                         'exclude_from_invoice_tab': True,
                     })
-                print('============account move candidate==============')
-                print(candidate)
 
                 new_terms_lines += candidate
                 if in_draft_mode:
                     candidate.update(candidate._get_fields_onchange_balance(force_computation=True))
-                print(candidate.amount_currency)
             return new_terms_lines
 
         existing_terms_lines = self.line_ids.filtered(lambda line: line.account_id.user_type_id.type in ('receivable', 'payable'))
@@ -285,8 +279,6 @@ class account_move(models.Model):
                 # total_amount_currency -= line.amount_currency * 2
                 # total_balance -= line.amount_currency * 2
 
-        print('======================666==========================')
-        print(total_amount_currency)
 
         
         if not others_lines:
