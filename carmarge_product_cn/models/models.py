@@ -189,7 +189,9 @@ class product_template(models.Model):
             # public_pricelist = self.env.ref("product.list0")
             # product.exw_rate = sum( abs(price) for price in public_pricelist.item_ids.filtered(lambda i: i.product_tmpl_id == product).mapped("price_discount"))
             # 26期-修改销售毛利率计算逻辑  该产品被打包成
-            product.exw_rate = ((product.list_price - product.purchase_price_tax / (product.price_tax_value if product.price_tax_value else 1)) * 100 / product.list_price) if product.list_price != 0 else 0
+            # product.exw_rate = ((product.list_price - product.purchase_price_tax / (product.price_tax_value if product.price_tax_value else 1)) * 100 / product.list_price) if product.list_price != 0 else 0
+            # 20231228-修改销售毛利率计算逻辑:销售毛利率=（销售价格-采购成本）/销售价格。 by qiqi
+            product.exw_rate = (product.list_price - product.standard_price) / product.list_price * 100 if product.list_price != 0 else 0
             # 计算出厂价
             # product.exw = public_pricelist.get_product_price(product.product_variant_id,1,self.env.company.partner_id)
             product.exw = product.standard_price * (100 + product.exw_rate) / 100
@@ -199,6 +201,7 @@ class product_template(models.Model):
         for product in self:
             product.default_code = f"{'/'.join([p.name for p in product.product_replaces_ids])}"
 
+    name = fields.Char(translate=False)
     comm_check = fields.Boolean("商检", default=False)
     brand = fields.Many2many("product.brand", string="适用")
     exw = fields.Monetary("标准售价", compute="_compute_exw_rate")
@@ -227,14 +230,14 @@ class product_template(models.Model):
     width = fields.Float("宽")
     weight = fields.Float(string="毛重")
     type = fields.Selection(default="product")
-    translate_name = fields.Char(string="英文名称")
+    translate_name = fields.Char(string="英文名称", required=True)
     uom_id = fields.Many2one(
         'uom.uom', 'Unit of Measure',
-        default=_get_default_uom_id, required=True,
+        default=False, required=True,
         help="Default unit of measure used for all stock operations.")
     uom_po_id = fields.Many2one(
         'uom.uom', 'Purchase Unit of Measure',
-        default=_get_default_uom_id, required=True,
+        default=False, required=True,
         help="Default unit of measure used for purchase orders. It must be in the same category as the default unit of measure.")
     other_purchases_count = fields.Float(string="其他采购数量", help="当当前产品存在合并产品时")
     other_sales_count = fields.Float(string="其他销售数量", help="当当前产品存在合并产品时")
@@ -249,7 +252,7 @@ class product_template(models.Model):
         "product.price.history", string="历史销售价格", compute="_compute_price_history")
     purchase_price_history = fields.Many2many(
         "purchase.price.history", string="历史采购价格", compute="_compute_price_history")
-    origin_type = fields.Selection(ORIGINS, string="产品属性", default='self')
+    origin_type = fields.Selection(ORIGINS, string="产品属性", default=False)
     is_cost_service = fields.Boolean("Cost Service", default=False)
     product_replaces_ids = fields.Many2many('product.replaces', string="替换号/OE号")
 

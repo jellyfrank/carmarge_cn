@@ -28,7 +28,7 @@
                     <field name="other_purchases_count" invisible="1"/>
                     <field name="other_sales_count" invisible="1"/>
                     <field name="translate_name" placeholder="英文名称"/>
-                    <field name="origin_type" options="{'horizontal': true}" widget="radio" class="oe_inline"/>
+<!--                    <field name="origin_type" options="{'horizontal': true}" widget="radio" class="oe_inline"/>-->
                 </xpath>
                 <xpath expr="//div[@name='options']" position="after">
                     <div>
@@ -69,10 +69,11 @@
                     <attribute name='attrs'>{'readonly':[('group_use_product_standard_price_update','=',False)]}</attribute>
                 </xpath>
                 <xpath expr="//page[@name='purchase']" position="attributes">
-                <attribute name="string">询价记录</attribute>
+                    <attribute name="string">询价记录</attribute>
+                    <attribute name="groups">purchase.group_purchase_manager</attribute>
                 </xpath>
                 <xpath expr="//page[@name='inventory']" position="after">
-                    <page string="历史销售价格">
+                    <page string="历史销售价格" groups="purchase.group_purchase_manager">
                         <field name="sale_price_history">
                             <tree>
                                 <field name="sale_order"/>
@@ -86,7 +87,7 @@
                             </tree>
                         </field>
                     </page>
-                    <page string="历史采购价格">
+                    <page string="历史采购价格" groups="purchase.group_purchase_manager">
                         <field name="purchase_price_history">
                             <tree>
                                 <field name="purchase_order"/>
@@ -104,7 +105,7 @@
                 <field name="company_id" position="before">
                     <!-- <field name="exw"/>-->
                     <field name="price_tax_value" invisible="1"/>
-                    <field name="purchase_price_tax"/>
+<!--                    <field name="purchase_price_tax"/>-->
                     <label for="exw_rate" string="销售毛利率"/>
                     <div class="o_row">
                         <field name="exw_rate"/>%
@@ -136,7 +137,7 @@
                     <tree string="Product" multi_edit="1" sample="1">
                         <field name="type" optional="hide" readonly="1"/>
                         <field name="categ_id" optional="show"/>
-                        <field name="origin_type"/>
+<!--                        <field name="origin_type"/>-->
                         <field name="name" string="中文名称"/>
                         <field name="translate_name"/>
                         <field name="product_replaces_ids" widget="many2many_tags" string="替换号/OE号"
@@ -206,11 +207,11 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='name']" position="after">
                     <field name="translate_name" string="英文名称" filter_domain="[('translate_name', 'ilike', self)]"/>
-                    <field name="origin_type"/>
+<!--                    <field name="origin_type"/>-->
                 </xpath>
-                <filter name="categ_id" position="after">
-                    <filter name="attr" string="产品属性" context="{'group_by':'origin_type'}"/>
-                </filter>
+<!--                <filter name="categ_id" position="after">-->
+<!--                    <filter name="attr" string="产品属性" context="{'group_by':'origin_type'}"/>-->
+<!--                </filter>-->
 
             </field>
         </record>

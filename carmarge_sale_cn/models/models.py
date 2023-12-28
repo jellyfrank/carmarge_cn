@@ -190,9 +190,11 @@ class sale_order(models.Model):
         return result
 
     def action_confirm(self):
+        da = self.date_order
         if self.state == 'draft':
             raise exceptions.Warning('当前报价单未发送报价！')
         result = super(sale_order, self).action_confirm()
+        self.date_order = da
         return result
 
     @api.onchange('pricelist_id')

@@ -919,3 +919,9 @@ msgstr ""
 #: model:ir.model.fields,field_description:carmarge_sale_cn.field_sale_order__land_fee
 msgid "陆运费"
 msgstr ""
+
+#. module: sale
+#: model:ir.model.fields,field_description:sale.field_sale_order__commitment_date
+#: model_terms:ir.ui.view,arch_db:sale.view_order_form
+msgid "Delivery Date"
+msgstr "交货日期"
