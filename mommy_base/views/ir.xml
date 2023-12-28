@@ -22,5 +22,16 @@
                 </field>
             </field>
         </record>
+
+        <record id="view_ir_model_form" model="ir.ui.view">
+            <field name="name">ir model form</field>
+            <field name="model">ir.model</field>
+            <field name="inherit_id" ref="base.view_model_form"/>
+            <field name="arch" type="xml">
+                <field name="readonly" position="after">
+                    <field name="store"/>
+                </field>
+            </field>
+        </record>
     </data>
 </odoo>

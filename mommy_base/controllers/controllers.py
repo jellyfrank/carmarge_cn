@@ -18,3 +18,14 @@ class ActionController(Action):
             active_records = request.env[active_model].browse(active_id) if active_id else request.env[active_model].browse(active_ids)
             active_records._pre_action_validate()
         return super().load(action_id, additional_context)
+
+    @http.route('/web/attachment/<int:id>', type='http', auth="public")
+    def download_attachments(self, file_name, id):
+        """
+        Download file bytes
+        """
+        attach = request.env['ir.attchment'].sudo().browse(id)
+        headers = [('Content-Type', 'application/ms-excel'),
+                   ('Content-Disposition', content_disposition(file_name))]
+        return request.make_response(attach.raw,
+                                     headers=headers)

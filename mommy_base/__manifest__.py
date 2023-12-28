@@ -19,16 +19,18 @@
         10. 表单X2many字段树形控制分页设置
         11. 添加模型跟踪Track All功能
         12. qweb报表添加货币符号去除功能
+        13. X2Many字段支持optons no_open属性
+        14. ir.model添加store显示
     """,
 
-    'author': "Kevin Kong",
-    'website': "http://www.odoomommy.com",
+    'author': "OdooMommy Network Technology",
+    'website': "https://www.odoomommy.com",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/13.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'basic',
-    'version': '14.7.6',
+    'version': '14.7.9',
 
     # any module necessary for this one to work correctly
     'depends': ['mail'],
@@ -49,4 +51,10 @@
     'demo': [
         'demo/demo.xml',
     ],
+    "images":["static/description/icon.png"],
+    "price": "10",
+    "currency": 'EUR',
+    "application": True,
+    'support': 'kevin@odoomommy.com',
+    "license": "OPL-1",
 }
