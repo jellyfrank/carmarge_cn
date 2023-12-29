@@ -1,0 +1,15 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* carmarge_product_cn
+
+#. module: carmarge_product_cn
+#: model:ir.model.fields,field_description:carmarge_product_cn.field_product_product__uom_id
+#: model:ir.model.fields,field_description:carmarge_product_cn.field_product_template__uom_id
+msgid "Unit of Measure"
+msgstr "销售单位"
+
+#. module: product
+#: model:ir.model.fields,field_description:product.field_product_product__uom_po_id
+#: model:ir.model.fields,field_description:product.field_product_template__uom_po_id
+msgid "Purchase Unit of Measure"
+msgstr "采购单位"

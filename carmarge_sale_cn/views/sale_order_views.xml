@@ -234,8 +234,16 @@
                 <field name="invoice_status" position="attributes">
                     <attribute name='attrs'>{'column_invisible':[('state','=','draft')]}</attribute>
                 </field>
+                <field name="name" position="attributes">
+                    <attribute name='string'>订单编号</attribute>
+                </field>
             </field>
         </record>
+
+        <menuitem id="sale.menu_sale_invoicing"
+            name="To Invoice"
+            parent="sale.sale_menu_root"
+            sequence="3" groups="sales_team.group_sale_salesman" active="False"/>
 
     </data>
 </odoo>
