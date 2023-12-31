@@ -68,6 +68,9 @@
                 <xpath expr="//field[@name='standard_price']" position="attributes">
                     <attribute name='attrs'>{'readonly':[('group_use_product_standard_price_update','=',False)]}</attribute>
                 </xpath>
+                <xpath expr="//field[@name='uom_id']" position="attributes">
+                    <attribute name='string'>销售单位</attribute>
+                </xpath>
                 <xpath expr="//page[@name='purchase']" position="attributes">
                     <attribute name="string">询价记录</attribute>
                     <attribute name="groups">purchase.group_purchase_manager</attribute>

@@ -107,6 +107,10 @@
         </field>
         <field name="commitment_date" position="attributes">
           <attribute name="widget">date</attribute>
+          <attribute name="string">交货日期</attribute>
+        </field>
+        <field name="name" position="attributes">
+          <attribute name="string">订单编码</attribute>
         </field>
       </field>
     </record>
