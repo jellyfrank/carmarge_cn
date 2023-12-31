@@ -255,6 +255,7 @@ class product_template(models.Model):
     origin_type = fields.Selection(ORIGINS, string="产品属性", default=False)
     is_cost_service = fields.Boolean("Cost Service", default=False)
     product_replaces_ids = fields.Many2many('product.replaces', string="替换号/OE号")
+    grade_id = fields.Many2one("product.grade", string="产品等级")
 
     def action_view_sales(self):
         action = self.env["ir.actions.actions"]._for_xml_id(
@@ -452,3 +453,10 @@ class ProductProduct(models.Model):
     def _compute_default_code(self):
         for product in self:
             product.default_code = f"{'/'.join([p.name for p in product.product_replaces_ids])}"
+
+
+class product_grade(models.Model):
+    _name = "product.grade"
+    _description = "product grade"
+
+    name = fields.Char("产品等级")
