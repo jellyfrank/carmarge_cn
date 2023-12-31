@@ -55,18 +55,22 @@
                     </div>
                 </xpath>
                 <field name="categ_id" position="after">
+                    <field name="grade_id"/>
                     <field name="brand" widget="many2many_tags"/>
                 </field>
                 <xpath expr="//label[@for='weight']" position="attributes">
                     <attribute name="string">毛重</attribute>
                 </xpath>
-                <xpath expr="//field[@name='product_variant_id']" position="after">
-                    <field name="group_use_product_standard_price_update"/>
+<!--                <xpath expr="//field[@name='product_variant_id']" position="after">-->
+<!--                    <field name="group_use_product_standard_price_update"/>-->
 
-                </xpath>
+<!--                </xpath>-->
 
-                <xpath expr="//field[@name='standard_price']" position="attributes">
-                    <attribute name='attrs'>{'readonly':[('group_use_product_standard_price_update','=',False)]}</attribute>
+<!--                <xpath expr="//field[@name='standard_price']" position="attributes">-->
+<!--                    <attribute name='attrs'>{'readonly':[('group_use_product_standard_price_update','=',False)]}</attribute>-->
+<!--                </xpath>-->
+                <xpath expr="//field[@name='uom_id']" position="attributes">
+                    <attribute name='string'>销售单位</attribute>
                 </xpath>
                 <xpath expr="//page[@name='purchase']" position="attributes">
                     <attribute name="string">询价记录</attribute>
@@ -136,6 +140,7 @@
                 <xpath expr="//tree" position="replace">
                     <tree string="Product" multi_edit="1" sample="1">
                         <field name="type" optional="hide" readonly="1"/>
+                        <field name="grade_id" optional="show"/>
                         <field name="categ_id" optional="show"/>
 <!--                        <field name="origin_type"/>-->
                         <field name="name" string="中文名称"/>
@@ -305,5 +310,56 @@
                   parent="purchase.menu_purchase_products" sequence="40"/>
         <menuitem id="menu_product_stock_replaces" name="替换号/OE号" action="action_product_replaces"
                   parent="stock.menu_stock_inventory_control" sequence="40"/>
+
+        <record id="view_product_grade_tree" model="ir.ui.view">
+            <field name="name">Product Grade Tree</field>
+            <field name="model">product.grade</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_product_grade_form" model="ir.ui.view">
+            <field name="name">Product Grade Form</field>
+            <field name="model">product.grade</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_product_grade_filter" model="ir.ui.view">
+            <field name="name">Product Grade Filter</field>
+            <field name="model">product.grade</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" filter_domain="[('name','ilike',self)]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_product_grade" model="ir.actions.act_window">
+            <field name="name">产品等级</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.grade</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref=""/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    暂无记录！
+                </p>
+                <p>
+                </p>
+            </field>
+        </record>
+        <menuitem id="menu_product_grade" name="产品等级" action="action_product_grade" parent="sale.product_menu_catalog" sequence="20"/>
+
     </data>
 </odoo>
