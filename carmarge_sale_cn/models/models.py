@@ -368,6 +368,12 @@ class sale_order_line(models.Model):
     # product_packaging = fields.Many2one( 'product.packaging', string='包装数量', default=False, check_company=True)
     product_packaging = fields.Many2one(string='包装数量')
 
+    def action_make_invoiced(self):
+        """
+        Mark the sale order line invoice status to done
+        """
+        for line in self:
+            line.invoice_status = 'done'
 
     @api.onchange('product_uom', 'product_uom_qty')
     def product_uom_change(self):
