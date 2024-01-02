@@ -320,14 +320,18 @@ class sale_order_line(models.Model):
         it automatically, which may not be wanted at all. That's why the refund has to be created from the SO
         """
         for line in self:
-            qty_invoiced = 0.0
-            for invoice_line in line.invoice_lines:
-                if invoice_line.move_id.state != 'cancel':
-                    if invoice_line.move_id.move_type == 'out_invoice':
-                        qty_invoiced += invoice_line.product_uom_id._compute_quantity(invoice_line.quantity, line.product_uom)
-                    # elif invoice_line.move_id.move_type == 'out_refund':
-                    #     qty_invoiced -= invoice_line.product_uom_id._compute_quantity(invoice_line.quantity, line.product_uom)
-            line.qty_invoiced = qty_invoiced
+            #[FIXME] 判断条件不是很严格
+            if line.product_id.type == 'service' and line.product_id.name == '优惠':
+                line.qty_invoiced = line.product_uom_qty
+            else:
+                qty_invoiced = 0.0
+                for invoice_line in line.invoice_lines:
+                    if invoice_line.move_id.state != 'cancel':
+                        if invoice_line.move_id.move_type == 'out_invoice':
+                            qty_invoiced += invoice_line.product_uom_id._compute_quantity(invoice_line.quantity, line.product_uom)
+                        # elif invoice_line.move_id.move_type == 'out_refund':
+                        #     qty_invoiced -= invoice_line.product_uom_id._compute_quantity(invoice_line.quantity, line.product_uom)
+                line.qty_invoiced = qty_invoiced
 
     delivery_cost_line = fields.Monetary(
         "运费", compute="_compute_line", store=True)
