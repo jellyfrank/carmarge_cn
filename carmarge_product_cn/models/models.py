@@ -201,7 +201,7 @@ class product_template(models.Model):
         for product in self:
             product.default_code = f"{'/'.join([p.name for p in product.product_replaces_ids])}"
 
-    name = fields.Char(translate=False)
+    # name = fields.Char(translate=False)
     comm_check = fields.Boolean("商检", default=False)
     brand = fields.Many2many("product.brand", string="适用")
     exw = fields.Monetary("标准售价", compute="_compute_exw_rate")
