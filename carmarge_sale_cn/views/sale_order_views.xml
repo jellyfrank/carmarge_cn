@@ -106,8 +106,8 @@
                     </tree>
                 </xpath>
 
-                <xpath expr="//field[@name='order_line']//form" position="inside">
-                    <button name="action_make_invoiced" attrs="{'invisible':[('qty_invoiced','!=', product_uom_qty)]}" type="object" string="Mark as Invoiced" class="oe_highlight"/>
+                <xpath expr="//field[@name='order_line']//field[@name='display_type']" position="before">
+                    <button name="action_make_invoiced" type="object" string="Mark as Invoiced" class="oe_highlight"/>
                 </xpath>
 
                 <!-- <xpath expr="//field[@name='order_line']//tree//field[@name='price_unit']" position="after">

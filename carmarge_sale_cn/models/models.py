@@ -373,7 +373,8 @@ class sale_order_line(models.Model):
         Mark the sale order line invoice status to done
         """
         for line in self:
-            line.invoice_status = 'done'
+            line.invoice_status = 'invoiced'
+        return self.show_message("状态更新","成功")
 
     @api.onchange('product_uom', 'product_uom_qty')
     def product_uom_change(self):
