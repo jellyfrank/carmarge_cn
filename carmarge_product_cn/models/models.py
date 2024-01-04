@@ -445,7 +445,8 @@ class ProductProduct(models.Model):
         """product.product销售毛利率"""
         for product in self:
             # 26期-修改销售毛利率计算逻辑
-            product.exw_rate = ((product.lst_price - product.purchase_price_tax) * 100 / product.lst_price) if product.lst_price != 0 else 0
+            # product.exw_rate = ((product.lst_price - product.purchase_price_tax) * 100 / product.lst_price) if product.lst_price != 0 else 0
+            product.exw_rate = (product.lst_price - product.standard_price) / product.lst_price * 100 if product.lst_price != 0 else 0
 
     default_code = fields.Char('配件编号',compute="_compute_default_code",store=True, index=True)
 
