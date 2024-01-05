@@ -440,7 +440,7 @@ class ProductProduct(models.Model):
         digits='Product Price', inverse='_set_product_lst_price', store=True,
         help="销售价格由产品模板管理。点击“可变配置”按钮来设置额外的产品变体价格。")
 
-    @api.onchange('lst_price', 'purchase_price_tax')
+    @api.onchange('lst_price', 'purchase_price_tax','standard_price')
     def _onchange_exw_rate_1(self):
         """product.product销售毛利率"""
         for product in self:
