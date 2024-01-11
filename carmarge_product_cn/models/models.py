@@ -181,7 +181,7 @@ class product_template(models.Model):
             # data.insert(0,(5,))
             product.purchase_price_history = purchase_data
 
-    @api.onchange('list_price', 'purchase_price_tax', 'standard_price')
+    @api.depends('list_price', 'purchase_price_tax', 'standard_price')
     def _compute_exw_rate(self):
         """计算加价率->销售毛利率"""
         for product in self:
@@ -201,13 +201,18 @@ class product_template(models.Model):
         for product in self:
             product.default_code = f"{'/'.join([p.name for p in product.product_replaces_ids])}"
 
+    @api.onchange("standard_price")
+    def _compute_purchase_price(self):
+        for product in self:
+            product.purchase_price = product.standard_price * 1.13
+
     # name = fields.Char(translate=False)
     comm_check = fields.Boolean("商检", default=False)
     brand = fields.Many2many("product.brand", string="适用")
     exw = fields.Monetary("标准售价", compute="_compute_exw_rate")
     purchase_price_tax = fields.Monetary("含税采购价")
     price_tax_value = fields.Float("含税采购价固定除数", default=1.13)
-    exw_rate = fields.Float("销售毛利率%", compute="_compute_exw_rate")
+    exw_rate = fields.Float("销售毛利率%", compute="_compute_exw_rate", store=True)
 
     default_code = fields.Char(string="配件编号", compute="_compute_default_code", store=True)
 
@@ -256,6 +261,7 @@ class product_template(models.Model):
     is_cost_service = fields.Boolean("Cost Service", default=False)
     product_replaces_ids = fields.Many2many('product.replaces', string="替换号/OE号")
     grade_id = fields.Many2one("product.grade", string="产品等级")
+    purchase_price = fields.Monetary("采购价格", compute="_compute_purchase_price")
 
     def action_view_sales(self):
         action = self.env["ir.actions.actions"]._for_xml_id(
@@ -350,7 +356,7 @@ class product_template(models.Model):
         """
             继承read_group隐藏产品分组中 长、宽、高、体积、净重、毛重 汇总金额值
         """
-        drops = ['length', 'width', 'height', 'volume', 'net_weight', 'weight']
+        drops = ['length', 'width', 'height', 'volume', 'net_weight', 'weight', 'list_price']
         for drop in drops:
             if drop in fields:
                 fields.remove(drop)

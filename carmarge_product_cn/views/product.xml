@@ -72,6 +72,9 @@
                 <xpath expr="//field[@name='uom_id']" position="attributes">
                     <attribute name='string'>销售单位</attribute>
                 </xpath>
+                <xpath expr="//div[@name='standard_price_uom']" position="after">
+                    <field name="purchase_price" widget="monetary"/>
+                </xpath>
                 <xpath expr="//page[@name='purchase']" position="attributes">
                     <attribute name="string">询价记录</attribute>
                     <attribute name="groups">purchase.group_purchase_manager</attribute>
@@ -144,19 +147,20 @@
                         <field name="categ_id" optional="show"/>
 <!--                        <field name="origin_type"/>-->
                         <field name="name" string="中文名称"/>
-                        <field name="translate_name"/>
+                        <field name="translate_name" optional="hide"/>
                         <field name="product_replaces_ids" widget="many2many_tags" string="替换号/OE号"
                                optional="show"/>
                         <field name="barcode" optional="show" attrs="{'readonly': [('product_variant_count', '&gt;', 1)]}"/>
                         <field name="brand" widget="many2many_tags"/>
                         <field name="uom_id" string="单位" readonly="1" optional="hide" groups="uom.group_uom"/>
-                        <field name="packaging_ids" widget="many2many_tags" string="包装数量"/>
+                        <field name="packaging_ids" widget="many2many_tags" string="包装数量" optional="hide"/>
                         <field name="comm_check" string="商检" optional="hide"/>
                         <field name="is_brand_package" string="品牌包装" optional="hide"/>
                         <field name="standard_price" widget="monetary" options="{'currency_field': 'cost_currency_id'}" optional="hide" readonly="1"/>
+                        <field name="purchase_price" widget="monetary" options="{'currency_field': 'cost_currency_id'}" optional="hide" readonly="1"/>
                         <field name="list_price" string="销售价格" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show" decoration-muted="not sale_ok"/>
                         <!-- <field name="exw" optional="hide" string="标准价格"/>-->
-                        <field name="exw_rate"/>
+                        <field name="exw_rate" optional="hide"/>
                         <field name="purchased_product_qty" string="已采购数量" optional="hide"/>
                         <field name="qty_available" optional="hide"/>
                         <field name="virtual_available" optional="hide"/>

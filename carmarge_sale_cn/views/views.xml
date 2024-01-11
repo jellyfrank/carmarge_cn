@@ -18,21 +18,28 @@
           <field name="delivery_cost" readonly="1"/>
           <field name="discount_manual"/>
         </field>
+        <field name="incoterm" position="after">
+          <field name="port_city" required="1"/>
+          <label for="commitment_date" string="交货日期"/>
+          <div name="commitment_date_div" class="o_row">
+            <field name="commitment_date" widget="date"/>
+          </div>
+        </field>
         <!-- <field name="amount_tax" position="attributes">
           <attribute name="invisible">1</attribute>
         </field> -->
         <field name="payment_term_id" position="replace">
           <field name="payment_term_id" invisible="1"/>
           <field name="payment_term"/>
-          <field name="port_city" required="1"/>
-          <label for="commitment_date" string="交货日期"/>
-          <div name="commitment_date_div" class="o_row">
-            <field name="commitment_date" widget="date"/>
-            <!-- <span name="expected_date_span" class="text-muted">
-              Expected:
-              <field name="expected_date" widget="date"/>
-            </span> -->
-          </div>
+<!--          <field name="port_city" required="1"/>-->
+<!--          <label for="commitment_date" string="交货日期"/>-->
+<!--          <div name="commitment_date_div" class="o_row">-->
+<!--            <field name="commitment_date" widget="date"/>-->
+<!--            &lt;!&ndash; <span name="expected_date_span" class="text-muted">-->
+<!--              Expected:-->
+<!--              <field name="expected_date" widget="date"/>-->
+<!--            </span> &ndash;&gt;-->
+<!--          </div>-->
         </field>
         <!-- <xpath expr="//group[@name='commitment_date']" position="after">
           <attribute name='invisible'>1</attribute>

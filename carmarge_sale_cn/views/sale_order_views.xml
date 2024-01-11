@@ -43,7 +43,12 @@
                 </xpath> -->
 
                 <field name="payment_term" position="before">
-                    <field name="currency_str" readonly="1"/>
+<!--                    <field name="currency_str" readonly="1"/>-->
+                    <label for="currency_str"/>
+                    <div name="currency">
+                        <field name="currency_str" readonly="1"/>
+                        <button name="update_currency_button" type="object" string="更新汇率" class="oe_link" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                    </div>
                 </field>
 
                 <xpath expr="//field[@name='order_line']//tree" position="replace">
@@ -86,7 +91,7 @@
                         <field name="total_packaging_volume" sum="total" optional="hide"/>
                         <field name="group_use_sale_price_update" invisible="1"/>
                         <field name="price_subtotal" invisible="1" widget="monetary" groups="account.group_show_line_subtotals_tax_excluded"/>
-                        <field name="price_total" widget="monetary" />
+                        <field name="price_subtotal" widget="monetary" string="不含税合计"/>
 
                         <!-- We do not display the type because we don't want the user to be bothered with that information if he has no section or note. -->
                         <field name="display_type" invisible="1"/>

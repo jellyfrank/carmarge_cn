@@ -160,6 +160,11 @@ class sale_order(models.Model):
 
     sale_cost_lines = fields.One2many("sale.cost", "order_id", string="销售费用")
 
+    def update_currency_button(self):
+        """获取价格表中的货币比率"""
+        for sale_order in self:
+            sale_order.currency_str = f"{self.env.company.currency_id.rate}({datetime.strftime(datetime.now(),'%Y-%m-%d %H:%M:%S')})"
+
     @api.model
     def create(self, vals):
         partner_id = self.env['res.partner'].sudo().browse(
