@@ -189,6 +189,7 @@ class sale_order(models.Model):
         for sale_order in self:
             sale_order.currency_str = f"{self.env.company.currency_id.rate}({datetime.strftime(datetime.now(),'%Y-%m-%d %H:%M:%S')})"
             sale_order.with_context({'changed':True}).update_prices()
+            sale_order.order_line._compute_purchase_price()
 
     @api.model
     def create(self, vals):
