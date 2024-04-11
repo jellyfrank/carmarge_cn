@@ -132,6 +132,30 @@ class sale_order(models.Model):
         """获取价格表中的货币比率"""
         return f"{self.env.company.currency_id.rate}({datetime.strftime(datetime.now(),'%Y-%m-%d %H:%M:%S')})"
 
+    @api.depends('order_line.margin', 'amount_untaxed','amount_total')
+    def _compute_margin(self):
+        """
+        毛利率使用含税价格计算
+        """
+        if not all(self._ids):
+            for order in self:
+                order.margin = sum(order.order_line.mapped('margin'))
+                order.margin_percent = order.amount_total and order.margin/order.amount_total
+        else:
+            self.env["sale.order.line"].flush(['margin'])
+            # On batch records recomputation (e.g. at install), compute the margins
+            # with a single read_group query for better performance.
+            # This isn't done in an onchange environment because (part of) the data
+            # may not be stored in database (new records or unsaved modifications).
+            grouped_order_lines_data = self.env['sale.order.line'].read_group(
+                [
+                    ('order_id', 'in', self.ids),
+                ], ['margin', 'order_id'], ['order_id'])
+            mapped_data = {m['order_id'][0]: m['margin'] for m in grouped_order_lines_data}
+            for order in self:
+                order.margin = mapped_data.get(order.id, 0.0)
+                order.margin_percent = order.amount_total and order.margin/order.amount_total
+
     delivery_cost = fields.Monetary(
         "海运费", compute="_compute_delivery_discount", store=True)
     discount_manual = fields.Monetary(
@@ -338,6 +362,12 @@ class sale_order_line(models.Model):
                         elif invoice_line.move_id.move_type == 'out_refund':
                             qty_invoiced -= invoice_line.product_uom_id._compute_quantity(invoice_line.quantity, line.product_uom)
                 line.qty_invoiced = qty_invoiced
+
+    @api.depends('price_subtotal', 'product_uom_qty', 'purchase_price')
+    def _compute_margin(self):
+        for line in self:
+            line.margin = line.price_total - (line.purchase_price * line.product_uom_qty)
+            line.margin_percent = line.price_total and line.margin/line.price_total
 
     delivery_cost_line = fields.Monetary(
         "运费", compute="_compute_line", store=True)
