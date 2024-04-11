@@ -164,6 +164,7 @@ class sale_order(models.Model):
         """获取价格表中的货币比率"""
         for sale_order in self:
             sale_order.currency_str = f"{self.env.company.currency_id.rate}({datetime.strftime(datetime.now(),'%Y-%m-%d %H:%M:%S')})"
+            sale_order.with_context({'changed':True}).update_prices()
 
     @api.model
     def create(self, vals):
@@ -383,19 +384,21 @@ class sale_order_line(models.Model):
 
     @api.onchange('product_uom', 'product_uom_qty')
     def product_uom_change(self):
-        if not self.product_uom or not self.product_id:
-            self.price_unit = 0.0
-            return
-        if self.order_id.pricelist_id and self.order_id.partner_id:
-            product = self.product_id.with_context(
-                lang=self.order_id.partner_id.lang,
-                partner=self.order_id.partner_id,
-                quantity=self.product_uom_qty,
-                date=self.order_id.date_order,
-                pricelist=self.order_id.pricelist_id.id,
-                uom=self.product_uom.id,
-                fiscal_position=self.env.context.get('fiscal_position')
-            )
+        if self._context.get("changed"):
+            super().product_uom_change()
+        # if not self.product_uom or not self.product_id:
+        #     self.price_unit = 0.0
+        #     return
+        # if self.order_id.pricelist_id and self.order_id.partner_id:
+        #     product = self.product_id.with_context(
+        #         lang=self.order_id.partner_id.lang,
+        #         partner=self.order_id.partner_id,
+        #         quantity=self.product_uom_qty,
+        #         date=self.order_id.date_order,
+        #         pricelist=self.order_id.pricelist_id.id,
+        #         uom=self.product_uom.id,
+        #         fiscal_position=self.env.context.get('fiscal_position')
+        #     )
 
     # 26期-继承修改：选择产品后默认数量置为0
     product_uom_qty = fields.Float(string='Quantity', digits='数量', required=True, default=0)
