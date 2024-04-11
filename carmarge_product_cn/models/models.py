@@ -212,7 +212,7 @@ class product_template(models.Model):
     exw = fields.Monetary("标准售价", compute="_compute_exw_rate")
     purchase_price_tax = fields.Monetary("含税采购价")
     price_tax_value = fields.Float("含税采购价固定除数", default=1.13)
-    exw_rate = fields.Float("销售毛利率%", compute="_compute_exw_rate")
+    exw_rate = fields.Float("销售毛利率%", compute="_compute_exw_rate",store=True)
 
     default_code = fields.Char(string="配件编号", compute="_compute_default_code", store=True)
 

@@ -199,7 +199,8 @@ class purchase_order_line(models.Model):
     def _onchange_quantity(self):
         if self._context.get("changed"):
             super()._onchange_quantity()
-        self.price_unit = self.price_unit * 1.13
+        else:
+            self.price_unit = self.product_id.standard_price * 1.13
 
     @api.model_create_multi
     def create(self, vals_list):
