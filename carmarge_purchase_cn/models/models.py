@@ -186,28 +186,46 @@ class purchase_order_line(models.Model):
     def onchange_product_id(self):
         if not self.product_id:
             return
-
-        # Reset date, price and quantity since _onchange_quantity will provide default values
-        # self.price_unit = self.product_qty = 0.0
-
         self._product_id_change()
-
         self._suggest_quantity()
-        self._onchange_quantity()
+        # self._onchange_quantity()
+
+        product_ids = []
+        for line in self.order_id.order_line:
+            if not line.product_id:
+                continue
+            if line.product_id.id == self.product_id.id:
+                if isinstance(line.id, NewId):
+                    if line.id.ref or line.id.origin:
+                        product_ids.append(line.product_id.id)
+                else:
+                    product_ids.append(line.product_id.id)
+        if len(product_ids)>=2:
+            raise UserError(f"产品:{self.product_id.display_name}已经存在于明细行中！")
+        
+        self.with_context({'changed': True})._onchange_quantity()
+        # product_ids = []
+        # self.packaging=False
+        # product_data = self.product_id
+        # if product_data and product_data.packaging_ids:
+        #     for pack in product_data.packaging_ids:
+        #         product_ids.append(pack.id)
+        # return {
+        #     'domain':{
+        #         'packaging':[('id','in',product_ids)]
+        #     }
+        # }
 
     @api.onchange('product_qty', 'product_uom', 'company_id')
     def _onchange_quantity(self):
-        if self._context.get("changed"):
-            super()._onchange_quantity()
-            self.price_unit = self.product_id.standard_price * 1.13
+        allow_price_changed = self._context.get("changed")
+        # don't change the price if not the new line.
+        if not isinstance(self.id, NewId) or not allow_price_changed:
+            return
 
-    @api.model_create_multi
-    def create(self, vals_list):
-        for values in vals_list:
-            product_tmpl_obj = self.env['product.template'].search([('id', '=', values['product_id'])])
-            values['price_unit'] = product_tmpl_obj.standard_price*1.13
-        # 调用原始的create方法
-        return super(purchase_order_line, self).create(vals_list)
+        super()._onchange_quantity()
+        self.price_unit = self.product_id.standard_price * 1.13
+
 
     @api.depends("order_id.delivery_cost", "order_id.discount_manual")
     def _compute_line(self):
@@ -237,40 +255,6 @@ class purchase_order_line(models.Model):
             line.total_packaging_weight = line.packaging_qty * line.packaging.weight
             line.total_packaging_volume = line.packaging_qty * line.packaging.volume
             line.total_packaging_net_weight = line.packaging_qty * line.packaging_net_weight
-
-    @api.onchange('product_id')
-    def _onchange_product_packaging(self):
-        '''
-        根据产品获取包装规格
-        '''
-        self.with_context({'changed': True})._onchange_quantity()
-        product_ids = []
-        self.packaging=False
-        product_data = self.product_id
-        if product_data and product_data.packaging_ids:
-            for pack in product_data.packaging_ids:
-                product_ids.append(pack.id)
-        return {
-            'domain':{
-                'packaging':[('id','in',product_ids)]
-            }
-        }
-        
-    @api.onchange("product_id")
-    def _onchange_product_id(self):
-        """产品发生变化时"""
-        product_ids = []
-        for line in self.order_id.order_line:
-            if not line.product_id:
-                continue
-            if line.product_id.id == self.product_id.id:
-                if isinstance(line.id, NewId):
-                    if line.id.ref or line.id.origin:
-                        product_ids.append(line.product_id.id)
-                else:
-                    product_ids.append(line.product_id.id)
-        if len(product_ids)>=2:
-            raise UserError(f"产品:{self.product_id.display_name}已经存在于明细行中！")
 
     @api.depends("product_qty","qty_received")
     def _compute_receive_state(self):
