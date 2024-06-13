@@ -204,17 +204,6 @@ class purchase_order_line(models.Model):
             raise UserError(f"产品:{self.product_id.display_name}已经存在于明细行中！")
         
         self.with_context({'changed': True})._onchange_quantity()
-        # product_ids = []
-        # self.packaging=False
-        # product_data = self.product_id
-        # if product_data and product_data.packaging_ids:
-        #     for pack in product_data.packaging_ids:
-        #         product_ids.append(pack.id)
-        # return {
-        #     'domain':{
-        #         'packaging':[('id','in',product_ids)]
-        #     }
-        # }
 
     @api.onchange('product_qty', 'product_uom', 'company_id')
     def _onchange_quantity(self):
