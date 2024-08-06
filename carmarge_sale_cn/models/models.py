@@ -156,6 +156,7 @@ class sale_order(models.Model):
                 order.margin = mapped_data.get(order.id, 0.0)
                 order.margin_percent = order.amount_total and order.margin/order.amount_total
 
+    commitment_date = fields.Date("目标交货日期")
     delivery_cost = fields.Monetary(
         "海运费", compute="_compute_delivery_discount", store=True)
     discount_manual = fields.Monetary(
@@ -181,7 +182,7 @@ class sale_order(models.Model):
     customs_shared = fields.Boolean("报关均摊状态", default=False)
     shipping_fee = fields.Float("海运费", help="按体积均摊")
     shipping_shared = fields.Boolean("海运均摊状态", default=False)
-
+    
     sale_cost_lines = fields.One2many("sale.cost", "order_id", string="销售费用")
 
     def update_currency_button(self):
