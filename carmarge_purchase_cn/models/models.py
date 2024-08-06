@@ -161,6 +161,7 @@ class purchase_order(models.Model):
 
     delivery_cost = fields.Monetary("运费",compute="_compute_delivery_discount", store=True)
     discount_manual = fields.Monetary("优惠",compute="_compute_delivery_discount", store=True)
+    effective_date = fields.Datetime(string="实际接收日期")
     sale_id = fields.Many2one("sale.order",string="销售单")
     receive_state = fields.Selection(RECEIVE_STATES,string="入库状态",compute="_compute_receive_state", store=True)
     paid_amount = fields.Monetary("已付金额", compute="_compute_amount",store=True)
