@@ -378,8 +378,9 @@ class sale_order_line(models.Model):
     exw = fields.Monetary("标准售价", related="product_id.exw")
     packaging = fields.Many2one(
         "product.packaging", string="包装规格", compute="_get_product_packaging")
+    product_uom_qty = fields.Float(digits="Product Unit of Measure")
     packaging_qty = fields.Float(
-        "件数", compute="_compute_packaging_qty", store=True)
+        "件数", compute="_compute_packaging_qty", store=True, digits="Product Unit of Measure")
     packaging_weight = fields.Float(
         "包装毛重", related="packaging.weight", store=True)
     packaging_net_weight = fields.Float(
