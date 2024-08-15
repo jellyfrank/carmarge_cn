@@ -64,6 +64,10 @@
                     <attribute name="widget">date</attribute>
                     <attribute name="string">实际接收日期</attribute>
                 </field>
+
+                <field name="date_order" position="attributes">
+                    <attribute name="widget">date</attribute>
+                </field>
             </field>
         </record>
 
