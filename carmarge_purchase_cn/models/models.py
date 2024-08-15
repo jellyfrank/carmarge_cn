@@ -257,6 +257,7 @@ class purchase_order_line(models.Model):
             else:
                 line.receive_state = 'done'
 
+    date_planned = fields.Char("目标接收日期")
     delivery_cost_line = fields.Monetary("运费", compute="_compute_line", store=True)
     discount_manual_line = fields.Monetary("优惠", compute="_compute_line", store=True)
     packaging = fields.Many2one("product.packaging", string="包装规格")
