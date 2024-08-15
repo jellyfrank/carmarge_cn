@@ -33,11 +33,13 @@
                 <xpath expr="//field[@name='date_order'][1]" position="attributes">
                     <attribute name='required'>1</attribute>
                     <attribute name='widget'>date</attribute>
+                    <attribute name='string'>确认日期</attribute>
                 </xpath>
 
                 <xpath expr="//field[@name='date_order'][2]" position="attributes">
                     <attribute name='required'>1</attribute>
                     <attribute name='widget'>date</attribute>
+                    <attribute name='string'>确认日期</attribute>
                 </xpath>
 
                 <field name="commitment_date" position="attributes">
@@ -285,6 +287,10 @@
                 </field>
                 <field name="expected_date" position="after">
                     <field name="effective_date" widget="date" string="实际交付日期"/>
+                </field>
+                <field name="commitment_date" position="attributes">
+                    <attribute name='string'>目标交货日期</attribute>
+                    <attribute name='widget'>date</attribute>
                 </field>
             </field>
         </record>
