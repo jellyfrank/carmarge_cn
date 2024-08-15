@@ -33,12 +33,14 @@
                 <xpath expr="//field[@name='date_order'][1]" position="attributes">
                     <attribute name='required'>1</attribute>
                     <attribute name='widget'>date</attribute>
-                    <attribute name='string'>确认日期</attribute>
                 </xpath>
 
                 <xpath expr="//field[@name='date_order'][2]" position="attributes">
                     <attribute name='required'>1</attribute>
                     <attribute name='widget'>date</attribute>
+                </xpath>
+
+                <xpath expr="//label[@for='date_order'][1]" position="attributes">
                     <attribute name='string'>确认日期</attribute>
                 </xpath>
 
