@@ -158,7 +158,7 @@ class purchase_order(models.Model):
             po.due_amount = abs(sum([invoice_id.amount_residual_signed for invoice_id in po.invoice_ids if invoice_id.state == 'posted']))
             po.paid_amount = total - po.due_amount
 
-
+    date_planned = fields.Datetime("目标接收日期")
     delivery_cost = fields.Monetary("运费",compute="_compute_delivery_discount", store=True)
     discount_manual = fields.Monetary("优惠",compute="_compute_delivery_discount", store=True)
     effective_date = fields.Datetime(string="实际接收日期")
@@ -257,7 +257,6 @@ class purchase_order_line(models.Model):
             else:
                 line.receive_state = 'done'
 
-    date_planned = fields.Char("目标接收日期")
     delivery_cost_line = fields.Monetary("运费", compute="_compute_line", store=True)
     discount_manual_line = fields.Monetary("优惠", compute="_compute_line", store=True)
     packaging = fields.Many2one("product.packaging", string="包装规格")
