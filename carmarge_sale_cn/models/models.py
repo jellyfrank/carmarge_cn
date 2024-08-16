@@ -375,7 +375,7 @@ class sale_order_line(models.Model):
         "运费", compute="_compute_line", store=True)
     discount_manual_line = fields.Monetary(
         "优惠", compute="_compute_line", store=True)
-    exw = fields.Monetary("标准售价", related="product_id.exw")
+    # exw = fields.Monetary("标准售价", related="product_id.exw")
     packaging = fields.Many2one(
         "product.packaging", string="包装规格", compute="_get_product_packaging")
     product_uom_qty = fields.Float(digits="Product Unit of Measure")
