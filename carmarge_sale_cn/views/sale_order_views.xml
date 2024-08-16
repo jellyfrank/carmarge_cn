@@ -273,9 +273,9 @@
                     <attribute name="string">预计交付日期</attribute>
                     <attribute name='widget'>date</attribute>
                 </field>
-                <field name="expected_date" position="after">
+                <!-- <field name="expected_date" position="after">
                     <field name="effective_date" widget="date" string="实际交付日期"/>
-                </field>
+                </field> -->
             </field>
         </record>
 
