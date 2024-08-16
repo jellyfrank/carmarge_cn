@@ -156,7 +156,7 @@ class sale_order(models.Model):
                 order.margin = mapped_data.get(order.id, 0.0)
                 order.margin_percent = order.amount_total and order.margin/order.amount_total
 
-    commitment_date = fields.Date("目标交货日期")
+    commitment_date = fields.Datetime("目标交货日期")
     delivery_cost = fields.Monetary(
         "海运费", compute="_compute_delivery_discount", store=True)
     discount_manual = fields.Monetary(

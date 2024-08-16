@@ -196,7 +196,7 @@
                     <attribute name="string">目标接收日期</attribute>
                 </field>
                 <field name="date_order" position="after">
-                    <field name="effective_date" string="实际接收日期" optional="show"/>
+                    <field name="effective_date" widget="date" string="实际接收日期" optional="show"/>
                 </field>
             </field>
         </record>
