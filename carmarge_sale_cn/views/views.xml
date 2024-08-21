@@ -92,37 +92,6 @@
       </field>
     </record> -->
 
-    <record id="view_sale_order_tree" model="ir.ui.view">
-      <field name="name">sale order tree</field>
-      <field name="model">sale.order</field>
-      <field name="inherit_id" ref="sale.view_order_tree"/>
-      <field name="arch" type="xml">
-        <field name="amount_total" position="after">
-          <field name="paid_amount" sum="total"/>
-          <field name="due_amount" sum="total"/>
-          <field name="delivery_state"/>
-          <!-- <field name="invoice_status" optional="hide"/> -->
-        </field>
-        <field name="expected_date" position="attributes">
-          <attribute name="widget">date</attribute>
-        </field>
-        <field name="amount_untaxed" position="attributes">
-          <attribute name='invisible'>True</attribute>
-        </field>
-        <field name="amount_tax" position="attributes">
-          <attribute name='invisible'>True</attribute>
-        </field>
-        <field name="commitment_date" position="attributes">
-          <attribute name="widget">date</attribute>
-          <attribute name="string">交货日期</attribute>
-        </field>
-        <field name="name" position="attributes">
-          <attribute name="string">订单编码</attribute>
-        </field>
-      </field>
-    </record>
-
-
     <record id="sale.action_quotations_with_onboarding" model="ir.actions.act_window">
       <field name="domain">[('state','in',['draft','sent','cancel'])]</field>
       <field name="context">{}</field>
