@@ -139,7 +139,7 @@ class purchase_order(models.Model):
     def _compute_receive_state(self):
         """计算入库状态"""
         for po in self:
-            po.state = 'none'
+            po.receive_state = 'none'
             if po.order_line:
                 valid_lines = po.order_line.filtered(lambda l:l.receive_state)
                 all_done = all( line.receive_state == 'done' for line in valid_lines)
