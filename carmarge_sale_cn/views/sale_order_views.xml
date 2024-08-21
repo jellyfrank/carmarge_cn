@@ -62,7 +62,7 @@
                 </xpath> -->
 
                 <field name="payment_term" position="before">
-                    <!--                    <field name="currency_str" readonly="1"/>-->
+<!--                    <field name="currency_str" readonly="1"/>-->
                     <label for="currency_str"/>
                     <div name="currency">
                         <field name="currency_str" readonly="1"/>
@@ -244,17 +244,21 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_quotation_tree"/>
             <field name="arch" type="xml">
-                <field name="amount_total" position="after">
-                    <field name="paid_amount" sum="total"/>
-                    <field name="due_amount" sum="total"/>
-                    <field name="delivery_state"/>
-                </field>
                 <field name="amount_untaxed" position="attributes">
                     <attribute name='invisible'>True</attribute>
                 </field>
                 <field name="amount_tax" position="attributes">
                     <attribute name='invisible'>True</attribute>
                 </field>
+                <!-- <field name="paid_amount" position="attributes">
+                    <attribute name='attrs'>{'column_invisible':[('state','=','draft')]}</attribute>
+                </field>
+                <field name="due_amount" position="attributes">
+                    <attribute name='attrs'>{'column_invisible':[('state','=','draft')]}</attribute>
+                </field>
+                <field name="delivery_state" position="attributes">
+                    <attribute name='attrs'>{'column_invisible':[('state','=','draft')]}</attribute>
+                </field> -->
                 <field name="invoice_status" position="attributes">
                     <attribute name='attrs'>{'column_invisible':[('state','=','draft')]}</attribute>
                 </field>
@@ -269,9 +273,9 @@
                     <attribute name="string">预计交付日期</attribute>
                     <attribute name='widget'>date</attribute>
                 </field>
-                <field name="name" position="attributes">
-                    <attribute name="string">订单编码</attribute>
-                </field>
+                <!-- <field name="expected_date" position="after">
+                    <field name="effective_date" widget="date" string="实际交付日期"/>
+                </field> -->
             </field>
         </record>
 
@@ -280,6 +284,18 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_tree"/>
             <field name="arch" type="xml">
+                <field name="amount_total" position="after">
+                    <field name="paid_amount" sum="total"/>
+                    <field name="due_amount" sum="total"/>
+                    <field name="delivery_state"/>
+                    <!-- <field name="invoice_status" optional="hide"/> -->
+                  </field>
+                  <field name="amount_untaxed" position="attributes">
+                    <attribute name='invisible'>True</attribute>
+                  </field>
+                  <field name="amount_tax" position="attributes">
+                    <attribute name='invisible'>True</attribute>
+                  </field>
                 <field name="name" position="attributes">
                     <attribute name='string'>订单编号</attribute>
                 </field>
