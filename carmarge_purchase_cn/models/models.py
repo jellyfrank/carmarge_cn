@@ -139,16 +139,18 @@ class purchase_order(models.Model):
     def _compute_receive_state(self):
         """计算入库状态"""
         for po in self:
-            if not po.order_line:
-                po.receive_state = 'none'
-            else:
-                states = list(set(po.order_line.filtered(lambda l:l.receive_state in ('none','done')).mapped("receive_state")))
-                if len(states) == 1 and states[0] == 'none':
-                    po.receive_state = 'none'
-                elif len(states) == 1 and states[0] == 'done':
+            po.state = 'none'
+            if po.order_line:
+                valid_lines = po.order_line.filtered(lambda l:l.receive_state)
+                all_done = all( line.receive_state == 'done' for line in valid_lines)
+                if all_done:
                     po.receive_state = 'done'
                 else:
-                    po.receive_state = 'partial'
+                    all_none = all( line.receive_state == 'none' for line in valid_lines)
+                    if all_none:
+                        po.receive_state = 'none'
+                    else:
+                        po.receive_state = 'partial'
 
     @api.depends("invoice_ids.state","invoice_ids.amount_residual")
     def _compute_amount(self):
