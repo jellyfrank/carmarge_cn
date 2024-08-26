@@ -222,7 +222,7 @@
                                         </td> -->
                                         <td name="td_subtotal" class="o_price_total text-center">
                                             <!-- <span t-field="line.price_subtotal" /> -->
-                                            <span t-esc="current_subtotal" />
+                                            <span t-esc="current_subtotal"  t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: doc.currency_id}"/>
                                             <!-- <span t-field="line.price_total" groups="account.group_show_line_subtotals_tax_included"/> -->
                                         </td>
                                     </t>
